@@ -8,7 +8,8 @@ import '../list_items/cast_item_view.dart';
 import '../utils/images.dart';
 
 class MovieDetailsPage extends StatelessWidget {
-  const MovieDetailsPage({super.key});
+  final bool isComingSoonPage;
+  const MovieDetailsPage({super.key, required this.isComingSoonPage});
 
   @override
   Widget build(BuildContext context) {
@@ -19,42 +20,44 @@ class MovieDetailsPage extends StatelessWidget {
           children: [
             ///body
             ///to make app bar appears on top of body
-            const SingleChildScrollView(
+            SingleChildScrollView(
               child: Column(
                 children: [
                   //Movie, Large Image, Small Image
-                  MovieLargeImageSmallImageAndInfoView(),
+                  const MovieLargeImageSmallImageAndInfoView(),
 
                   //Spacer
-                  SizedBox(
+                  const SizedBox(
                     height: kMargin30,
                   ),
 
                   //Censor Rating, Release date and duration
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.symmetric(horizontal: kMarginMedium2),
                     child: CensorRatingReleaseDateAndDurationView(),
                   ),
                   //spacer
-                  SizedBox(
+                  const SizedBox(
                     height: kMargin30,
                   ),
-
+                  Visibility(
+                      visible: isComingSoonPage,
+                      child: const SetNotificationView()),
                   //story line view
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.symmetric(horizontal: kMarginMedium2),
                     child: StoryLineView(),
                   ),
 
                   //spacer
-                  SizedBox(
+                  const SizedBox(
                     height: kMargin30,
                   ),
 
                   //cast view
-                  CastView(),
+                  const CastView(),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 148,
                   )
                 ],
@@ -88,17 +91,29 @@ class MovieDetailsPage extends StatelessWidget {
             ),
 
             //bottom section
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 128,
-                decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, kBackgroundColor])),
-                child: const Center(
-                  child: BookingButton(),
+            Visibility(
+              visible: !isComingSoonPage,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 128,
+                  decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, kBackgroundColor])),
+                  child: Center(
+                    child: PrimaryButton(
+                      label: kBookingLabel,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BookingPage(),
+                            ));
+                      },
+                    ),
+                  ),
                 ),
               ),
             )
@@ -109,10 +124,103 @@ class MovieDetailsPage extends StatelessWidget {
   }
 }
 
-//booking button
+//set notification view
+class SetNotificationView extends StatelessWidget {
+  const SetNotificationView({super.key});
 
-class BookingButton extends StatelessWidget {
-  const BookingButton({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: kSetNotificationContainerHeight,
+      margin: const EdgeInsets.only(
+          left: kMarginMedium2, bottom: kMargin30, right: kMarginMedium2),
+      padding: const EdgeInsets.symmetric(
+          horizontal: kMarginCardMedium2, vertical: kMargin18),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(kMarginMedium2),
+        gradient: const LinearGradient(
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
+          colors: [
+            kSetNotificationGradientStartColor,
+            kSetNotificationGradientMiddleColor,
+            kSetNotificationGradientEndColor,
+          ],
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Releasing in 5 days",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: kTextRegular2X),
+              ),
+
+              Text(
+                kGetNotifyText,
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: kSetNotificationCardTextColor),
+              ),
+
+              //set notification button view
+              SetNotificationButtonView()
+            ],
+          ),
+          Image.asset(
+            kSetNotificationImage,
+            height: kSetNotificationImageHeight,
+            width: kSetNotificationImageWidth,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SetNotificationButtonView extends StatelessWidget {
+  const SetNotificationButtonView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: kSetNotificationButtonViewHeight,
+      width: kSetNotificationButtonViewWidth,
+      decoration: BoxDecoration(
+          color: kPrimaryColor,
+          borderRadius: BorderRadius.circular(kMarginMedium)),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Icon(
+            Icons.notifications_active,
+            color: Colors.black,
+          ),
+          Text(
+            kSetNotificationText,
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: kTextRegular),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//booking button
+class PrimaryButton extends StatelessWidget {
+  final String label;
+  final void Function() onTap;
+  const PrimaryButton({super.key, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -128,18 +236,15 @@ class BookingButton extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: GestureDetector(
-              onTap: (){
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const BookingPage(),));
-              },
+              onTap: onTap,
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.5,
                 height: kBookingButtonHeight,
                 decoration: const BoxDecoration(color: kPrimaryColor),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    kBookingLabel,
-                    style: TextStyle(
+                    label,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
                     ),

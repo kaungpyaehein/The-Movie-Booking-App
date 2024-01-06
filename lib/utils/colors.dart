@@ -49,3 +49,15 @@ const Color kTimeSlotCardFillingFastBackgroundColor = Color(0x19FF7A00);
 
 Color kTimeSlotCardUnavailableBackgroundColor =
     Colors.white.withOpacity(0.10000000149011612);
+
+const Color kSetNotificationCardTextColor = Color(0xFFC7C7C7);
+
+const Color kSetNotificationGradientStartColor = Color(0x99ffffff);
+const Color kSetNotificationGradientMiddleColor = Color(0x99cccccc);
+const Color kSetNotificationGradientEndColor = Color(0x4cdddddd);
+
+const Color kSnackItemCardGradientStartColor = Color(0xCC666666);
+const Color kSnackItemCardGradientEndColor = Color(0x66333333);
+const Color kSnackItemAddRemoveButtonColor = Color(0xFF555555);
+
+const Color kSnackItemCountColor =  Color(0xFFFF0000);

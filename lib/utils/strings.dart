@@ -33,7 +33,6 @@ const String kSearchRegionHintLabel = "Search your location";
 const String kCitiesLabel = "Cities";
 const String kPickRegionAppBarTitle = "Pick Regin";
 
-
 const String kFilmType2D = "2D";
 const String kFilmType3D = "3D";
 const String kFilmType3DIMAX = "3D IMAX";
@@ -43,3 +42,23 @@ const String kAvailableLabel = "Available";
 const String kFillingFastLabel = "Filling Fast";
 const String kAlmostFullLabel = "Almost Full";
 const String kSeeDetailsLabel = "See Details";
+
+const String kTakenLabel = "Taken";
+const String kYourSelectionLabel = "Your Selection";
+
+const String kScreenLabel = "Screen";
+
+const String kNormalTextLabel = "Normal (4500ks)";
+
+const String kBuyTicketLabel = "Buy Ticket";
+
+const String kGetNotifyText = "Get notify as soon as movie\nbooking opens up in your city!";
+const String kSetNotificationText = "Set Notifications";
+
+const String kSnackPageAppBarTitle= "Grab a bite!";
+
+const String kSkipLabel = "SKIP";
+
+const String kAddLabel = "ADD";
+
+const String kCheckoutText = "Checkout";

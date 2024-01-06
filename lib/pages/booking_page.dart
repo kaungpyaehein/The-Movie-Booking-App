@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pinput/pinput.dart';
 import 'package:the_movie_booking_app/data/film_type_list.dart';
 import 'package:the_movie_booking_app/pages/seating_plan_page.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
@@ -102,6 +101,7 @@ class BookingPage extends StatelessWidget {
               child: ChooseFilmTypeView(),
             ),
           ),
+          //spacer
           const SliverToBoxAdapter(
             child: SizedBox(
               height: kMargin30,

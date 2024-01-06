@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/pages/seating_plan_page.dart';
+import 'package:the_movie_booking_app/pages/snack_page.dart';
 
 import 'package:the_movie_booking_app/pages/splash_page.dart';
 

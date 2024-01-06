@@ -18,6 +18,13 @@ const kFoodIcon = "assets/images/food_icon.png";
 const kWheelchairIcon = "assets/images/wheelchair_icon.png";
 
 const kScreenImage = "assets/images/screen_image.png";
+const kTakenSeatImage = "assets/images/taken_seat.svg";
+const kAvailableSeatImage = "assets/images/available_seat.svg";
 
+const kSetNotificationImage = "assets/images/set_notification_image.png";
 
-
+const kPotatoImage = "assets/images/potato_image.png";
+const kBurgerComboImage = "assets/images/burger_combo_image.png";
+const kCocaColaImage = "assets/images/coca_cola_image.png";
+const kPepsiImage = "assets/images/pepsi_image.png";
+const kSnackIcon = "assets/images/snack_icon.png";

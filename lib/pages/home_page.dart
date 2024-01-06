@@ -130,7 +130,10 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const MovieDetailsPage(),
+                            builder: (context) => MovieDetailsPage(
+                              isComingSoonPage:
+                                  selectedText == kComingSoonLabel,
+                            ),
                           ));
                     },
                     child: MovieListItemView(
@@ -209,7 +212,6 @@ class BannerSectionView extends StatelessWidget {
 }
 
 ///now showing and coming soon tab bar
-
 class NowShowingAndComingSoonTabBar extends StatelessWidget {
   final String selectedText;
   final Function(String) onTapNowShowingOrComingSoon;
