@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:the_movie_booking_app/list_items/movie_list_item_view.dart';
 import 'package:the_movie_booking_app/pages/movie_details_page.dart';
+import 'package:the_movie_booking_app/pages/search_movie_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
@@ -40,11 +41,17 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
-        actions: const [
-          Icon(
-            Icons.search,
-            color: Colors.white,
-            size: kMarginLarge,
+        actions: [
+          InkWell(
+            onTap: (){
+              Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const SearchMoviePage(),));
+            },
+            child: Icon(
+              Icons.search,
+              color: Colors.white,
+              size: kMarginLarge,
+            ),
           ),
           SizedBox(
             width: kMarginXLarge,

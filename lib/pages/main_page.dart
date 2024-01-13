@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/pages/cinemas_page.dart';
 import 'package:the_movie_booking_app/pages/home_page.dart';
 import 'package:the_movie_booking_app/pages/profile_page.dart';
 import 'package:the_movie_booking_app/pages/tickets_page.dart';
@@ -6,7 +7,6 @@ import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 
-import 'cinema_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
   List<Widget> screenWidgets = [
     const HomePage(),
-    const CinemaPage(),
+    const CinemasPage(),
     const TicketsPage(),
     const ProfilePage(),
   ];

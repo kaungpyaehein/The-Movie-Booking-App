@@ -20,89 +20,101 @@ class OTPPage extends StatelessWidget {
       body: SafeArea(
           child: Center(
               child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    //Spacer
-                    const SizedBox(
-                      height: kMarginXLarge,
-                    ),
-                    //Login and title view
-                    const LogoAndTitleView(
-                      title: kOTPTitle,
-                      label: kOTPTLabel,
-                    ),
-                    const SizedBox(
-                      height: kMargin60,
-                    ),
-                    //OTP input view
-                    const OTPInputView(),
-
-                    //Spacer
-                    const SizedBox(
-                      height: kMarginXLarge2,
-                    ),
-                    //Resend code view
-                    RichText(
-                        text: const TextSpan(children: [
-                      TextSpan(
-                          text: kDontReceiveOTPLabel,
-                          style: TextStyle(
-                              color: Colors.white, fontSize: kTextRegular)),
-                      TextSpan(
-                          text: kResendCodeLabel,
-                          style: TextStyle(
-                              color: kPrimaryColor, fontSize: kTextRegular2X)),
-                    ])),
-
-                    //Spacer
-                    const SizedBox(
-                      height: kMarginXLarge2,
-                    ),
-
-                    PrimaryButtonView(
-                      title: kConfirmOTPLabel,
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder:
-                        (context) => const PickRegionPage(),));
-                      },
-                    ),
-
-                    //Spacer
-                    const SizedBox(
-                      height: kMovieDetailsSmallImageWidth,
-                    ),
-
-                    //Terms and conditions view
-
-                  ],
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                //Spacer
+                const SizedBox(
+                  height: kMarginXLarge,
                 ),
-              ),
-
-              //Back button
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.chevron_left,
-                      size: kMarginXLarge2,
-                      color: kNowPlayingAndComingSoonSelectedTextColor,
-                    )),
-              ),
-              const Align(
-                alignment: Alignment.bottomCenter,
-                child:   Padding(
-                  padding: EdgeInsets.only(bottom: kMargin30),
-                  child: TermsAndConditionView(),
+                //Login and title view
+                const LogoAndTitleView(
+                  title: kOTPTitle,
+                  label: kOTPTLabel,
                 ),
-              )
-            ],
-          ))),
+                const SizedBox(
+                  height: kMargin60,
+                ),
+                //OTP input view
+                const OTPInputView(),
+
+                //Spacer
+                const SizedBox(
+                  height: kMarginXLarge2,
+                ),
+
+                //Resend code view
+                const ResendCodeView(),
+
+                //Spacer
+                const SizedBox(
+                  height: kMarginXLarge2,
+                ),
+
+                PrimaryButtonView(
+                  title: kConfirmOTPLabel,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PickRegionPage(),
+                        ));
+                  },
+                ),
+
+                //Spacer
+                const SizedBox(
+                  height: kMovieDetailsSmallImageWidth,
+                ),
+
+                //Terms and conditions view
+              ],
+            ),
+          ),
+
+          //Back button
+          Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.chevron_left,
+                  size: kMarginXLarge2,
+                  color: kNowPlayingAndComingSoonSelectedTextColor,
+                )),
+          ),
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: kMargin30),
+              child: TermsAndConditionView(),
+            ),
+          )
+        ],
+      ))),
     );
+  }
+}
+
+class ResendCodeView extends StatelessWidget {
+  const ResendCodeView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+        text: const TextSpan(children: [
+      TextSpan(
+          text: kDontReceiveOTPLabel,
+          style: TextStyle(color: Colors.white, fontSize: kTextRegular)),
+      TextSpan(
+          text: kResendCodeLabel,
+          style: TextStyle(color: kPrimaryColor, fontSize: kTextRegular2X)),
+    ]));
   }
 }
 
@@ -136,9 +148,10 @@ class OTPInputView extends StatelessWidget {
   }
 }
 
+//pin theme
 final pinTheme = PinTheme(
-  width: kCountryCodeDropDownHeight,
-  height: kCountryCodeDropDownHeight,
+  width: kMargin50,
+  height: kMargin50,
   textStyle: const TextStyle(
       fontSize: kTextRegular,
       color: kOTPPinTextColor,

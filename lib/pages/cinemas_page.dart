@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/pages/ticket_details_page.dart';
-import 'package:the_movie_booking_app/widgets/ticket_view.dart';
+import 'package:the_movie_booking_app/widgets/cinemas_view.dart';
 
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 
-class TicketsPage extends StatelessWidget {
-  const TicketsPage({super.key});
+class CinemasPage extends StatelessWidget {
+  const CinemasPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: kBackgroundColor,
         appBar: AppBar(
           centerTitle: false,
           backgroundColor: kBackgroundColor,
@@ -42,23 +42,19 @@ class TicketsPage extends StatelessWidget {
             ),
           ],
         ),
-        backgroundColor: kBackgroundColor,
         body: ListView.builder(
+          itemCount: 10,
           padding: const EdgeInsets.symmetric(
-              vertical: kMarginMedium4, horizontal: kMarginMedium4),
-          itemCount: 3,
-          itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.only(bottom: kMargin30),
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TicketDetailsPage(),
-                      ));
-                },
-                child: const TicketView()),
-          ),
+              horizontal: kMarginMedium, vertical: kMarginMedium),
+          itemBuilder: (context, index) {
+            print("is building");
+            return const Padding(
+              padding: EdgeInsets.only(bottom: kMarginSmall),
+              child: CinemasView(
+                isShow: true,
+              ),
+            );
+          },
         ));
   }
 }

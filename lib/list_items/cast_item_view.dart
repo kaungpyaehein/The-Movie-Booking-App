@@ -16,7 +16,7 @@ class CastItemView extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: kMarginMedium2,
         )
       ],

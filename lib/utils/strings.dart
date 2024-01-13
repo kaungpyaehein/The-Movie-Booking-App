@@ -52,13 +52,38 @@ const String kNormalTextLabel = "Normal (4500ks)";
 
 const String kBuyTicketLabel = "Buy Ticket";
 
-const String kGetNotifyText = "Get notify as soon as movie\nbooking opens up in your city!";
+const String kGetNotifyText =
+    "Get notify as soon as movie\nbooking opens up in your city!";
 const String kSetNotificationText = "Set Notifications";
 
-const String kSnackPageAppBarTitle= "Grab a bite!";
+const String kSnackPageAppBarTitle = "Grab a bite!";
 
 const String kSkipLabel = "SKIP";
 
 const String kAddLabel = "ADD";
 
 const String kCheckoutText = "Checkout";
+const String kTicketDetailsText = "Ticket Details";
+const String kCinemaDetailsText = "Cinema Details";
+
+const String kCancelBookingLabel = "Cancel Booking";
+
+const String kPaymentText = "Payment";
+const String kYourNameText = "Your Name";
+const String kEnterYourNameText = "Enter your name";
+
+const String kUPIText = "UPI";
+const String kGiftVoucherText = "Gift Voucher";
+const String kQuickPayText = "Quick Pay";
+const String kCreditText = "Credit Card / Debit Card";
+const String kRedeemText = "Redeem Point";
+const String kMobileWalletText = "Mobile Wallet";
+const String kNetBankingText = "Net Banking";
+
+const String kTickerInformationText = "Ticket Information";
+
+const String kRefundAmountText = "Refund Amount";
+
+const String kLoginOrSignupText = "Login or Sign Up";
+
+const String kSearchTheMovieText = "Search the Movie";

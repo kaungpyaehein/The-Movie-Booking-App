@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/pages/checkout_page.dart';
+import 'package:the_movie_booking_app/pages/payment_page.dart';
+import 'package:the_movie_booking_app/pages/profile_page.dart';
 import 'package:the_movie_booking_app/pages/seating_plan_page.dart';
 import 'package:the_movie_booking_app/pages/snack_page.dart';
 
 import 'package:the_movie_booking_app/pages/splash_page.dart';
+import 'package:the_movie_booking_app/pages/ticket_information_page.dart';
 
 import 'package:the_movie_booking_app/utils/fonts.dart';
+
+import 'pages/search_movie_page.dart';
 
 void main() {
   runApp(const MovieBookingApp());

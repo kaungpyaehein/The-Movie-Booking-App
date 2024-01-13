@@ -4,12 +4,12 @@ class SeatVo {
   SeatVo(this.text, this.type);
 }
 
-List<SeatVo> seatList = [
-  SeatVo("A", "text"),
-  SeatVo("", "taken"),
-  SeatVo("", "space"),
-  SeatVo("", "available"),
-];
+// List<SeatVo> seatList = [
+//   SeatVo("A", "text"),
+//   SeatVo("", "taken"),
+//   SeatVo("", "space"),
+//   SeatVo("", "available"),
+// ];
 
 List<SeatVo> seatList1 = [
   SeatVo("A", "text"),

@@ -62,7 +62,7 @@ const double kSplashLogoHeight = 189;
 const double kLogoWidth = 124;
 const double kLogoHeight = 150;
 
-const double kCountryCodeDropDownHeight = 50;
+const double kMargin50 = 50;
 const double kCountryCodeDropDownWidth = 70;
 
 const double kLoginScreenTAndCMarginHeight = 94;
@@ -104,6 +104,14 @@ const double kSnackPageGridViewSpacing = 25;
 const double kSnackItemImageHeight = 120;
 const double kSnackItemImageWidth = 120;
 const double kSnackItemHeight = 230;
+
+const double kApplyCouponButtonHeight = 45;
+
+const double kTicketViewImageHeight = 120;
+const double kTicketViewImageWidth = 96;
+
+const double kQRSize = 93.0;
+const double kDoneButtonWidth = 176;
 
 
 

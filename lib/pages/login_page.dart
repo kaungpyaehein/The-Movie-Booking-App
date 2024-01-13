@@ -41,7 +41,7 @@ class LoginPage extends StatelessWidget {
 
                 //spacer
                 const SizedBox(
-                  height: kCountryCodeDropDownHeight,
+                  height: kMargin50,
                 ),
 
                 //verify phone number button
@@ -91,7 +91,7 @@ class GoogleSignInButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             minimumSize:
-                const Size(double.infinity, kCountryCodeDropDownHeight),
+                const Size(double.infinity, kMargin50),
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(kMarginMedium))),
@@ -177,7 +177,7 @@ class PrimaryButtonView extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             minimumSize:
-                const Size(double.infinity, kCountryCodeDropDownHeight),
+                const Size(double.infinity, kMargin50),
             backgroundColor: kPrimaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(kMarginMedium))),
@@ -234,7 +234,7 @@ class _CountryCodeAndPhoneNumberInputViewState
                   color: Colors.white,
                   height: 1,
                 ),
-                itemHeight: kCountryCodeDropDownHeight,
+                itemHeight: kMargin50,
                 iconEnabledColor: kNowPlayingAndComingSoonSelectedTextColor,
                 dropdownColor: Colors.black,
                 value: selectedItem,

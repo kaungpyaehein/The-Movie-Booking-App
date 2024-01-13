@@ -28,3 +28,29 @@ const kBurgerComboImage = "assets/images/burger_combo_image.png";
 const kCocaColaImage = "assets/images/coca_cola_image.png";
 const kPepsiImage = "assets/images/pepsi_image.png";
 const kSnackIcon = "assets/images/snack_icon.png";
+
+const kEllipseRightImage = "assets/images/ellipse_right.png";
+const kEllipseLeftImage = "assets/images/ellipse_left.png";
+
+const kPercentageIcon = "assets/images/percentage_icon.png";
+
+const kUpiImage = "assets/images/upi_image.png";
+const kGiftVoucherImage = "assets/images/gift_voucher_image.png";
+const kQuickPayImage = "assets/images/quick_pay_image.png";
+const kCreditCardImage = "assets/images/credit_card_image.png";
+const kRedeemImage = "assets/images/redeem_image.png";
+const kMobileWalletImage = "assets/images/mobile_wallet_image.png";
+const kNetBankingImage = "assets/images/net_banking_image.png";
+
+const kBookingSuccessfulImage = "assets/images/booking_successful_image.png";
+
+const kCinemaDetailsSampleImage = "assets/images/cinema_details_sample_image.png";
+
+const kPlayButton = "assets/images/play_button.png";
+
+const kStarIcon = 'assets/images/star_icon.png';
+
+const kCancelTicketIcon = 'assets/images/cancel_ticket_icon.png';
+const kProfileBackgroundImage = 'assets/images/profile_background_image.png';
+const kProfileIcon = 'assets/images/profile_icon.png';
+const kTicketIcon = 'assets/images/ticket_icon.png';

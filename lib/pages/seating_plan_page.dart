@@ -114,14 +114,17 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                           onPressed: () {
                             setState(() {
                               //zoom out
-                              _zoomLevel -= 0.1;
-                              transformationController
-                                  .value = Matrix4.identity()
-                                ..translate(
-                                    kSeatsViewHeight / 2, kSeatsViewHeight / 2)
-                                ..scale(_zoomLevel * 2)
-                                ..translate(-kSeatsViewHeight / 2,
-                                    -kSeatsViewHeight / 2);
+                              if (_zoomLevel > 0.1) {
+                                print(_zoomLevel);
+                                _zoomLevel -= 0.1;
+                                transformationController.value =
+                                    Matrix4.identity()
+                                      ..translate(kSeatsViewHeight / 2,
+                                          kSeatsViewHeight / 2)
+                                      ..scale(_zoomLevel * 2)
+                                      ..translate(-kSeatsViewHeight / 2,
+                                          -kSeatsViewHeight / 2);
+                              }
                             });
                           },
                         ),

@@ -60,4 +60,28 @@ const Color kSnackItemCardGradientStartColor = Color(0xCC666666);
 const Color kSnackItemCardGradientEndColor = Color(0x66333333);
 const Color kSnackItemAddRemoveButtonColor = Color(0xFF555555);
 
-const Color kSnackItemCountColor =  Color(0xFFFF0000);
+const Color kSnackItemCountColor = Color(0xFFFF0000);
+
+const Color kTicketCancellingButtonColor = Color(0xFFFF6B00);
+
+const Color kTicketGradientStartColor = Color(0xFF444444);
+const Color kTicketGradientEndColor = Color(0xFF222222);
+
+const Color kPaymentOptionButtonColor = Color(0xFF111111);
+const Color kPaymentOptionButtonBoxShadowColor = Color(0x3FFFFFFF);
+
+const Color kTicketSmallGradientStartColor1 = Color(0xff616161);
+const Color kTicketSmallGradientStartColor2 = Color(0x00262626);
+const Color kTicketSmallGradientStartColor3 = Color(0x72272727);
+const Color kTicketSmallGradientStartColor4 = Color(0xff333333);
+
+const Color kCancelButtonColor = Color(0xFFFF2D00);
+
+const Color kLoginOrSignupButtonBackgroundColor = Color(0x1900FF6A);
+
+var addRemoveBoxShadow = const BoxShadow(
+  color: Color(0x3F000000),
+  blurRadius: 5,
+  offset: Offset(0, 12.50),
+  spreadRadius: 0,
+);
