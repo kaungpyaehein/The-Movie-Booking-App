@@ -1,8 +1,5 @@
 //ticket details view
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/pages/login_page.dart';
-
-import '../pages/checkout_page.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
@@ -281,7 +278,7 @@ void showTicketCancellationPolicy(BuildContext context) {
               height: kMarginXLarge,
             ),
 
-            CloseButtonView()
+            const CloseButtonView()
           ],
         ),
       );

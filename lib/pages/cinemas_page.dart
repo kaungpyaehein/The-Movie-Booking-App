@@ -51,7 +51,7 @@ class CinemasPage extends StatelessWidget {
             return const Padding(
               padding: EdgeInsets.only(bottom: kMarginSmall),
               child: CinemasView(
-                isShow: true,
+                isShow: false,
               ),
             );
           },

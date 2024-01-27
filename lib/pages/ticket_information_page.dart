@@ -1,56 +1,107 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:the_movie_booking_app/pages/home_page.dart';
 import 'package:the_movie_booking_app/pages/main_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
-
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
 import '../utils/strings.dart';
 import '../widgets/ticket_view.dart';
-import 'checkout_page.dart';
 
-class TickerInformationPage extends StatelessWidget {
-  const TickerInformationPage({super.key});
+class TicketInformationPage extends StatefulWidget {
+  const TicketInformationPage({super.key});
+
+  @override
+  State<TicketInformationPage> createState() => _TicketInformationPageState();
+}
+
+class _TicketInformationPageState extends State<TicketInformationPage> {
+  bool isShow = true;
+  @override
+  void initState() {
+    Future.delayed(const Duration(seconds: 2)).whenComplete(() {
+      setState(() {
+        isShow = false;
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackgroundColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        foregroundColor: Colors.white,
-        backgroundColor: kBackgroundColor,
-        title: const Text(
-          kTickerInformationText,
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: kTextRegular3X,
-              fontWeight: FontWeight.w600),
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: kBackgroundColor,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            foregroundColor: Colors.white,
+            backgroundColor: kBackgroundColor,
+            title: const Text(
+              kTickerInformationText,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: kTextRegular3X,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+          body: const Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: kMargin30, horizontal: kMarginLarge),
+            child: Column(
+              children: [
+                //ticket view
+                TicketView(),
+
+                //spacer
+                Spacer(),
+
+                //qr view
+                QRView(),
+                //spacer
+                Spacer(),
+
+                //done button
+                DoneButtonView(),
+
+                //spacer
+                Spacer(),
+                // booking successful view
+              ],
+            ),
+          ),
         ),
+        Visibility(
+          visible: isShow,
+          child: const Align(
+            alignment: Alignment.center,
+            child: BookingSuccessfulOverlayView(),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class BookingSuccessfulOverlayView extends StatelessWidget {
+  const BookingSuccessfulOverlayView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: kMarginLarge),
+      height: double.maxFinite,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.8999999761581421),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(
-            vertical: kMargin30, horizontal: kMarginLarge),
-        child: Column(
-          children: [
-            //ticket view
-            TicketView(),
-
-            //spacer
-            Spacer(),
-
-            //qr view
-            QRView(),
-            //spacer
-            Spacer(),
-
-            //done button
-            DoneButtonView(),
-            
-            //spacer
-            Spacer(),
-          ],
+      child: Center(
+        child: Image.asset(
+          kBookingSuccessfulImage,
+          width: 350,
+          fit: BoxFit.contain,
         ),
       ),
     );
@@ -71,8 +122,12 @@ class DoneButtonView extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(kMarginSmall))),
       onPressed: () {
-       Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context) =>
-         const MainPage(),) ,(route) => false) ;
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MainPage(),
+            ),
+            (route) => false);
       },
       child: const Text(
         "Done",
@@ -135,7 +190,3 @@ class QRView extends StatelessWidget {
     );
   }
 }
-
-
-
-

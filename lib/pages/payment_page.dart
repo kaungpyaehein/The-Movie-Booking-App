@@ -15,116 +15,88 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  bool isShow = false;
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          backgroundColor: kBackgroundColor,
-          appBar: AppBar(
-            foregroundColor: Colors.white,
-            backgroundColor: kBackgroundColor,
-            title: const Text(
-              kPaymentText,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: kAppBarTitleFontSize,
-                  fontWeight: FontWeight.w600),
-            ),
-          ),
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: kMarginXLarge2, vertical: kMarginXLarge),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //name input field
-                    NameInputView(),
-
-                    SizedBox(
-                      height: kMarginXLarge,
-                    ),
-
-                    //apply coupon button view
-                    ApplyCouponButtonView(),
-                  ],
-                ),
-              ),
-              //spacer
-              const SizedBox(
-                height: kMarginXLarge2,
-              ),
-
-              //choose payment method view
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kMarginLarge),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Choose your payment type",
-                      style: TextStyle(
-                          color: kPrimaryColor,
-                          fontWeight: FontWeight.w700,
-                          fontSize: kText18),
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      padding:
-                          const EdgeInsets.symmetric(vertical: kMarginMedium4),
-                      itemCount: paymentOptionModelList.length,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.only(bottom: kMarginMedium2),
-                        child: PaymentOptionItemView(
-                          label: paymentOptionModelList[index].label,
-                          image: paymentOptionModelList[index].image,
-                          onTap: () {
-                            setState(() {
-                              isShow = !isShow;
-                              Future.delayed(const Duration(seconds: 2))
-                                  .whenComplete(() {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const TickerInformationPage(),
-                                    ));
-                              });
-                            });
-                          },
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: kBackgroundColor,
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: kBackgroundColor,
+        title: const Text(
+          kPaymentText,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: kAppBarTitleFontSize,
+              fontWeight: FontWeight.w600),
         ),
-        Visibility(
-          visible: isShow,
-          child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: kMarginLarge),
-              height: double.maxFinite,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.8999999761581421),
-              ),
-              child: Image.asset(
-                kBookingSuccessfulImage,
-                width: 350,
-                fit: BoxFit.contain,
-              ),
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: kMarginXLarge2, vertical: kMarginXLarge),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //name input field
+                NameInputView(),
+
+                SizedBox(
+                  height: kMarginXLarge,
+                ),
+
+                //apply coupon button view
+                ApplyCouponButtonView(),
+              ],
             ),
           ),
-        )
-      ],
+          //spacer
+          const SizedBox(
+            height: kMarginXLarge2,
+          ),
+
+          //choose payment method view
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kMarginLarge),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Choose your payment type",
+                  style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: kText18),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: kMarginMedium4),
+                  itemCount: paymentOptionModelList.length,
+                  itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.only(bottom: kMarginMedium2),
+                    child: PaymentOptionItemView(
+                      label: paymentOptionModelList[index].label,
+                      image: paymentOptionModelList[index].image,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                              const TicketInformationPage(),
+                            ));
+
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
