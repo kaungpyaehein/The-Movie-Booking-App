@@ -122,18 +122,18 @@ class SearchSuggestionsView extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
           childCount: 8,
           (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MovieDetailsPage(
-                        isComingSoonPage: isComingSoon,
-                      ),
-                    ));
-              },
-              child: MovieListItemView(isComingSoonSelected: isComingSoon),
-            );
+            // return GestureDetector(
+            //   onTap: () {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => MovieDetailsPage(
+            //             isComingSoonPage: isComingSoon,
+            //           ),
+            //         ));
+            //   },
+            //   child: MovieListItemView(isComingSoonSelected: isComingSoon,movie: ),
+            // );
           },
         ),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -4,6 +4,7 @@ import 'package:the_movie_booking_app/data/vos/genre_vo.dart';
 import 'package:the_movie_booking_app/data/vos/production_company_vo.dart';
 import 'package:the_movie_booking_app/data/vos/production_country_vo.dart';
 import 'package:the_movie_booking_app/data/vos/spoken_language_vo.dart';
+import 'package:the_movie_booking_app/network/api_constants.dart';
 
 part 'movie_vo.g.dart';
 
@@ -115,7 +116,23 @@ class MovieVO {
       this.voteAverage,
       this.voteCount);
 
-  factory MovieVO.fromJson(Map<String, dynamic> json) => _$MovieVOFromJson(json);
+  factory MovieVO.fromJson(Map<String, dynamic> json) =>
+      _$MovieVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$MovieVOToJson(this);
+
+  /// Poster Path with base url
+  String getPosterPathWithBaseUrl() {
+    return kImageBaseUrl + (posterPath ?? "");
+  }
+
+  ///backdrop path with base url
+  String getBackdropPathWithBaseUrl() {
+    return kImageBaseUrl + (backdropPath ?? "");
+  }
+
+  //get rating with two decimal places
+  String getRatingTwoDecimals() {
+    return voteAverage?.toStringAsFixed(2) ?? "";
+  }
 }

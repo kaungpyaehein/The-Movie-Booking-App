@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
 import 'package:the_movie_booking_app/list_items/movie_list_item_view.dart';
 import 'package:the_movie_booking_app/pages/movie_details_page.dart';
 import 'package:the_movie_booking_app/pages/search_movie_page.dart';
@@ -7,6 +8,8 @@ import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
+
+import '../data/vos/movie_vo.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -43,33 +46,36 @@ class HomePage extends StatelessWidget {
         ),
         actions: [
           InkWell(
-            onTap: (){
-              Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const SearchMoviePage(),));
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SearchMoviePage(),
+                  ));
             },
-            child: Icon(
+            child: const Icon(
               Icons.search,
               color: Colors.white,
               size: kMarginLarge,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: kMarginXLarge,
           ),
-          Icon(
+          const Icon(
             Icons.notifications,
             color: Colors.white,
             size: kMarginLarge,
           ),
-          SizedBox(
+          const SizedBox(
             width: kMarginXLarge,
           ),
-          Icon(
+          const Icon(
             Icons.qr_code_scanner,
             color: Colors.white,
             size: kMarginLarge,
           ),
-          SizedBox(
+          const SizedBox(
             width: kHomeScreenAppBarRightMargin,
           ),
         ],
@@ -88,7 +94,45 @@ class HomeScreenBodyView extends StatefulWidget {
 }
 
 class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
+  ///Model
+  final MovieBookingModel _model = MovieBookingModel();
+
+  //now showing or coming soon
   String selectedText = kNowShowingLabel;
+
+  ///3 states variables
+
+  ///Now Playing Movies
+  List<MovieVO> nowPlayingMovies = [];
+
+  ///Coming soon Movies
+  List<MovieVO> comingSoonMovies = [];
+
+  ///Movies To Show
+  List<MovieVO> moviesToShow = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    //get now playing movies
+    _model.getNowPlayingMovies().then((nowPlayingMovies) {
+      setState(() {
+        this.nowPlayingMovies = nowPlayingMovies;
+
+        //show now playing movies
+        moviesToShow = nowPlayingMovies;
+      });
+    });
+
+    //get coming soon movies
+    _model.getComingSoonMovies().then((comingSoonMovies) {
+      setState(() {
+        this.comingSoonMovies = comingSoonMovies;
+        debugPrint(comingSoonMovies.toString());
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +156,15 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
           selectedText: selectedText,
           onTapNowShowingOrComingSoon: (text) {
             setState(() {
+              //set now showing or coming soon titles
               selectedText = text;
+
+              //set movies list
+              if (text == kNowShowingLabel) {
+                moviesToShow = nowPlayingMovies;
+              } else {
+                moviesToShow = comingSoonMovies;
+              }
             });
           },
         )),
@@ -124,37 +176,51 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
           ),
         ),
 
-        /// movie list grid view
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: kMarginLarge,
-          ),
-          sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MovieDetailsPage(
-                              isComingSoonPage:
-                                  selectedText == kComingSoonLabel,
-                            ),
-                          ));
-                    },
-                    child: MovieListItemView(
-                        isComingSoonSelected: selectedText == kComingSoonLabel),
-                  );
-                },
-              ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisExtent: kMovieListItemHeight,
-                mainAxisSpacing: kMarginMedium4,
-                crossAxisSpacing: kMarginMedium4,
-              )),
-        )
+        //check movies to show is empty
+        (moviesToShow.isEmpty)
+        //show loading indicator
+            ? const SliverToBoxAdapter(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: kPrimaryColor,
+                  ),
+                ),
+              )
+            :
+
+            /// movie list grid view
+            SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kMarginLarge,
+                ),
+                sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MovieDetailsPage(
+                                  isComingSoonPage:
+                                      selectedText == kComingSoonLabel,
+                                ),
+                              ));
+                        },
+                        child: MovieListItemView(
+                            isComingSoonSelected:
+                                selectedText == kComingSoonLabel,
+                            //movie vo
+                            movie: moviesToShow[index]),
+                      );
+                    }, childCount: moviesToShow.length),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisExtent: kMovieListItemHeight,
+                      mainAxisSpacing: kMarginMedium4,
+                      crossAxisSpacing: kMarginMedium4,
+                    )),
+              )
       ],
     );
   }
