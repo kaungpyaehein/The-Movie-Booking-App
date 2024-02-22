@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/data/sample_data.dart';
 
+import '../data/sample_vos/sample_data.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
@@ -34,86 +34,88 @@ class CinemaDetailsPage extends StatelessWidget {
           )
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          //video view
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-                kCinemaDetailsSampleImage,
-                height: 200,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Image.asset(
-                  kPlayButton,
-                  height: kMargin50,
-                ),
-              )
-            ],
-          ),
-
-          ///cinama name
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: kMarginLarge, vertical: kMarginMedium4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //video view
+            Stack(
+              alignment: Alignment.center,
               children: [
-                //spacer
-                const SizedBox(
-                  height: kMarginLarge,
+                Image.asset(
+                  kCinemaDetailsSampleImage,
+                  height: 200,
                 ),
-
-                //cinema name
-                const Text(
-                  "JCGV : Junction City",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: kTextRegular2X),
-                ),
-                //spacer
-                const SizedBox(
-                  height: kMarginMedium3,
-                ),
-                //location
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const TitleText(
-                      title: "Q5H3+JPP, Corner of, Bogyoke\nLann, Yangon ",
-                    ),
-                    Image.asset(
-                      kLocationIcon,
-                      color: kPrimaryColor,
-                      height: kMargin50,
-                      width: kMargin50,
-                    ),
-                  ],
-                ),
-
-                //spacer
-                const SizedBox(
-                  height: kMarginXLarge2,
-                ),
-
-                //facilities view
-                const FacilityView(),
-
-                const SizedBox(
-                  height: kMarginLarge,
-                ),
-
-                //safety view
-                const SafetyView(),
+                Align(
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    kPlayButton,
+                    height: kMargin50,
+                  ),
+                )
               ],
             ),
-          )
-        ],
+        
+            ///cinama name
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kMarginLarge, vertical: kMarginMedium4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //spacer
+                  const SizedBox(
+                    height: kMarginLarge,
+                  ),
+        
+                  //cinema name
+                  const Text(
+                    "JCGV : Junction City",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: kTextRegular2X),
+                  ),
+                  //spacer
+                  const SizedBox(
+                    height: kMarginMedium3,
+                  ),
+                  //location
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const TitleText(
+                        title: "Q5H3+JPP, Corner of, Bogyoke\nLann, Yangon ",
+                      ),
+                      Image.asset(
+                        kLocationIcon,
+                        color: kPrimaryColor,
+                        height: kMargin50,
+                        width: kMargin50,
+                      ),
+                    ],
+                  ),
+        
+                  //spacer
+                  const SizedBox(
+                    height: kMarginXLarge2,
+                  ),
+        
+                  //facilities view
+                  const FacilityView(),
+        
+                  const SizedBox(
+                    height: kMarginLarge,
+                  ),
+        
+                  //safety view
+                  const SafetyView(),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

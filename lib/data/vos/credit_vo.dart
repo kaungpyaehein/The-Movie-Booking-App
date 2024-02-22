@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:the_movie_booking_app/network/api_constants.dart';
 
 part 'credit_vo.g.dart';
+
 @JsonSerializable()
 class CreditVO {
   @JsonKey(name: "adult")
@@ -53,7 +55,12 @@ class CreditVO {
       this.creditId,
       this.order);
 
-  factory CreditVO.fromJson(Map<String,dynamic> json) => _$CreditVOFromJson(json);
+  factory CreditVO.fromJson(Map<String, dynamic> json) =>
+      _$CreditVOFromJson(json);
 
-  Map<String,dynamic> toJson() => _$CreditVOToJson(this);
+  Map<String, dynamic> toJson() => _$CreditVOToJson(this);
+
+  String getProfileWithUrl() {
+    return kImageBaseUrl + (profilePath ?? "");
+  }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/data/sample_data.dart';
 import 'package:the_movie_booking_app/pages/ticket_information_page.dart';
 
+import '../data/sample_vos/sample_data.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';

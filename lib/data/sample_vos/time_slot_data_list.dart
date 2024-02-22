@@ -1,4 +1,4 @@
-import 'package:the_movie_booking_app/data/time_slot_model.dart';
+import 'package:the_movie_booking_app/data/sample_vos/time_slot_model.dart';
 
 List<TimeSlotModel> timeSlotDataList = [
   TimeSlotModel(

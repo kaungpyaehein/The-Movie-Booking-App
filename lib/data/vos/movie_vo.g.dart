@@ -7,43 +7,44 @@ part of 'movie_vo.dart';
 // **************************************************************************
 
 MovieVO _$MovieVOFromJson(Map<String, dynamic> json) => MovieVO(
-      json['adult'] as bool?,
-      json['backdrop_path'] as String?,
-      json['belongs_to_collection'] == null
+      adult: json['adult'] as bool?,
+      backdropPath: json['backdrop_path'] as String?,
+      belongsToCollection: json['belongs_to_collection'] == null
           ? null
           : CollectionVO.fromJson(
               json['belongs_to_collection'] as Map<String, dynamic>),
-      (json['budget'] as num?)?.toDouble(),
-      (json['genres'] as List<dynamic>?)
+      budget: (json['budget'] as num?)?.toDouble(),
+      genres: (json['genres'] as List<dynamic>?)
           ?.map((e) => GenreVO.fromJson(e as Map<String, dynamic>))
           .toList(),
-      json['homepage'] as String?,
-      (json['genre_ids'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      json['id'] as int?,
-      json['imdb_id'] as String?,
-      json['original_language'] as String?,
-      json['original_title'] as String?,
-      json['overview'] as String?,
-      (json['popularity'] as num?)?.toDouble(),
-      json['poster_path'] as String?,
-      (json['production_companies'] as List<dynamic>?)
+      homepage: json['homepage'] as String?,
+      genresIds:
+          (json['genre_ids'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      id: json['id'] as int?,
+      imdbId: json['imdb_id'] as String?,
+      originalLanguage: json['original_language'] as String?,
+      originalTitle: json['original_title'] as String?,
+      overview: json['overview'] as String?,
+      popularity: (json['popularity'] as num?)?.toDouble(),
+      posterPath: json['poster_path'] as String?,
+      productionCompanies: (json['production_companies'] as List<dynamic>?)
           ?.map((e) => ProductionCompanyVO.fromJson(e as Map<String, dynamic>))
           .toList(),
-      (json['production_countries'] as List<dynamic>?)
+      productionCountries: (json['production_countries'] as List<dynamic>?)
           ?.map((e) => ProductionCountryVO.fromJson(e as Map<String, dynamic>))
           .toList(),
-      json['release_date'] as String?,
-      (json['revenue'] as num?)?.toDouble(),
-      json['runtime'] as int?,
-      (json['spoken_languages'] as List<dynamic>?)
+      releaseDate: json['release_date'] as String?,
+      revenue: (json['revenue'] as num?)?.toDouble(),
+      runtime: json['runtime'] as int?,
+      spokenLanguages: (json['spoken_languages'] as List<dynamic>?)
           ?.map((e) => SpokenLanguageVO.fromJson(e as Map<String, dynamic>))
           .toList(),
-      json['status'] as String?,
-      json['tagline'] as String?,
-      json['title'] as String?,
-      json['video'] as bool?,
-      (json['vote_average'] as num?)?.toDouble(),
-      json['vote_count'] as int?,
+      status: json['status'] as String?,
+      tagline: json['tagline'] as String?,
+      title: json['title'] as String?,
+      video: json['video'] as bool?,
+      voteAverage: (json['vote_average'] as num?)?.toDouble(),
+      voteCount: json['vote_count'] as int?,
     );
 
 Map<String, dynamic> _$MovieVOToJson(MovieVO instance) => <String, dynamic>{

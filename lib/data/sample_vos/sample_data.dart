@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/data/payment_option_model.dart';
-import 'package:the_movie_booking_app/data/profile_item_model.dart';
-import 'package:the_movie_booking_app/data/snack_model.dart';
+import 'package:the_movie_booking_app/data/sample_vos/payment_option_model.dart';
+import 'package:the_movie_booking_app/data/sample_vos/profile_item_model.dart';
+
+import 'package:the_movie_booking_app/data/sample_vos/snack_model.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';

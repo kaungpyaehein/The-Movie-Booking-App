@@ -1,15 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
+import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
 import 'package:the_movie_booking_app/pages/booking_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 
+import '../data/vos/credit_vo.dart';
 import '../list_items/cast_item_view.dart';
 import '../utils/images.dart';
 
-class MovieDetailsPage extends StatelessWidget {
+class MovieDetailsPage extends StatefulWidget {
   final bool isComingSoonPage;
-  const MovieDetailsPage({super.key, required this.isComingSoonPage});
+
+  /// will receive from previous screen
+  final String? movieId;
+  const MovieDetailsPage({
+    super.key,
+    required this.isComingSoonPage,
+    required this.movieId,
+  });
+
+  @override
+  State<MovieDetailsPage> createState() => _MovieDetailsPageState();
+}
+
+class _MovieDetailsPageState extends State<MovieDetailsPage> {
+  //Movie Model
+  final MovieBookingModel _model = MovieBookingModel();
+
+  // states
+  MovieVO? movieDetails;
+  List<CreditVO>? creditList;
+
+  //get the state
+
+  @override
+  void initState() {
+    /// Get Movie Details from Database
+    _model
+        .getMovieByIdFromDatabase(int.parse(widget.movieId ?? "0"))
+        .then((movie) {
+      setState(() {
+        movieDetails = movie;
+      });
+    });
+
+    /// Get movie details from network
+    _model.getMovieDetails(widget.movieId ?? "").then((movie) {
+      setState(() {
+        movieDetails = movie;
+      });
+    });
+
+    /// Get credit list from network
+    _model.getCreditsByMovie(widget.movieId ?? "").then((credits) {
+      setState(() {
+        creditList = credits;
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,49 +72,68 @@ class MovieDetailsPage extends StatelessWidget {
           children: [
             ///body
             ///to make app bar appears on top of body
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  //Movie, Large Image, Small Image
-                  const MovieLargeImageSmallImageAndInfoView(),
-
-                  //Spacer
-                  const SizedBox(
-                    height: kMargin30,
-                  ),
-
-                  //Censor Rating, Release date and duration
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: kMarginMedium2),
-                    child: CensorRatingReleaseDateAndDurationView(),
-                  ),
-                  //spacer
-                  const SizedBox(
-                    height: kMargin30,
-                  ),
-                  Visibility(
-                      visible: isComingSoonPage,
-                      child: const SetNotificationView()),
-                  //story line view
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: kMarginMedium2),
-                    child: StoryLineView(),
-                  ),
-
-                  //spacer
-                  const SizedBox(
-                    height: kMargin30,
-                  ),
-
-                  //cast view
-                  const CastView(),
-
-                  const SizedBox(
-                    height: 148,
+            movieDetails == null
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: kPrimaryColor,
+                    ),
                   )
-                ],
-              ),
-            ),
+                : SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        //Movie, Large Image, Small Image
+                        MovieLargeImageSmallImageAndInfoView(
+                          movie: movieDetails,
+                        ),
+
+                        //Spacer
+                        const SizedBox(
+                          height: kMargin30,
+                        ),
+
+                        //Censor Rating, Release date and duration
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kMarginMedium2),
+                          child: CensorRatingReleaseDateAndDurationView(
+                            movie: movieDetails,
+                          ),
+                        ),
+                        //spacer
+                        const SizedBox(
+                          height: kMargin30,
+                        ),
+                        Visibility(
+                            visible: widget.isComingSoonPage,
+                            child: const SetNotificationView()),
+                        //story line view
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kMarginMedium2),
+                          child: StoryLineView(
+                            movie: movieDetails,
+                          ),
+                        ),
+
+                        //spacer
+                        const SizedBox(
+                          height: kMargin30,
+                        ),
+
+                        //cast view
+                        Visibility(
+                          visible: !(creditList?.isEmpty ?? true),
+                          child: CastView(
+                            creditList: creditList ?? [],
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 148,
+                        )
+                      ],
+                    ),
+                  ),
 
             /// App bar
             Padding(
@@ -92,7 +163,7 @@ class MovieDetailsPage extends StatelessWidget {
 
             //bottom section
             Visibility(
-              visible: !isComingSoonPage,
+              visible: !widget.isComingSoonPage,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
@@ -265,7 +336,11 @@ class PrimaryButton extends StatelessWidget {
 
 //cast view
 class CastView extends StatelessWidget {
-  const CastView({super.key});
+  final List<CreditVO> creditList;
+  const CastView({
+    super.key,
+    required this.creditList,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +361,7 @@ class CastView extends StatelessWidget {
         const SizedBox(
           height: kMarginMedium3,
         ),
-        //circle photots view
+        //circle photo view
         SizedBox(
           height: kMargin60,
           child: ListView.builder(
@@ -294,7 +369,9 @@ class CastView extends StatelessWidget {
             itemCount: 10,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return const CastItemView();
+              return CastItemView(
+                credit: creditList[index],
+              );
             },
           ),
         )
@@ -304,28 +381,30 @@ class CastView extends StatelessWidget {
 }
 
 class StoryLineView extends StatelessWidget {
+  final MovieVO? movie;
   const StoryLineView({
     super.key,
+    required this.movie,
   });
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "Story line",
           style: TextStyle(
               color: Colors.white,
               fontSize: kTextRegular,
               fontWeight: FontWeight.w600),
         ),
-        SizedBox(
+        const SizedBox(
           height: kMarginMedium,
         ),
         Text(
-          "Real love crosses paths with unspeakable betrayal as Mollie Burkhart, a member of the Osage Nation, tries to save her community from a spree of murders fueled by oil and greed.",
-          style: TextStyle(
+          movie?.overview ?? "",
+          style: const TextStyle(
               color: Colors.white,
               fontSize: kTextRegular,
               fontWeight: FontWeight.w500),
@@ -337,24 +416,26 @@ class StoryLineView extends StatelessWidget {
 
 // censor rating release data and duration
 class CensorRatingReleaseDateAndDurationView extends StatelessWidget {
-  const CensorRatingReleaseDateAndDurationView({super.key});
+  final MovieVO? movie;
+  const CensorRatingReleaseDateAndDurationView(
+      {super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CensorRatingReleaseDateAndDurationItemView(
+        const CensorRatingReleaseDateAndDurationItemView(
           label: "Censor Rating",
           value: "U/A",
         ),
         CensorRatingReleaseDateAndDurationItemView(
           label: "Release Date",
-          value: "May 8th,2022",
+          value: movie?.getReleaseDateFormatted() ?? "",
         ),
         CensorRatingReleaseDateAndDurationItemView(
           label: "Duration",
-          value: "2hr 15min",
+          value: movie?.getRunTimeFormatted() ?? "",
         ),
       ],
     );
@@ -406,7 +487,8 @@ class CensorRatingReleaseDateAndDurationItemView extends StatelessWidget {
 }
 
 class MovieLargeImageSmallImageAndInfoView extends StatelessWidget {
-  const MovieLargeImageSmallImageAndInfoView({super.key});
+  final MovieVO? movie;
+  const MovieLargeImageSmallImageAndInfoView({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -420,7 +502,7 @@ class MovieLargeImageSmallImageAndInfoView extends StatelessWidget {
             children: [
               //large image
               Image.network(
-                "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/e2fd9882892035.5d2c3c960586e.jpg",
+                movie?.getBackdropPathWithBaseUrl() ?? "",
                 height: kMovieDetailsTopImageHeight,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -429,7 +511,9 @@ class MovieLargeImageSmallImageAndInfoView extends StatelessWidget {
                 height: kMarginMedium2,
               ),
               //movie info and genre view
-              MovieInfoAndGenresView(),
+              MovieInfoAndGenresView(
+                movie: movie,
+              ),
             ],
           ),
 
@@ -440,7 +524,7 @@ class MovieLargeImageSmallImageAndInfoView extends StatelessWidget {
               padding: const EdgeInsets.only(
                   left: kMarginMedium2, bottom: kMarginMedium2),
               child: Image.network(
-                "https://dbdzm869oupei.cloudfront.net/img/posters/preview/91008.png",
+                movie?.getPosterPathWithBaseUrl() ?? "",
                 width: kMovieDetailsSmallImageWidth,
                 height: kMovieDetailsSmallImageHeight,
                 fit: BoxFit.cover,
@@ -454,14 +538,15 @@ class MovieLargeImageSmallImageAndInfoView extends StatelessWidget {
 }
 
 class MovieInfoAndGenresView extends StatelessWidget {
-  MovieInfoAndGenresView({super.key});
+  final MovieVO? movie;
+  const MovieInfoAndGenresView({super.key, required this.movie});
 
-  final List<String> genreList = [
-    "Action",
-    "Adventure",
-    "Drama",
-    "Animation",
-  ];
+  // final List<String> genreList = [
+  //   "Action",
+  //   "Adventure",
+  //   "Drama",
+  //   "Animation",
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -473,41 +558,47 @@ class MovieInfoAndGenresView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///movie name and rating view
-            const MovieNameAndRatingView(),
+            MovieNameAndRatingView(
+              movie: movie,
+            ),
             const SizedBox(height: kMarginMedium2),
 
             //text
             const Text(
               "2D, 3D, 3D IMAX, 3D DBOX",
               style: TextStyle(
-                  fontSize: kTextRegular2X,
+                  fontSize: kTextRegular,
                   color: Colors.white,
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: kMarginMedium2),
             //genre
             Wrap(
-                spacing: kMarginMedium,
-                runSpacing: kMarginMedium,
-                children: genreList
-                    .map((genre) => Container(
-                          decoration: BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius:
-                                BorderRadius.circular(kMarginCardMedium2),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: kMarginMedium,
-                              vertical: kMarginSmall),
-                          child: Text(
-                            genre,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: kTextSmall,
+              spacing: kMarginMedium,
+              runSpacing: kMarginMedium,
+              children: movie?.genres
+                      ?.take(5)
+                      .map((genre) => genre.name ?? "")
+                      .map((name) => Container(
+                            decoration: BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius:
+                                  BorderRadius.circular(kMarginCardMedium2),
                             ),
-                          ),
-                        ))
-                    .toList()),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kMarginMedium,
+                                vertical: kMarginSmall),
+                            child: Text(
+                              name,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: kTextSmall,
+                              ),
+                            ),
+                          ))
+                      .toList() ??
+                  [],
+            ),
           ],
         ),
       ),
@@ -516,7 +607,8 @@ class MovieInfoAndGenresView extends StatelessWidget {
 }
 
 class MovieNameAndRatingView extends StatelessWidget {
-  const MovieNameAndRatingView({super.key});
+  final MovieVO? movie;
+  const MovieNameAndRatingView({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -524,12 +616,15 @@ class MovieNameAndRatingView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         //movie name
-        const Text(
-          "Stranger Things",
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: kTextRegular2X,
-              fontWeight: FontWeight.bold),
+        Expanded(
+          child: Text(
+            movie?.title ?? "",
+            maxLines: 2,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: kTextRegular2X,
+                fontWeight: FontWeight.bold),
+          ),
         ),
         const SizedBox(
           width: kMarginMedium,
@@ -540,9 +635,9 @@ class MovieNameAndRatingView extends StatelessWidget {
           height: kIMDBHeight,
         ),
         //rating
-        const Text(
-          "7.1",
-          style: TextStyle(
+        Text(
+          movie?.getRatingTwoDecimals() ?? "",
+          style: const TextStyle(
               color: Colors.white,
               fontSize: kTextRegular2X,
               fontWeight: FontWeight.bold,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/data/citiy_list.dart';
 import 'package:the_movie_booking_app/pages/home_page.dart';
 import 'package:the_movie_booking_app/pages/main_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 
+import '../data/sample_vos/citiy_list.dart';
 import '../utils/strings.dart';
 
 class PickRegionPage extends StatelessWidget {
