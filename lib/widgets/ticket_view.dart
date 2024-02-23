@@ -40,9 +40,7 @@ class TicketView extends StatelessWidget {
                 TicketPosterView(),
 
                 //spacer
-                SizedBox(
-                  width: kMarginMedium4,
-                ),
+                Spacer(),
 
                 //ticket information
                 SmallTicketInformationView()

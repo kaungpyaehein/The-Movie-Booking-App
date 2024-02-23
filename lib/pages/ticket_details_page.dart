@@ -29,7 +29,8 @@ class TicketDetailsPage extends StatelessWidget {
       body: const Stack(
         children: [
           //ticket details
-          SingleChildScrollView(child: TicketDetailsView(
+          SingleChildScrollView(
+              child: TicketDetailsView(
             isTicketCancelButtonRed: true,
           )),
 
@@ -84,9 +85,7 @@ class TicketDetailsBottomView extends StatelessWidget {
             ),
 
             //spacer
-            const SizedBox(
-              width: kMarginLarge,
-            ),
+            Spacer(),
             CancelButton(
               label: kCancelBookingLabel,
               onTap: () {},
