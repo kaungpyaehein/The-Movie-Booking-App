@@ -41,11 +41,6 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
     _model
         .getMovieByIdFromDatabase(int.parse(widget.movieId ?? "0"))
         .then((movie) {
-      if (movie == null) {
-        print("Null");
-      } else {
-        print(movie.genres);
-      }
       setState(() {
         movieDetails = movie;
       });
@@ -72,18 +67,18 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
-      body: movieDetails == null
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: kPrimaryColor,
-              ),
-            )
-          : SafeArea(
-              child: Stack(
-                children: [
-                  ///body
-                  ///to make app bar appears on top of body
-                  SingleChildScrollView(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            ///body
+            ///to make app bar appears on top of body
+            movieDetails == null
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: kPrimaryColor,
+                    ),
+                  )
+                : SingleChildScrollView(
                     child: Column(
                       children: [
                         //Movie, Large Image, Small Image
@@ -140,65 +135,62 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                     ),
                   ),
 
-                  /// App bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: kMarginLarge, vertical: kMarginMedium),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          child: const Icon(
-                            Icons.chevron_left,
-                            color: Colors.white,
-                            size: kMarginXLarge,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        const Spacer(),
-                        const Icon(
-                          Icons.share,
-                          color: Colors.white,
-                          size: kMarginLarge,
-                        ),
-                      ],
+            /// App bar
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kMarginLarge, vertical: kMarginMedium),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    child: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.white,
+                      size: kMarginXLarge,
                     ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
-
-                  //bottom section
-                  Visibility(
-                    visible: !widget.isComingSoonPage,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: 128,
-                        decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                              Colors.transparent,
-                              kBackgroundColor
-                            ])),
-                        child: Center(
-                          child: PrimaryButton(
-                            label: kBookingLabel,
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const BookingPage(),
-                                  ));
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
+                  const Spacer(),
+                  const Icon(
+                    Icons.share,
+                    color: Colors.white,
+                    size: kMarginLarge,
+                  ),
                 ],
               ),
             ),
+
+            //bottom section
+            Visibility(
+              visible: !widget.isComingSoonPage,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 128,
+                  decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, kBackgroundColor])),
+                  child: Center(
+                    child: PrimaryButton(
+                      label: kBookingLabel,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BookingPage(),
+                            ));
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
@@ -374,7 +366,7 @@ class CastView extends StatelessWidget {
           height: kMargin60,
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: kMarginMedium2),
-            itemCount: 10,
+            itemCount: 8,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return CastItemView(

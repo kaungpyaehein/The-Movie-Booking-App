@@ -84,9 +84,7 @@ class TicketDetailsBottomView extends StatelessWidget {
             ),
 
             //spacer
-            const SizedBox(
-              width: kMarginLarge,
-            ),
+           Spacer(),
             CancelButton(
               label: kCancelBookingLabel,
               onTap: () {},

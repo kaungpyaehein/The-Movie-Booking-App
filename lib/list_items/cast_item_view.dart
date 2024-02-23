@@ -14,7 +14,7 @@ class CastItemView extends StatelessWidget {
       children: [
         ClipOval(
           child: CachedNetworkImage(
-            imageUrl: credit?.getProfileWithUrl() ?? "",
+            imageUrl: credit!.getProfileWithUrl(),
             errorWidget: (_, __, ___) => const Icon(
               Icons.person,
               color: kPrimaryColor,

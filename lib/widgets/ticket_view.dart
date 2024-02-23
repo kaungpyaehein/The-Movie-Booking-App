@@ -87,82 +87,86 @@ class SmallTicketInformationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        //movie name
-        const Text(
-          "Black Widow (3D) (U/A)",
-          style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: kText18),
-        ),
-        const SizedBox(
-          height: kMarginMedium2,
-        ),
-        //spacer
-        const Text(
-          "JCGV : Junction City",
-          style: TextStyle(
-              color: kPrimaryColor,
-              fontSize: kTextRegular2X,
-              fontWeight: FontWeight.w400),
-        ),
-        const SizedBox(
-          height: kMarginMedium3,
-        ),
-        //tickets price view
-        RichText(
-            text: const TextSpan(children: [
-          TextSpan(
-            text: "M-Ticket(",
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //movie name
+          const Text(
+            "Black Widow (3D) (U/A)",
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: kFacilityViewColor,
-              fontWeight: FontWeight.w700,
-            ),
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: kText18),
           ),
-          TextSpan(
-            text: "2",
+          const SizedBox(
+            height: kMarginMedium2,
+          ),
+          //spacer
+          const Text(
+            "JCGV : Junction City",
             style: TextStyle(
-              color: kPrimaryColor,
-              fontWeight: FontWeight.w700,
-            ),
+                color: kPrimaryColor,
+                fontSize: kTextRegular2X,
+                fontWeight: FontWeight.w400),
           ),
-          TextSpan(
-            text: ")",
-            style: TextStyle(
-              color: kFacilityViewColor,
-              fontWeight: FontWeight.w700,
-            ),
+          const SizedBox(
+            height: kMarginMedium3,
           ),
-        ])),
-        //spacer
-        const SizedBox(
-          height: kMarginMedium2,
-        ),
+          //tickets price view
+          RichText(
+              text: const TextSpan(children: [
+            TextSpan(
+              text: "M-Ticket(",
+              style: TextStyle(
+                color: kFacilityViewColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            TextSpan(
+              text: "2",
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            TextSpan(
+              text: ")",
+              style: TextStyle(
+                color: kFacilityViewColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ])),
+          //spacer
+          const SizedBox(
+            height: kMarginMedium2,
+          ),
 
-        //seat text
-        RichText(
-            text: const TextSpan(children: [
-          TextSpan(
-            text: "Gold-G8,G7",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: kTextRegular2X,
-              fontWeight: FontWeight.w700,
+          //seat text
+          RichText(
+              text: const TextSpan(children: [
+            TextSpan(
+              text: "Gold-G8,G7",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: kTextRegular2X,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
-          TextSpan(
-            text: "(Screen2)",
-            style: TextStyle(
-              fontSize: kTextSmall,
-              color: kFacilityViewColor,
-              fontWeight: FontWeight.w400,
+            TextSpan(
+              text: "(Screen2)",
+              style: TextStyle(
+                fontSize: kTextSmall,
+                color: kFacilityViewColor,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          ),
-        ])),
-      ],
+          ])),
+        ],
+      ),
     );
   }
 }
