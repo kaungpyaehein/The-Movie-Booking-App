@@ -1,4 +1,4 @@
-import 'package:floor/floor.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:the_movie_booking_app/data/vos/collection_vo.dart';
@@ -7,124 +7,123 @@ import 'package:the_movie_booking_app/data/vos/production_company_vo.dart';
 import 'package:the_movie_booking_app/data/vos/production_country_vo.dart';
 import 'package:the_movie_booking_app/data/vos/spoken_language_vo.dart';
 import 'package:the_movie_booking_app/network/api_constants.dart';
+import 'package:the_movie_booking_app/persistence/hive_constants.dart';
 
 part 'movie_vo.g.dart';
 
 @JsonSerializable()
-// the name of the table
-@Entity(tableName: "movies")
+
+/// hive type
+@HiveType(typeId: kHiveTypeIdMovieVO, adapterName: kAdapterNameMovieVO)
 class MovieVO {
   @JsonKey(name: "adult")
-  // column info will be the same text formant as the Jsonkey
-  @ColumnInfo(name: "adult")
+  @HiveField(0)
   bool? adult;
 
   @JsonKey(name: "backdrop_path")
-  @ColumnInfo(name: "backdrop_path")
+  @HiveField(1)
   String? backdropPath;
 
   @JsonKey(name: "belongs_to_collection")
-  @ColumnInfo(name: "belongs_to_collection")
+  @HiveField(2)
   CollectionVO? belongsToCollection;
 
   @JsonKey(name: "budget")
-  @ColumnInfo(name: "budget")
+  @HiveField(3)
   double? budget;
 
   @JsonKey(name: "genres")
-  @ColumnInfo(name: "genres")
+  @HiveField(4)
   List<GenreVO>? genres;
 
   @JsonKey(name: "homepage")
-  @ColumnInfo(name: "homepage")
+  @HiveField(5)
   String? homepage;
 
   @JsonKey(name: "genre_ids")
-  @ColumnInfo(name: "genre_ids")
+  @HiveField(6)
   List<int>? genresIds;
 
   @JsonKey(name: "id")
-  @ColumnInfo(name: "id")
-  // make id as the primary key to be unique
-  @PrimaryKey()
+  @HiveField(7)
   int? id;
 
   @JsonKey(name: "imdb_id")
-  @ColumnInfo(name: "imdb_id")
+  @HiveField(8)
   String? imdbId;
 
   @JsonKey(name: "original_language")
-  @ColumnInfo(name: "original_language")
+  @HiveField(9)
   String? originalLanguage;
 
   @JsonKey(name: "original_title")
-  @ColumnInfo(name: "original_title")
+  @HiveField(10)
   String? originalTitle;
 
   @JsonKey(name: "overview")
-  @ColumnInfo(name: "overview")
+  @HiveField(11)
   String? overview;
 
   @JsonKey(name: "popularity")
-  @ColumnInfo(name: "popularity")
+  @HiveField(12)
   double? popularity;
 
   @JsonKey(name: "poster_path")
-  @ColumnInfo(name: "poster_path")
+  @HiveField(13)
   String? posterPath;
 
   @JsonKey(name: "production_companies")
-  @ColumnInfo(name: "production_companies")
+  @HiveField(14)
   List<ProductionCompanyVO>? productionCompanies;
 
   @JsonKey(name: "production_countries")
-  @ColumnInfo(name: "production_countries")
+  @HiveField(15)
   List<ProductionCountryVO>? productionCountries;
 
   @JsonKey(name: "release_date")
-  @ColumnInfo(name: "release_date")
+  @HiveField(16)
   String? releaseDate;
 
   @JsonKey(name: "revenue")
-  @ColumnInfo(name: "revenue")
+  @HiveField(17)
   double? revenue;
 
   @JsonKey(name: "runtime")
-  @ColumnInfo(name: "runtime")
+  @HiveField(18)
   int? runtime;
 
   @JsonKey(name: "spoken_languages")
-  @ColumnInfo(name: "spoken_languages")
+  @HiveField(19)
   List<SpokenLanguageVO>? spokenLanguages;
 
   @JsonKey(name: "status")
-  @ColumnInfo(name: "status")
+  @HiveField(20)
   String? status;
 
   @JsonKey(name: "tagline")
-  @ColumnInfo(name: "tagline")
+  @HiveField(21)
   String? tagline;
 
   @JsonKey(name: "title")
-  @ColumnInfo(name: "title")
+  @HiveField(22)
   String? title;
 
   @JsonKey(name: "video")
-  @ColumnInfo(name: "video")
+  @HiveField(23)
   bool? video;
 
   @JsonKey(name: "vote_average")
-  @ColumnInfo(name: "vote_average")
+  @HiveField(24)
   double? voteAverage;
 
   @JsonKey(name: "vote_count")
-  @ColumnInfo(name: "vote_count")
+  @HiveField(25)
   int? voteCount;
 
   // ONLY for persistence layer
   // to hide from network call json parse
   @JsonKey(includeFromJson: false, includeToJson: false)
-  @ColumnInfo(name: "type")
+  @HiveField(26)
   String type;
 
   MovieVO(
