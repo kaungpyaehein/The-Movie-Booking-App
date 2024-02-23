@@ -8,7 +8,7 @@ class GenreListTypeConverter extends TypeConverter<List<GenreVO>?, String?> {
   @override
   List<GenreVO>? decode(String? databaseValue) {
     if (databaseValue == null) {
-      debugPrint("GenreListTypeConverter : $databaseValue");
+      // debugPrint("GenreListTypeConverter : $databaseValue");
       return null;
     }
 

@@ -10,10 +10,11 @@ class ProductionCountryListTypeConverter
     if (databaseValue == null) {
       return null;
     }
-    List<Map<String, dynamic>> decodedList = json.decode(databaseValue);
+   List<dynamic> decodedList =
+        json.decode(databaseValue) ;
 
     List<ProductionCountryVO> productionCountries = decodedList.map((model) {
-      return ProductionCountryVO.fromJson(model);
+      return ProductionCountryVO.fromJson(model as Map<String, dynamic> );
     }).toList();
     return productionCountries;
   }

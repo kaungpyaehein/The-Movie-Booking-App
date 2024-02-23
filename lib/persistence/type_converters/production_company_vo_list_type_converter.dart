@@ -10,10 +10,10 @@ class ProductionCompanyListConverter
     if (databaseValue == null) {
       return null;
     }
-    List<Map<String, dynamic>> decodedList = json.decode(databaseValue);
+    List<dynamic> decodedList = json.decode(databaseValue);
 
     List<ProductionCompanyVO> productionCompanies = decodedList.map((model) {
-      return ProductionCompanyVO.fromJson(model);
+      return ProductionCompanyVO.fromJson(model as Map<String, dynamic>);
     }).toList();
     return productionCompanies;
   }

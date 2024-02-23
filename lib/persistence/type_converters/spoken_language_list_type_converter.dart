@@ -10,10 +10,10 @@ class SpokenLanguageListConverter
     if (databaseValue == null) {
       return null;
     }
-    List<Map<String, dynamic>> decodedList = json.decode(databaseValue);
+    List<dynamic> decodedList = json.decode(databaseValue);
 
     List<SpokenLanguageVO> spokenLanguages = decodedList.map((model) {
-      return SpokenLanguageVO.fromJson(model);
+      return SpokenLanguageVO.fromJson(model as Map<String, dynamic>);
     }).toList();
     return spokenLanguages;
   }

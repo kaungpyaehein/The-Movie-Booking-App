@@ -38,14 +38,15 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
   @override
   void initState() {
     /// Get Movie Details from Database
+
     _model
         .getMovieByIdFromDatabase(int.parse(widget.movieId ?? "0"))
         .then((movie) {
-      if (movie == null) {
-        print("Null");
-      } else {
-        print(movie.genres);
-      }
+      // if (movie == null) {
+      //   print("Null");
+      // } else {
+      //   print(movie.genres);
+      // }
       setState(() {
         movieDetails = movie;
       });
@@ -374,7 +375,7 @@ class CastView extends StatelessWidget {
           height: kMargin60,
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: kMarginMedium2),
-            itemCount: 10,
+            itemCount: creditList.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return CastItemView(
