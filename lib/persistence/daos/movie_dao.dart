@@ -12,6 +12,7 @@ abstract class MovieDao {
   Future<void> insertMovie(MovieVO movie);
 
   /// get movie by its id
+  /// it it nullable as the movie with that id can be null
   @Query("SELECT * FROM movies WHERE id=:movieId")
   Future<MovieVO?> getMovieById(int movieId);
 

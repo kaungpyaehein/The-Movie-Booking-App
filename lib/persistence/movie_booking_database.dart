@@ -1,4 +1,6 @@
 import 'package:floor/floor.dart';
+
+/// need to import this
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'dart:async';
 
@@ -12,8 +14,8 @@ import 'package:the_movie_booking_app/persistence/type_converters/production_cou
 import 'package:the_movie_booking_app/persistence/type_converters/spoken_language_list_type_converter.dart';
 
 part 'movie_booking_database.g.dart';
-// need to declare part
 
+// need to declare part
 @TypeConverters([
   CollectionVOTypeConverter,
   GenreListTypeConverter,

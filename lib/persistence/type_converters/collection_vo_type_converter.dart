@@ -10,6 +10,7 @@ class CollectionVOTypeConverter extends TypeConverter<CollectionVO?, String?> {
     if (jsonStringFromDatabase == null) {
       return null;
     }
+    /// convert String into Map<String, dynamic> by json.decode
     return CollectionVO.fromJson(
         json.decode(jsonStringFromDatabase) as Map<String, dynamic>);
   }
@@ -20,6 +21,8 @@ class CollectionVOTypeConverter extends TypeConverter<CollectionVO?, String?> {
     if (value == null) {
       return null;
     }
+    /// convert String into Map<String, dynamic> by .toJson
+    /// convert again to json string by json.encode
     return json.encode(value.toJson());
   }
 }
