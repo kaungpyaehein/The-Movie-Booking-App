@@ -63,27 +63,26 @@ class MovieBookingModel {
     });
   }
 
-  Future<List<CreditVO>> getCreditsByMovie(String movieId) {
-    return mDataAgent.getCreditsByMovie(movieId);
-  }
-
   /// Get Now Playing Movies from Database
   Future<List<MovieVO>> getNowPlayingMoviesFromDatabase() async {
     var database = await MovieBookingDatabase.getMovieBookingDatabase;
 
-    return database.movieDao.getMovieByType(kMovieTypeNowPlaying);
+    return database.movieDao.getMoviesByType(kMovieTypeNowPlaying);
   }
 
   /// Get Coming Soon Movies from Database
   Future<List<MovieVO>> getComingSoonMoviesFromDatabase() async {
     var database = await MovieBookingDatabase.getMovieBookingDatabase;
-
-    return database.movieDao.getMovieByType(kMovieTypeComingSoon);
+    return database.movieDao.getMoviesByType(kMovieTypeComingSoon);
   }
 
   /// Get Movie by ID from database
   Future<MovieVO?> getMovieByIdFromDatabase(int movieId) async {
     var database = await MovieBookingDatabase.getMovieBookingDatabase;
     return database.movieDao.getMovieById(movieId);
+  }
+
+  Future<List<CreditVO>> getCreditsByMovie(String movieId) {
+    return mDataAgent.getCreditsByMovie(movieId);
   }
 }

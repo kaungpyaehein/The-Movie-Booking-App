@@ -1,21 +1,23 @@
 import 'dart:convert';
 
 import 'package:floor/floor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:the_movie_booking_app/data/vos/genre_vo.dart';
 
 class GenreListTypeConverter extends TypeConverter<List<GenreVO>?, String?> {
   @override
   List<GenreVO>? decode(String? databaseValue) {
     if (databaseValue == null) {
+      debugPrint("GenreListTypeConverter : $databaseValue");
       return null;
     }
 
-    // convert to List<String, dynamic>
-    Iterable<Map<String, dynamic>> decodedList = json.decode(databaseValue);
+    // Convert to List<Map<String, dynamic>>
+    List<dynamic> decodedList = json.decode(databaseValue);
 
-    // convert to List<GenreVO>
+    // Convert to List<GenreVO>
     List<GenreVO> genres = decodedList.map((model) {
-      return GenreVO.fromJson(model);
+      return GenreVO.fromJson(model as Map<String, dynamic>);
     }).toList();
 
     return genres;

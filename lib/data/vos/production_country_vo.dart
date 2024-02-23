@@ -11,7 +11,8 @@ class ProductionCountryVO {
   String? name;
 
   ProductionCountryVO(this.iso31661, this.name);
-  factory ProductionCountryVO.fromJson(Map<String,dynamic> json) => _$ProductionCountryVOFromJson(json);
+  factory ProductionCountryVO.fromJson(Map<String,dynamic> json) =>
+      _$ProductionCountryVOFromJson(json);
 
   Map<String,dynamic> toJson() => _$ProductionCountryVOToJson(this);
 }

@@ -41,6 +41,11 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
     _model
         .getMovieByIdFromDatabase(int.parse(widget.movieId ?? "0"))
         .then((movie) {
+      if (movie == null) {
+        print("Null");
+      } else {
+        print(movie.genres);
+      }
       setState(() {
         movieDetails = movie;
       });
@@ -67,18 +72,18 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            ///body
-            ///to make app bar appears on top of body
-            movieDetails == null
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: kPrimaryColor,
-                    ),
-                  )
-                : SingleChildScrollView(
+      body: movieDetails == null
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: kPrimaryColor,
+              ),
+            )
+          : SafeArea(
+              child: Stack(
+                children: [
+                  ///body
+                  ///to make app bar appears on top of body
+                  SingleChildScrollView(
                     child: Column(
                       children: [
                         //Movie, Large Image, Small Image
@@ -135,62 +140,65 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                     ),
                   ),
 
-            /// App bar
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: kMarginLarge, vertical: kMarginMedium),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    child: const Icon(
-                      Icons.chevron_left,
-                      color: Colors.white,
-                      size: kMarginXLarge,
+                  /// App bar
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kMarginLarge, vertical: kMarginMedium),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.chevron_left,
+                            color: Colors.white,
+                            size: kMarginXLarge,
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.share,
+                          color: Colors.white,
+                          size: kMarginLarge,
+                        ),
+                      ],
                     ),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
                   ),
-                  const Spacer(),
-                  const Icon(
-                    Icons.share,
-                    color: Colors.white,
-                    size: kMarginLarge,
-                  ),
+
+                  //bottom section
+                  Visibility(
+                    visible: !widget.isComingSoonPage,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 128,
+                        decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                              Colors.transparent,
+                              kBackgroundColor
+                            ])),
+                        child: Center(
+                          child: PrimaryButton(
+                            label: kBookingLabel,
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const BookingPage(),
+                                  ));
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
-
-            //bottom section
-            Visibility(
-              visible: !widget.isComingSoonPage,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: 128,
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, kBackgroundColor])),
-                  child: Center(
-                    child: PrimaryButton(
-                      label: kBookingLabel,
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const BookingPage(),
-                            ));
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
     );
   }
 }

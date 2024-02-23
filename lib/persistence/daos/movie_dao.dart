@@ -17,5 +17,5 @@ abstract class MovieDao {
 
   /// get movie by its type
   @Query("SELECT * FROM movies WHERE type=:type")
-  Future<List<MovieVO>> getMovieByType(String type);
+  Future<List<MovieVO>> getMoviesByType(String type);
 }

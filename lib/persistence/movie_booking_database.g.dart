@@ -189,7 +189,7 @@ class _$MovieDao extends MovieDao {
   }
 
   @override
-  Future<List<MovieVO>> getMovieByType(String type) async {
+  Future<List<MovieVO>> getMoviesByType(String type) async {
     return _queryAdapter.queryList('SELECT * FROM movies WHERE type=?1',
         mapper: (Map<String, Object?> row) => MovieVO(
             adult: row['adult'] == null ? null : (row['adult'] as int) != 0,
