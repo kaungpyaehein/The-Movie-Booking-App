@@ -101,7 +101,6 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
   String selectedText = kNowShowingLabel;
 
   ///3 states variables
-
   ///Now Playing Movies
   List<MovieVO> nowPlayingMovies = [];
 

@@ -66,7 +66,6 @@ class MovieBookingModel {
   /// Get Now Playing Movies from Database
   Future<List<MovieVO>> getNowPlayingMoviesFromDatabase() async {
     var database = await MovieBookingDatabase.getMovieBookingDatabase;
-
     return database.movieDao.getMoviesByType(kMovieTypeNowPlaying);
   }
 
