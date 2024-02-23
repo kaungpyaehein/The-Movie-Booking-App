@@ -45,7 +45,7 @@ const double nowPlayingAndComingSoonTabBarHeight = 55;
 const double kMovieListItemHeight = 279;
 const double kMovieListItemImageHeight = 212;
 
-const double kMovieDetailsTopSectionHeight = 360;
+const double kMovieDetailsTopSectionHeight = 376;
 const double kMovieDetailsTopImageHeight = 200;
 
 const double kIMDBWidth = 43;

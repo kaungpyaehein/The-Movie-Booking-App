@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/data/country_code_list.dart';
+import 'package:the_movie_booking_app/data/sample_vos/country_code_list.dart';
 import 'package:the_movie_booking_app/pages/otp_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';

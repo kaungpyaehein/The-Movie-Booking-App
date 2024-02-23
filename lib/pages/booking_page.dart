@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/data/film_type_list.dart';
+import 'package:the_movie_booking_app/data/sample_vos/film_type_list.dart';
 import 'package:the_movie_booking_app/pages/seating_plan_page.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
-import '../data/time_slot_data_list.dart';
-import '../data/time_slot_model.dart';
+
 import '../widgets/cinemas_view.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';

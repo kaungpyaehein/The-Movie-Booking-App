@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 
-import '../data/sample_data.dart';
+import '../data/sample_vos/sample_data.dart';
 import '../utils/colors.dart';
 import '../utils/images.dart';
 

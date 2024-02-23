@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/data/snack_model.dart';
+import 'package:the_movie_booking_app/data/sample_vos/snack_model.dart';
 import 'package:the_movie_booking_app/pages/checkout_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 
-import '../data/sample_data.dart';
+import '../data/sample_vos/sample_data.dart';
 import '../utils/strings.dart';
 
 class SnackPage extends StatefulWidget {

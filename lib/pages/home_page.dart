@@ -115,14 +115,42 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
   void initState() {
     super.initState();
 
+    //Now Playing Movies from database
+    _model
+        .getNowPlayingMoviesFromDatabase()
+        .then((nowPlayingMoviesFromDatabase) {
+      setState(() {
+        nowPlayingMovies = nowPlayingMoviesFromDatabase;
+        //show now playing movies
+        moviesToShow = nowPlayingMoviesFromDatabase;
+      });
+    });
+
+    /// Coming soon Movies from database
+    _model
+        .getNowPlayingMoviesFromDatabase()
+        .then((comingSoonMoviesFromDatabase) {
+      setState(() {
+        nowPlayingMovies = comingSoonMoviesFromDatabase;
+      });
+    });
+
     //get now playing movies
     _model.getNowPlayingMovies().then((nowPlayingMovies) {
       setState(() {
         this.nowPlayingMovies = nowPlayingMovies;
-
         //show now playing movies
         moviesToShow = nowPlayingMovies;
       });
+    }).catchError((error) {
+      ///catch the error and
+      /// show custom error
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text(error.toString()),
+        ),
+      );
     });
 
     //get coming soon movies
@@ -178,7 +206,7 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
 
         //check movies to show is empty
         (moviesToShow.isEmpty)
-        //show loading indicator
+            //show loading indicator
             ? const SliverToBoxAdapter(
                 child: Center(
                   child: CircularProgressIndicator(
@@ -203,6 +231,8 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
                                 builder: (context) => MovieDetailsPage(
                                   isComingSoonPage:
                                       selectedText == kComingSoonLabel,
+                                  movieId:
+                                      moviesToShow[index].id?.toString() ?? "",
                                 ),
                               ));
                         },
