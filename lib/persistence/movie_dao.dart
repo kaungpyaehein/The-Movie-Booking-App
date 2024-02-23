@@ -14,6 +14,7 @@ class MovieDao {
 
   /// map movie object to movie_id : moves to store in hive
   void saveMovies(List<MovieVO> movies) async {
+    /// {} represents Map
     Map<int, MovieVO> movieMap = {
       for (var movie in movies) movie.id ?? 0: movie
     };
@@ -25,6 +26,7 @@ class MovieDao {
   }
 
   List<MovieVO> getMoviesByType(String type) {
+    /// get the values in the box first
     return getMovieBox().values.where((movie) => movie.type == type).toList();
   }
 

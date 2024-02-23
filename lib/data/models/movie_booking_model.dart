@@ -13,7 +13,7 @@ class MovieBookingModel {
   }
   MovieBookingModel._internal();
 
-  /// Dao
+  /// Dao of Hive
   final MovieDao _movieDao = MovieDao();
 
   // /Data agent
@@ -40,7 +40,7 @@ class MovieBookingModel {
         .then((comingSoonMovieList) async {
       /// add type to the move list
       for (var movie in comingSoonMovieList) {
-        movie.type = kMovieTypeNowPlaying;
+        movie.type = kMovieTypeComingSoon;
       }
 
       /// save movies to hive
