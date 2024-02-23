@@ -37,19 +37,12 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
 
   @override
   void initState() {
-    // /// Get Movie Details from Database
-    // _model
-    //     .getMovieByIdFromDatabase(int.parse(widget.movieId ?? "0"))
-    //     .then((movie) {
-    //   if (movie == null) {
-    //     print("Null");
-    //   } else {
-    //     print(movie.genres);
-    //   }
-    //   setState(() {
-    //     movieDetails = movie;
-    //   });
-    // });
+    /// Get Movie Details from Database
+    MovieVO? movieDetailsFromDatabase =
+        _model.getMovieByIdFromDatabase(int.parse(widget.movieId ?? "0"));
+    setState(() {
+      movieDetails = movieDetailsFromDatabase;
+    });
 
     /// Get movie details from network
     _model.getMovieDetails(widget.movieId ?? "").then((movie) {
