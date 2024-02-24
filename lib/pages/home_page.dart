@@ -127,7 +127,7 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
 
     /// Coming soon Movies from database
     _model
-        .getNowPlayingMoviesFromDatabase()
+        .getComingSoonMoviesFromDatabase()
         .then((comingSoonMoviesFromDatabase) {
       setState(() {
         nowPlayingMovies = comingSoonMoviesFromDatabase;

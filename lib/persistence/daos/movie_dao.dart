@@ -4,6 +4,7 @@ import '../../data/vos/movie_vo.dart';
 @dao
 abstract class MovieDao {
   /// Insert movie list to database local
+  /// if same movie id, primary key, overwrite it
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertMovieList(List<MovieVO> movie);
 
