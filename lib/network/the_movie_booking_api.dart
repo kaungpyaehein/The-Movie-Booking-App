@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
+
 import 'package:the_movie_booking_app/network/api_constants.dart';
 import 'package:the_movie_booking_app/network/responses/get_credits_by_movie_response.dart';
 import 'package:the_movie_booking_app/network/responses/movie_list_response.dart';
@@ -11,6 +12,7 @@ part 'the_movie_booking_api.g.dart';
 //base url without http
 @RestApi(baseUrl: kBaseUrl)
 abstract class TheMovieBookingApi {
+  /// Dio as the parameter
   factory TheMovieBookingApi(Dio dio) = _TheMovieBookingApi;
 
   @GET(kEndPointGetNowPlaying)

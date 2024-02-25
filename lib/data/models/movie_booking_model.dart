@@ -13,10 +13,10 @@ class MovieBookingModel {
   }
   MovieBookingModel._internal();
 
-  /// Dao of Hive
+  /// Dao of Hive or Dependency of Persistence Layer
   final MovieDao _movieDao = MovieDao();
 
-  // /Data agent
+  // /Data agent or Dependency of Network Layer
   TheMovieBookingDataAgent mDataAgent = RetrofitDataAgentImpl();
 
   Future<List<MovieVO>> getNowPlayingMovies() {
