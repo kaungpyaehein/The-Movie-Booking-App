@@ -17,6 +17,7 @@ class CheckoutPage extends StatelessWidget {
         backgroundColor: kBackgroundColor,
         appBar: AppBar(
           foregroundColor: Colors.white,
+          centerTitle: true,
           backgroundColor: kBackgroundColor,
           title: const Text(
             kCheckoutText,

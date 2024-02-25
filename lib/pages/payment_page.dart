@@ -21,6 +21,7 @@ class _PaymentPageState extends State<PaymentPage> {
     return Scaffold(
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
+        centerTitle: true,
         foregroundColor: Colors.white,
         backgroundColor: kBackgroundColor,
         title: const Text(

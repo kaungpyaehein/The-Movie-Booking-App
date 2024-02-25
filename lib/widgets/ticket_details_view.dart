@@ -155,131 +155,136 @@ class TicketCancellationPolicyView extends StatelessWidget {
 
 void showTicketCancellationPolicy(BuildContext context) {
   showModalBottomSheet(
+    isScrollControlled: true,
+
     context: context,
     builder: (context) {
-      return Container(
-        decoration: const BoxDecoration(color: Colors.black),
-        padding: const EdgeInsets.all(kMarginMedium4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Ticket Cancellation Policy",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            //spacer
-            const SizedBox(
-              height: kMarginLarge,
-            ),
-
-            Row(
-              children: [
-                Image.asset(
-                  kSnackIcon,
-                  height: kMargin30,
-                  color: Colors.white,
-                ),
-                const SizedBox(
-                  width: kMarginMedium2,
-                ),
-                const Text(
-                  "100% Refund on F&B",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: kTextRegular2X,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(
-              height: kMarginLarge,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset(
-                  kTicketIcon,
-                  height: kMargin30,
-                  color: Colors.white,
-                ),
-                const SizedBox(
-                  width: kMarginMedium2,
-                ),
-                const Text(
-                  "Up to 75% Refund for Tickets",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: kTextRegular2X,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: kMarginLarge,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(
-                left: kMarginXLarge2,
-              ),
-              child: Text(
-                "-75% refund until 2 hours before show start time",
+      return FractionallySizedBox(
+        heightFactor: 0.6,
+        child: Container(
+          decoration: const BoxDecoration(color: Colors.black),
+          padding: const EdgeInsets.all(kMarginMedium4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Ticket Cancellation Policy",
                 style: TextStyle(
-                  color: kNowPlayingAndComingSoonSelectedTextColor,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            const SizedBox(
-              height: kMarginMedium2,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(
-                left: kMarginXLarge2,
+              //spacer
+              const SizedBox(
+                height: kMarginLarge,
               ),
-              child: Text(
-                "-50% refund between 2 hours and 20 minutes before show start time",
-                softWrap: true,
+
+              Row(
+                children: [
+                  Image.asset(
+                    kSnackIcon,
+                    height: kMargin30,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(
+                    width: kMarginMedium2,
+                  ),
+                  const Text(
+                    "100% Refund on F&B",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: kTextRegular2X,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(
+                height: kMarginLarge,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    kTicketIcon,
+                    height: kMargin30,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(
+                    width: kMarginMedium2,
+                  ),
+                  const Text(
+                    "Up to 75% Refund for Tickets",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: kTextRegular2X,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: kMarginLarge,
+              ),
+              const Padding(
+                padding: EdgeInsets.only(
+                  left: kMarginXLarge2,
+                ),
+                child: Text(
+                  "-75% refund until 2 hours before show start time",
+                  style: TextStyle(
+                    color: kNowPlayingAndComingSoonSelectedTextColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: kMarginMedium2,
+              ),
+              const Padding(
+                padding: EdgeInsets.only(
+                  left: kMarginXLarge2,
+                ),
+                child: Text(
+                  "-50% refund between 2 hours and 20 minutes before show start time",
+                  softWrap: true,
+                  style: TextStyle(
+                    color: kNowPlayingAndComingSoonSelectedTextColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: kMarginXLarge2,
+              ),
+
+              const Text(
+                "Refund not available for"
+                " Convenience fees,Vouchers, Gift Cards, Taxes etc.",
                 style: TextStyle(
-                  color: kNowPlayingAndComingSoonSelectedTextColor,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            const SizedBox(
-              height: kMarginXLarge2,
-            ),
-
-            const Text(
-              "Refund not available for"
-              " Convenience fees,Vouchers, Gift Cards, Taxes etc.",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+              const SizedBox(
+                height: kMarginMedium4,
               ),
-            ),
-            const SizedBox(
-              height: kMarginMedium4,
-            ),
-            const Text(
-              "Refund not available for"
-              " Convenience fees,Vouchers, Gift Cards, Taxes etc.",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+              const Text(
+                "Refund not available for"
+                " Convenience fees,Vouchers, Gift Cards, Taxes etc.",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: kMarginXLarge,
-            ),
+              const SizedBox(
+                height: kMarginXLarge,
+              ),
 
-            const CloseButtonView()
-          ],
+              const CloseButtonView()
+            ],
+          ),
         ),
       );
     },

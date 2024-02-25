@@ -37,6 +37,7 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
             automaticallyImplyLeading: false,
             foregroundColor: Colors.white,
             backgroundColor: kBackgroundColor,
+            centerTitle: true,
             title: const Text(
               kTickerInformationText,
               style: TextStyle(

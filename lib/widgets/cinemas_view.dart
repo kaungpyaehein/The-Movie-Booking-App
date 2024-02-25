@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:the_movie_booking_app/pages/cinema_details_page.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 
-
 import '../data/sample_vos/time_slot_data_list.dart';
 import '../data/sample_vos/time_slot_model.dart';
 import '../pages/seating_plan_page.dart';
@@ -30,6 +29,7 @@ class _CinemasViewState extends State<CinemasView> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         setState(() {
           isShow = !isShow;
