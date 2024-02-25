@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
+import 'package:the_movie_booking_app/data/vos/city_vo.dart';
 import 'package:the_movie_booking_app/data/vos/collection_vo.dart';
 import 'package:the_movie_booking_app/data/vos/genre_vo.dart';
 import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
 import 'package:the_movie_booking_app/data/vos/production_company_vo.dart';
 import 'package:the_movie_booking_app/data/vos/production_country_vo.dart';
 import 'package:the_movie_booking_app/data/vos/spoken_language_vo.dart';
+import 'package:the_movie_booking_app/data/vos/user_vo.dart';
 import 'package:the_movie_booking_app/network/data_agents/dio_data_agent_impl.dart';
 import 'package:the_movie_booking_app/network/data_agents/http_data_agent_impl.dart';
 import 'package:the_movie_booking_app/network/data_agents/the_movie_booking_data_agent.dart';
@@ -35,6 +37,9 @@ void main() async {
   Hive.registerAdapter(ProductionCompanyVOAdapter());
   Hive.registerAdapter(ProductionCountryVOAdapter());
   Hive.registerAdapter(SpokenLanguageVOAdapter());
+  Hive.registerAdapter(UserVOAdapter());
+  Hive.registerAdapter(CityVOAdapter());
+
   getDateList(14);
 
   /// Open Hive Box

@@ -33,6 +33,8 @@ class SnackVO {
   String? totalPrice;
 
 
+  SnackVO(this.id, this.name, this.createdAt, this.price, this.unitPrice,
+      this.categoryId, this.image, this.quantity, this.totalPrice);
   //from json
   factory SnackVO.fromJson(Map<String, dynamic> json) =>
       _$SnackVOFromJson(json);
@@ -40,6 +42,4 @@ class SnackVO {
   //to json
   Map<String, dynamic> toJson() => _$SnackVOToJson(this);
 
-  SnackVO(this.id, this.name, this.createdAt, this.price, this.unitPrice,
-      this.categoryId, this.image, this.quantity, this.totalPrice);
 }
