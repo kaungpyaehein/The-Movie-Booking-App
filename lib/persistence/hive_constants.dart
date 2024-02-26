@@ -21,3 +21,9 @@ const kAdapterNameCityVO = "CityVOAdapter";
 
 /// Box name
 const kBoxNameMovieVO = "kBoxNameMovieVO";
+const kBoxNameUserVO = "kBoxNameUserVO";
+const kBoxNameCityVO = "kBoxNameCityVO";
+
+// keys
+const kBoxKeyUser = "userBoxKey";
+

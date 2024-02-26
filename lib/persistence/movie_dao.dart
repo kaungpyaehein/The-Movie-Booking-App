@@ -21,7 +21,7 @@ class MovieDao {
     await getMovieBox().putAll(movieMap);
   }
 
-  void saveSingleMove(MovieVO movie) async {
+  void saveSingleMovie(MovieVO movie) async {
     await getMovieBox().put(movie.id, movie);
   }
 
@@ -30,9 +30,11 @@ class MovieDao {
     return getMovieBox().values.where((movie) => movie.type == type).toList();
   }
 
+
   MovieVO? getMovieById(int movieId) {
     return getMovieBox().get(movieId);
   }
+
 
   /// Get Movie Box from HIVE
   Box<MovieVO> getMovieBox() {

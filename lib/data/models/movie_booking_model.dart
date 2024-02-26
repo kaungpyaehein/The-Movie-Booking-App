@@ -1,8 +1,13 @@
 import 'package:the_movie_booking_app/data/vos/credit_vo.dart';
 import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
+import 'package:the_movie_booking_app/data/vos/user_vo.dart';
 import 'package:the_movie_booking_app/network/data_agents/retrofit_data_agent_impl.dart';
 import 'package:the_movie_booking_app/network/data_agents/the_movie_booking_data_agent.dart';
+import 'package:the_movie_booking_app/persistence/cities_dao.dart';
 import 'package:the_movie_booking_app/persistence/movie_dao.dart';
+import 'package:the_movie_booking_app/persistence/user_dao.dart';
+
+import '../vos/city_vo.dart';
 
 class MovieBookingModel {
   static MovieBookingModel? _singleton;
@@ -15,6 +20,10 @@ class MovieBookingModel {
 
   /// Dao of Hive or Dependency of Persistence Layer
   final MovieDao _movieDao = MovieDao();
+
+  final UserDao _userDao = UserDao();
+
+  final CitiesDao _citiesDao = CitiesDao();
 
   // /Data agent or Dependency of Network Layer
   TheMovieBookingDataAgent mDataAgent = RetrofitDataAgentImpl();
@@ -53,7 +62,7 @@ class MovieBookingModel {
   Future<MovieVO> getMovieDetails(String movieId) {
     return mDataAgent.getMovieDetails(movieId).then((movie) async {
       /// save movie to hive
-      _movieDao.saveSingleMove(movie);
+      _movieDao.saveSingleMovie(movie);
       return movie;
     });
   }
@@ -71,6 +80,21 @@ class MovieBookingModel {
   /// Get Movie by ID from hive
   MovieVO? getMovieByIdFromDatabase(int movieId) {
     return _movieDao.getMovieById(movieId);
+  }
+
+  /// Get User data from hive
+  UserVO? getUserDataFromDatabase() {
+    return _userDao.getUserData();
+  }
+
+  /// Get CityList  from hive
+  List<CityVO> getCitiesFromDatabase() {
+    return _citiesDao.getCities();
+  }
+
+  /// Get City by ID from hive
+  CityVO? getCityByIdFromDatabase(int cityId) {
+    return _citiesDao.getCityById(cityId);
   }
 
   Future<List<CreditVO>> getCreditsByMovie(String movieId) {
