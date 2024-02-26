@@ -10,9 +10,9 @@ import 'package:the_movie_booking_app/network/data_agents/the_movie_booking_data
 import 'package:the_movie_booking_app/network/the_movie_booking_api.dart';
 
 class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
-  
   //moving booking api is an object dependency
   late TheMovieBookingApi mApi;
+  late TheMovieBookingApi mApiWithNewUrl;
 
   //setup singleton
   static RetrofitDataAgentImpl? _singleton;
@@ -25,6 +25,7 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
   RetrofitDataAgentImpl._internal() {
     final dio = Dio();
     mApi = TheMovieBookingApi(dio);
+    mApiWithNewUrl = TheMovieBookingApi(dio, baseUrl: kNewBaseUrl);
   }
 
   @override
