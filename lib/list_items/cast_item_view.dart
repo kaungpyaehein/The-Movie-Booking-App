@@ -14,11 +14,25 @@ class CastItemView extends StatelessWidget {
       children: [
         ClipOval(
           child: CachedNetworkImage(
-            imageUrl: credit?.getProfileWithUrl() ?? "",
-            errorWidget: (_, __, ___) => const Icon(
-              Icons.person,
-              color: kPrimaryColor,
-              size: kMargin50,
+            imageUrl: credit?.getProfileWithUrl() == null ||
+                    credit!.getProfileWithUrl().isEmpty
+                ? ""
+                : credit!.getProfileWithUrl(),
+            errorWidget: (_, __, ___) => Container(
+              width: kMargin60,
+              height: kMargin60,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade800),
+                shape: BoxShape.circle,
+                color: Colors.black26, // You can set any desired color here
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.person,
+                  color: kPrimaryColor,
+                  size: kMargin50,
+                ),
+              ),
             ),
             width: kMargin60,
             height: kMargin60,

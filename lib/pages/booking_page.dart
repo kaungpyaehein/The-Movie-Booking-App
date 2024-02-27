@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_booking_app/data/sample_vos/film_type_list.dart';
-import 'package:the_movie_booking_app/pages/seating_plan_page.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 

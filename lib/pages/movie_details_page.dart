@@ -296,19 +296,19 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.6,
-      height: kBookingButtonHeight,
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Image.asset(kBookingButtonEnd),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: GestureDetector(
-              onTap: onTap,
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.6,
+        height: kBookingButtonHeight,
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Image.asset(kBookingButtonEnd),
+            ),
+            Align(
+              alignment: Alignment.center,
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.5,
                 height: kBookingButtonHeight,
@@ -324,12 +324,12 @@ class PrimaryButton extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Image.asset(kBookingButtonEnd),
-          ),
-        ],
+            Align(
+              alignment: Alignment.centerRight,
+              child: Image.asset(kBookingButtonEnd),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -367,7 +367,7 @@ class CastView extends StatelessWidget {
           height: kMargin60,
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: kMarginMedium2),
-            itemCount: 10,
+            itemCount: 8,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return CastItemView(

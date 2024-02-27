@@ -181,6 +181,7 @@ class PrimaryButtonView extends StatelessWidget {
             backgroundColor: kPrimaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(kMarginMedium))),
+        
         onPressed: onTap,
         child: Text(
           title,

@@ -15,7 +15,6 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,70 +31,91 @@ class _PaymentPageState extends State<PaymentPage> {
               fontWeight: FontWeight.w600),
         ),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
+      body: const SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ApplyCouponView(),
+            //spacer
+            SizedBox(
+              height: kMarginXLarge,
+            ),
+
+            //choose payment method view
+            ChoosePaymentMethodsView(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ApplyCouponView extends StatelessWidget {
+  const ApplyCouponView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: kMarginXLarge2, vertical: kMarginXLarge),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: kMarginXLarge2, vertical: kMarginXLarge),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //name input field
-                NameInputView(),
+          //name input field
+          NameInputView(),
 
-                SizedBox(
-                  height: kMarginXLarge,
-                ),
+          SizedBox(
+            height: kMarginXLarge,
+          ),
 
-                //apply coupon button view
-                ApplyCouponButtonView(),
-              ],
+          //apply coupon button view
+          ApplyCouponButtonView(),
+        ],
+      ),
+    );
+  }
+}
+
+class ChoosePaymentMethodsView extends StatelessWidget {
+  const ChoosePaymentMethodsView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kMarginLarge),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Choose your payment type",
+            style: TextStyle(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.w700,
+                fontSize: kText18),
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(vertical: kMarginMedium4),
+            itemCount: paymentOptionModelList.length,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(bottom: kMarginMedium2),
+              child: PaymentOptionItemView(
+                label: paymentOptionModelList[index].label,
+                image: paymentOptionModelList[index].image,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TicketInformationPage(),
+                      ));
+                },
+              ),
             ),
-          ),
-          //spacer
-          const SizedBox(
-            height: kMarginXLarge2,
-          ),
-
-          //choose payment method view
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kMarginLarge),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Choose your payment type",
-                  style: TextStyle(
-                      color: kPrimaryColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: kText18),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: kMarginMedium4),
-                  itemCount: paymentOptionModelList.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(bottom: kMarginMedium2),
-                    child: PaymentOptionItemView(
-                      label: paymentOptionModelList[index].label,
-                      image: paymentOptionModelList[index].image,
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                              const TicketInformationPage(),
-                            ));
-
-                      },
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
+          )
         ],
       ),
     );

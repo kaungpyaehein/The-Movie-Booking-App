@@ -26,7 +26,7 @@ abstract class TheMovieBookingApi {
   factory TheMovieBookingApi(Dio dio, {String baseUrl}) = _TheMovieBookingApi;
 
   @GET(kEndPointGetNowPlaying)
-  Future<MovieListResponse?> getNowPlayingMoves(
+  Future<MovieListResponse?> getNowPlayingMovies(
     @Query(kParamApiKey) String apiKey,
     @Query(kParamLanguage) String language,
     @Query(kParamPage) String page,

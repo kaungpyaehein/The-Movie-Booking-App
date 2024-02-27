@@ -43,7 +43,7 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
             Column(
               children: [
                 const SizedBox(
-                  height: kMarginXXLarge,
+                  height: kMarginXLarge,
                 ),
                 Stack(
                   alignment: Alignment.center,
@@ -74,9 +74,7 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                       color: kBottomNavigationUnselectedColor,
                       fontSize: kFilmTypeTextSize),
                 ),
-                const SizedBox(
-                  height: kMarginLarge,
-                ),
+
                 //zoomable seats view
                 GestureDetector(
                   onDoubleTap: () {
@@ -100,7 +98,7 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                     //seats availability view
                     const SeatsAvailabilityView(),
                     const SizedBox(
-                      height: kMarginLarge,
+                      height: kMarginMedium2,
                     ),
                     //seat zoom in out view
                     Row(
@@ -173,7 +171,7 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                       ],
                     ),
                     const SizedBox(
-                      height: kMarginLarge,
+                      height: kMarginMedium2,
                     ),
                     const BuyTicketView(),
                   ],
