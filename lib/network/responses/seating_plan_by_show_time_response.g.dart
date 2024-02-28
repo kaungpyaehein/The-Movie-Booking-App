@@ -11,10 +11,8 @@ SeatingPlanByShowTimeResponse _$SeatingPlanByShowTimeResponseFromJson(
     SeatingPlanByShowTimeResponse(
       json['code'] as int?,
       json['message'] as String?,
-      (json['data'] as List<dynamic>)
-          .map((e) => (e as List<dynamic>?)
-              ?.map((e) => SeatVO.fromJson(e as Map<String, dynamic>))
-              .toList())
+      (json['data'] as List<dynamic>?)
+          ?.map((e) => SeatVO.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

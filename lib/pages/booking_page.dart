@@ -1,5 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
 import 'package:the_movie_booking_app/data/sample_vos/film_type_list.dart';
+import 'package:the_movie_booking_app/data/vos/choose_date_vo.dart';
+import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
+import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 
@@ -7,8 +14,50 @@ import '../widgets/cinemas_view.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 
-class BookingPage extends StatelessWidget {
+class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
+
+  @override
+  State<BookingPage> createState() => _BookingPageState();
+}
+
+class _BookingPageState extends State<BookingPage> {
+  List<ChooseDateVO> twoWeekDates = [];
+  MovieBookingModel model = MovieBookingModel();
+
+  List<CinemaVO> cinemaVOs = [
+    CinemaVO(
+      cinemaId: 1,
+      cinema: "JCGV",
+      timeslots: [
+        TimeslotVO(cinemaDayTimeslotId: 2, startTime: "9:30 AM", status: 2),
+        TimeslotVO(cinemaDayTimeslotId: 2, startTime: "9:30 AM", status: 3),
+        TimeslotVO(cinemaDayTimeslotId: 2, startTime: "9:30 AM", status: 4),
+      ],
+    ),
+    CinemaVO(
+      cinemaId: 2,
+      cinema: "MINGALAR Cinema",
+      timeslots: [
+        TimeslotVO(cinemaDayTimeslotId: 4, startTime: "10:00 AM", status: 2),
+        TimeslotVO(cinemaDayTimeslotId: 4, startTime: "10:00 AM", status: 3),
+        TimeslotVO(cinemaDayTimeslotId: 4, startTime: "10:00 AM", status: 4),
+      ],
+    ),
+  ];
+
+  @override
+  void initState() {
+    twoWeekDates = model.getTwoWeeksOfDates().map((dateTime) {
+      String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      bool isSelected =
+          dateTime.date == today; // Set isSelected to true for current date
+      return ChooseDateVO(dateTime.date, isSelected);
+    }).toList();
+
+    print(cinemaVOs[0].cinemaId.toString());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,16 +118,27 @@ class BookingPage extends StatelessWidget {
             child: SizedBox(
               height: kDateListHeight,
               child: ListView.builder(
-                itemCount: 14,
+                itemCount: twoWeekDates.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
+                  final ChooseDateVO chooseDateVO = twoWeekDates[index];
                   return Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: DateCardView(
-                      month: "Jan",
-                      isSelected: index.isEven,
-                      date: "Today",
-                      day: "1",
+                      month: chooseDateVO.getMonthName(),
+                      isSelected: chooseDateVO.isSelected,
+                      date: chooseDateVO.getRelativeDay(),
+                      day: chooseDateVO.getDayOfMonth(),
+                      onTap: () {
+                        setState(() {
+                          twoWeekDates = twoWeekDates.map((dateTime) {
+                            bool isSelected = dateTime.date ==
+                                chooseDateVO
+                                    .date; // Set isSelected to true for current date
+                            return ChooseDateVO(dateTime.date, isSelected);
+                          }).toList();
+                        });
+                      },
                     ),
                   );
                 },
@@ -115,15 +175,17 @@ class BookingPage extends StatelessWidget {
             ),
           ),
           SliverList(
-              delegate: SliverChildBuilderDelegate(
-            childCount: 3,
-            (context, index) => const Padding(
+              delegate: SliverChildBuilderDelegate(childCount: cinemaVOs.length,
+                  (context, index) {
+            final cinemaVO = cinemaVOs[index];
+            return Padding(
               padding: EdgeInsets.only(bottom: kMarginSmall),
               child: CinemasView(
-                isShow: false,
+                isShow: true,
+                cinemaVO: cinemaVO,
               ),
-            ),
-          ))
+            );
+          }))
         ],
       )),
     );
@@ -136,66 +198,71 @@ class DateCardView extends StatelessWidget {
   final String month;
   final String day;
   final bool isSelected;
+  final void Function() onTap;
   const DateCardView(
       {super.key,
       required this.date,
       required this.month,
       required this.day,
-      required this.isSelected});
+      required this.isSelected,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          decoration: isSelected
-              ? BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: kPrimaryColor.withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurStyle: BlurStyle.normal,
-                      blurRadius: 3,
-                      offset: const Offset(2, 4),
-                      // changes position of shadow
-                    ),
-                  ],
-                )
-              : null,
-          child: Image.asset(
-            fit: BoxFit.cover,
-            isSelected ? kSelectedDateCard : kUnselectedDateCard,
-            width: kDateCardWidth,
-            height: kDateCardHeight,
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: isSelected
+                ? BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: kPrimaryColor.withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurStyle: BlurStyle.outer,
+                        blurRadius: 5,
+                        offset: const Offset(5, 9),
+                        // changes position of shadow
+                      ),
+                    ],
+                  )
+                : null,
+            child: Image.asset(
+              fit: BoxFit.cover,
+              isSelected ? kSelectedDateCard : kUnselectedDateCard,
+              width: kDateCardWidth,
+              height: kDateCardHeight,
+            ),
           ),
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: [
-              const SizedBox(
-                height: kMarginMedium4,
-              ),
-              TextInsideDateCard(
-                text: date,
-              ),
-              const SizedBox(
-                height: kMarginMedium,
-              ),
-              TextInsideDateCard(
-                text: month,
-              ),
-              const SizedBox(
-                height: kMarginSmall,
-              ),
-              TextInsideDateCard(
-                text: day,
-              ),
-            ],
-          ),
-        )
-      ],
+          Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: kMarginMedium4,
+                ),
+                TextInsideDateCard(
+                  text: date,
+                ),
+                const SizedBox(
+                  height: kMarginMedium,
+                ),
+                TextInsideDateCard(
+                  text: month,
+                ),
+                const SizedBox(
+                  height: kMarginSmall,
+                ),
+                TextInsideDateCard(
+                  text: day,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

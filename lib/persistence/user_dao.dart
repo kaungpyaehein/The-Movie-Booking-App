@@ -17,6 +17,10 @@ class UserDao {
     await getUserBox().put(kBoxKeyUser, userVO);
   }
 
+  String? getToken() {
+    return getUserBox().get(kBoxKeyUser)?.token ?? "";
+  }
+
   /// get user data
   UserVO? getUserData() {
     return getUserBox().get(kBoxKeyUser);

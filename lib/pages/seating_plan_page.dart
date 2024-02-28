@@ -5,6 +5,7 @@ import 'package:the_movie_booking_app/pages/snack_page.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
+import '../data/vos/seat_vo.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
@@ -20,23 +21,85 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
   TransformationController transformationController =
       TransformationController();
   double _zoomLevel = .5;
+  List<SeatVO> seatVOList = [
+    SeatVO(
+      id: 1,
+      price: 0,
+      seatName: "A",
+      type: "text",
+    ),
+    SeatVO(
+      id: 2,
+      price: 0,
+      seatName: "",
+      type: "available",
+    ),
+    SeatVO(
+      id: 3,
+      price: 2,
+      seatName: "A-1",
+      type: "available",
+    ),
+    SeatVO(
+      id: 4,
+      price: 2,
+      seatName: "A-4",
+      type: "taken",
+    ),
+    SeatVO(
+      id: 5,
+      price: 2,
+      seatName: "A-5",
+      type: "available",
+    ),
+    SeatVO(
+      id: 6,
+      price: 2,
+      seatName: "A-6",
+      type: "space",
+    ),
+    SeatVO(
+      id: 7,
+      price: 2,
+      seatName: "A-7",
+      type: "space",
+    ),
+    SeatVO(
+      id: 8,
+      price: 2,
+      seatName: "A-9",
+      type: "available",
+    ),
+    SeatVO(
+      id: 9,
+      price: 2,
+      seatName: "A-9",
+      type: "available",
+    ),
+    SeatVO(
+      id: 10,
+      price: 2,
+      seatName: "A-10",
+      type: "available",
+    ),
+    SeatVO(
+      id: 11,
+      price: 2,
+      seatName: "",
+      type: "taken",
+    ),
+    SeatVO(
+      id: 12,
+      price: 0,
+      seatName: "B",
+      type: "text",
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
-      // appBar: AppBar(
-      //   leading: IconButton(
-      //     icon: const Icon(
-      //       Icons.chevron_left,
-      //       color: Colors.white,
-      //       size: kMarginXLarge,
-      //     ),
-      //     onPressed: () {
-      //       Navigator.pop(context);
-      //     },
-      //   ),
-      //   backgroundColor: kBackgroundColor,
-      // ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -86,10 +149,26 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                   child: ZoomableSeatsView(
                     transformController: transformationController,
                     scale: _zoomLevel * 2,
+                    seatVOList: seatVOList,
+                    onTapSeat: (selectedSeat) {
+                      setState(() {
+                        seatVOList = seatVOList
+                            .map((seatVO) => SeatVO(
+                                id: seatVO.id,
+                                price: seatVO.price,
+                                seatName: seatVO.seatName,
+                                type: seatVO.id == selectedSeat.id
+                                    ? "selected"
+                                    : seatVO.type))
+                            .toList();
+                      });
+                    },
                   ),
                 ),
               ],
             ),
+
+            /// zoom slider
             Align(
                 alignment: Alignment.bottomCenter,
                 child: Column(
@@ -176,19 +255,16 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                     const BuyTicketView(),
                   ],
                 )),
+
+            // back button
             Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.chevron_left,
+                alignment: Alignment.topLeft,
+                child: BackButton(
                   color: Colors.white,
-                  size: kMarginXLarge,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            )
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ))
           ],
         ),
       ),
@@ -388,8 +464,14 @@ class SeatsAvailabilityItemView extends StatelessWidget {
 class ZoomableSeatsView extends StatefulWidget {
   final TransformationController transformController;
   final double scale;
+  final List<SeatVO> seatVOList;
+  final Function(SeatVO seatVO) onTapSeat;
   const ZoomableSeatsView(
-      {super.key, required this.scale, required this.transformController});
+      {super.key,
+      required this.scale,
+      required this.transformController,
+      required this.seatVOList,
+      required this.onTapSeat});
 
   @override
   State<ZoomableSeatsView> createState() => _ZoomableSeatsViewState();
@@ -406,127 +488,111 @@ class _ZoomableSeatsViewState extends State<ZoomableSeatsView> {
       transformationController: widget.transformController,
       minScale: kMinScale,
       maxScale: kMaxScale,
-      // onInteractionStart: (ScaleStartDetails details) {
-      //   print(details);
-      //   _previousScale = _scale;
-      //   setState(() {});
-      // },
-      // onInteractionUpdate: (ScaleUpdateDetails details) {
-      //   if (widget.scale <= 1) {
-      //     widget.scale = 1;
-      //   } else {
-      //     widget.scale = _previousScale * details.scale;
-      //   }
-      //   setState(() {});
-      // },
-      // onInteractionEnd: (ScaleEndDetails details) {
-      //   print(details);
-      //   if (_scale == 0) {
-      //     _scale = 0;
-      //   }
-      //   _previousScale = 1.0;
-      //   setState(() {});
-      // },
       child: Padding(
         padding: const EdgeInsets.all(kMarginMedium),
         child: Transform(
-          alignment: FractionalOffset.center,
-          transform:
-              Matrix4.diagonal3(Vector3(kMinScale, kMinScale, kMinScale)),
-          child: SeatsView(
-            scale: widget.scale,
-          ),
-        ),
+            alignment: FractionalOffset.center,
+            transform:
+                Matrix4.diagonal3(Vector3(kMinScale, kMinScale, kMinScale)),
+            child: SizedBox(
+              height: kSeatsViewHeight,
+              child: GridView.custom(
+                physics: widget.scale <= 1.0
+                    ? const NeverScrollableScrollPhysics()
+                    : null,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    mainAxisExtent: kMargin60,
+                    crossAxisCount: kSeatsCount,
+                    mainAxisSpacing: kMarginMedium4),
+                childrenDelegate: SliverChildBuilderDelegate(
+                  childCount: widget.seatVOList.length,
+                  (context, index) {
+                    final SeatVO seatVO = widget.seatVOList[index];
+                    return SeatView(
+                      seatVO: seatVO,
+                      onTapSeat: () {
+                        widget.onTapSeat(
+                            seatVO); // Invoke the onTapSeat callback with the selected seat
+                      },
+                    );
+                  },
+                ),
+              ),
+            )),
       ),
     );
   }
 }
 
-// seats view
-class SeatsView extends StatefulWidget {
-  final double scale;
-  const SeatsView({super.key, required this.scale});
+class SeatView extends StatelessWidget {
+  final SeatVO seatVO;
+  final void Function() onTapSeat;
+  const SeatView({super.key, required this.seatVO, required this.onTapSeat});
 
-  @override
-  State<SeatsView> createState() => _SeatsViewState();
-}
-
-class _SeatsViewState extends State<SeatsView> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: kSeatsViewHeight,
-      child: GridView.custom(
-        physics:
-            widget.scale <= 1.0 ? const NeverScrollableScrollPhysics() : null,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: kMargin60,
-          crossAxisCount: kSeatsCount,
-        ),
-        childrenDelegate: SliverChildBuilderDelegate(
-          childCount: seatList1.length,
-          (context, index) {
-            final SeatVo seatModel = seatList1[index];
-            switch (seatModel.type) {
-              case "text":
-                return Center(
-                  child: Text(
-                    seatModel.text,
-                    style: const TextStyle(
-                        color: kDividerColor, fontSize: kTextSmall),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              case "taken":
-                // return SvgPicture.asset(kTakenSeatImage);
-                return const Icon(
-                  Icons.chair_rounded,
-                  size: 30,
-                  color: kDividerColor,
-                );
-              case "available":
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectSeat(
-                        index: index,
-                      );
-                    });
-                  },
-                  child: const Icon(
-                    Icons.chair_rounded,
-                    size: 30,
-                    color: Colors.white,
-                  ),
-                );
-              case "selected":
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      unSelectSeat(
-                        index: index,
-                      );
-                    });
-                  },
-                  child: const Icon(
-                    Icons.chair_rounded,
-                    size: 30,
-                    color: kPrimaryColor,
-                  ),
-                );
-              case "space":
-                return const SizedBox(
-                  width: 30,
-                );
-              default:
-                return const SizedBox();
-            }
-          },
-        ),
-      ),
-    );
+    switch (seatVO.type) {
+      case "text":
+        return Center(
+          child: Text(
+            seatVO.seatName ?? "",
+            style: const TextStyle(color: kDividerColor, fontSize: kTextSmall),
+            textAlign: TextAlign.center,
+          ),
+        );
+      case "taken":
+        // return SvgPicture.asset(kTakenSeatImage);
+        return const Icon(
+          Icons.chair,
+          size: 30,
+          color: kDividerColor,
+        );
+      case "available":
+        return GestureDetector(
+          onTap: onTapSeat,
+          child: const Icon(
+            Icons.chair,
+            size: 30,
+            color: Colors.white,
+          ),
+        );
+      case "selected":
+        return const Icon(
+          Icons.chair,
+          size: 30,
+          color: kPrimaryColor,
+        );
+      case "space":
+        return const SizedBox(
+          width: 10,
+        );
+      default:
+        return const SizedBox();
+    }
   }
 }
+
+// // seats view
+// class SeatsView extends StatefulWidget {
+//   final List<SeatVO> seatVOList;
+//   final double scale;
+//   final Function(SeatVO seatVO) onTapSeat;
+//   const SeatsView(
+//       {super.key,
+//       required this.scale,
+//       required this.seatVOList,
+//       required this.onTapSeat});
+//
+//   @override
+//   State<SeatsView> createState() => _SeatsViewState();
+// }
+//
+// class _SeatsViewState extends State<SeatsView> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return ;
+//   }
+// }
 
 void selectSeat({required int index}) {
   seatList1[index].type = "selected";

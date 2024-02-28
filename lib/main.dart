@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
+import 'package:the_movie_booking_app/data/vos/choose_date_vo.dart';
 import 'package:the_movie_booking_app/data/vos/city_vo.dart';
 import 'package:the_movie_booking_app/data/vos/collection_vo.dart';
+import 'package:the_movie_booking_app/data/vos/date_vo.dart';
 import 'package:the_movie_booking_app/data/vos/genre_vo.dart';
 import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
 import 'package:the_movie_booking_app/data/vos/production_company_vo.dart';
@@ -40,10 +43,11 @@ void main() async {
   Hive.registerAdapter(UserVOAdapter());
   Hive.registerAdapter(CityVOAdapter());
 
-  getDateList(14);
-
   /// Open Hive Box
   await Hive.openBox<MovieVO>(kBoxNameMovieVO);
+
+
+
 
   runApp(const MovieBookingApp());
 }
@@ -61,17 +65,4 @@ class MovieBookingApp extends StatelessWidget {
       home: const SplashPage(),
     );
   }
-}
-
-List<String> getDateList(int numberOfDays) {
-  List<String> dates = [];
-  DateTime now = DateTime.now();
-
-  for (int i = 0; i < numberOfDays; i++) {
-    DateTime date = now.add(Duration(days: i));
-    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-    dates.add(formattedDate);
-  }
-  debugPrint(dates.toString());
-  return dates;
 }

@@ -1,10 +1,12 @@
 //time view
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
 import 'package:the_movie_booking_app/pages/cinema_details_page.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 
 import '../data/sample_vos/time_slot_data_list.dart';
 import '../data/sample_vos/time_slot_model.dart';
+import '../data/vos/cinema_vo.dart';
 import '../pages/seating_plan_page.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
@@ -12,7 +14,8 @@ import '../utils/images.dart';
 
 class CinemasView extends StatefulWidget {
   final bool isShow;
-  const CinemasView({super.key, required this.isShow});
+  final CinemaVO cinemaVO;
+  const CinemasView({super.key, required this.isShow, required this.cinemaVO});
 
   @override
   State<CinemasView> createState() => _CinemasViewState();
@@ -43,9 +46,9 @@ class _CinemasViewState extends State<CinemasView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "JCGV : Junction City",
-                  style: TextStyle(
+                Text(
+                  widget.cinemaVO.cinema ?? "",
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: kTextRegular2X,
                       fontWeight: FontWeight.w600),
@@ -81,7 +84,9 @@ class _CinemasViewState extends State<CinemasView> {
           Visibility(
               visible: isShow,
               //time slot view
-              child: const TimeSlotsView()),
+              child:  TimeSlotsView(
+                timeslots: widget.cinemaVO.timeslots ?? [] ,
+              )),
           const Divider()
         ],
       ),
@@ -90,8 +95,9 @@ class _CinemasViewState extends State<CinemasView> {
 }
 
 class TimeSlotsView extends StatelessWidget {
+  final List<TimeslotVO> timeslots;
   const TimeSlotsView({
-    super.key,
+    super.key, required this.timeslots,
   });
 
   @override
@@ -107,16 +113,16 @@ class TimeSlotsView extends StatelessWidget {
           GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: timeSlotDataList.length,
+              itemCount: timeslots.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 mainAxisSpacing: kMarginMedium4,
                 crossAxisSpacing: kMarginXLarge,
               ),
               itemBuilder: (context, index) {
-                final data = timeSlotDataList[index];
+                final data = timeslots[index];
                 return TimeSlotItem(
-                  timeSlotModel: data,
+                  timeslotVO: data,
                 );
               }),
           // Wrap(
@@ -160,32 +166,32 @@ class TimeSlotsView extends StatelessWidget {
 
 //time slot item view
 class TimeSlotItem extends StatelessWidget {
-  final TimeSlotModel timeSlotModel;
+  final TimeslotVO timeslotVO;
 
-  const TimeSlotItem({super.key, required this.timeSlotModel});
+  const TimeSlotItem({super.key, required this.timeslotVO});
   @override
   Widget build(BuildContext context) {
     Color textColor = Colors.white;
     late Color borderColor;
     late Color backgroundColor;
 
-    switch (timeSlotModel.status) {
-      case "Unavailable":
+    switch (timeslotVO.status.toString()) {
+      case "1":
         textColor = kBottomNavigationUnselectedColor;
         backgroundColor = kTimeSlotCardUnavailableBackgroundColor;
         borderColor = kBottomNavigationUnselectedColor;
         break;
-      case "Available":
+      case "2":
         backgroundColor = kTimeSlotCardAvailableBackgroundColor;
         borderColor = kAvailableColor;
         break;
 
-      case "Filling Fast":
+      case "3":
         backgroundColor = kTimeSlotCardFillingFastBackgroundColor;
         borderColor = kFillingFastColor;
         break;
 
-      case "Almost Full":
+      case "4":
         backgroundColor = kTimeSlotCardAlmostFullBackgroundColor;
         borderColor = kAlmostFullColor;
         break;
@@ -216,7 +222,7 @@ class TimeSlotItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              timeSlotModel.time,
+              timeslotVO.startTime ?? "",
               style: TextStyle(
                 color: textColor,
                 fontSize: kTextSmall,
@@ -224,7 +230,7 @@ class TimeSlotItem extends StatelessWidget {
               ),
             ),
             Text(
-              timeSlotModel.type,
+              timeslotVO.cinemaDayTimeslotId.toString() ?? "",
               style: TextStyle(
                 color: textColor,
                 fontSize: kTextSmall,
@@ -232,23 +238,23 @@ class TimeSlotItem extends StatelessWidget {
               ),
             ),
             Text(
-              timeSlotModel.screen,
+              timeslotVO.startTime ?? "",
               style: TextStyle(
                 color: textColor,
                 fontSize: kTextSmall,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            timeSlotModel.seats != 0
-                ? Text(
-                    "${timeSlotModel.seats}",
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: kTextSmall,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  )
-                : const SizedBox(),
+            // timeSlotModel.seats != 0
+            //     ? Text(
+            //         "${timeSlotModel.seats}",
+            //         style: TextStyle(
+            //           color: textColor,
+            //           fontSize: kTextSmall,
+            //           fontWeight: FontWeight.w600,
+            //         ),
+            //       )
+            //     : const SizedBox(),
           ],
         ),
       ),

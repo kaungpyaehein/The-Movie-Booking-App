@@ -32,7 +32,6 @@ class SnackVO {
   @JsonKey(name: "total_price")
   String? totalPrice;
 
-
   SnackVO(this.id, this.name, this.createdAt, this.price, this.unitPrice,
       this.categoryId, this.image, this.quantity, this.totalPrice);
   //from json
@@ -41,5 +40,4 @@ class SnackVO {
 
   //to json
   Map<String, dynamic> toJson() => _$SnackVOToJson(this);
-
 }

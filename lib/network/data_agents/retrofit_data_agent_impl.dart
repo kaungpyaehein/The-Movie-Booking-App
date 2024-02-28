@@ -18,11 +18,13 @@ import 'package:the_movie_booking_app/network/api_constants.dart';
 import 'package:the_movie_booking_app/network/data_agents/the_movie_booking_data_agent.dart';
 import 'package:the_movie_booking_app/network/responses/otp_response.dart';
 import 'package:the_movie_booking_app/network/the_movie_booking_api.dart';
+import 'package:the_movie_booking_app/network/tmba_api.dart';
 
 class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
   //moving booking api is an object dependency
   late TheMovieBookingApi mApi;
-  late TheMovieBookingApi mApiWithNewUrl;
+
+  late TmbaApi mTmbaApi;
 
   //setup singleton
   static RetrofitDataAgentImpl? _singleton;
@@ -35,7 +37,7 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
   RetrofitDataAgentImpl._internal() {
     final dio = Dio();
     mApi = TheMovieBookingApi(dio);
-    mApiWithNewUrl = TheMovieBookingApi(dio, baseUrl: kNewBaseUrl);
+    mTmbaApi = TmbaApi(dio);
   }
 
   @override
@@ -68,7 +70,11 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
 
   @override
   Future<MovieVO> getMovieDetails(String movieId) {
-    return mApi.getMovieDetails(movieId, kApiKey, kLanguageENUS);
+    return mApi
+        .getMovieDetails(movieId, kApiKey, kLanguageENUS)
+        .catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
@@ -119,57 +125,135 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
   }
 
   @override
-  Future<CheckoutVO> checkout(CheckoutRequest checkoutRequest) {
-    // TODO: implement checkout
-    throw UnimplementedError();
+  Future<CheckoutVO> checkout(
+      String bearerToken, CheckoutRequest checkoutRequest) {
+    return mTmbaApi
+        .checkout(bearerToken, kApplicationJson, checkoutRequest)
+        .asStream()
+        .map((response) => response.data ?? CheckoutVO())
+        .first
+        .catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
-  Future<List<CinemaVO>> getCinemasAndShowTimeByDate(String date) {
-    // TODO: implement getCinemasAndShowTimeByDate
-    throw UnimplementedError();
+  Future<List<CinemaVO>> getCinemasAndShowTimeByDate(
+      String date, String bearerToken) {
+    return mTmbaApi
+        .getCinemaAndShowTimeByDate(date, bearerToken)
+        .asStream()
+        .map((response) => response.data ?? [])
+        .first
+        .catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
   Future<List<CityVO>> getCities() {
-    // TODO: implement getCities
-    throw UnimplementedError();
+    return mTmbaApi
+        .getCities()
+        .asStream()
+        .map((response) => response.data ?? [])
+        .first
+        .catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
   Future<OtpResponse> getOtp(String phone) {
-    // TODO: implement getOtp
-    throw UnimplementedError();
+    return mTmbaApi.getOtp(phone).catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
-  Future<List<PaymentTypeVO>> getPaymentTypes() {
-    // TODO: implement getPaymentTypes
-    throw UnimplementedError();
+  Future<List<PaymentTypeVO>> getPaymentTypes(
+    String bearerToken,
+  ) {
+    return mTmbaApi
+        .getPaymentTypes(bearerToken, kApplicationJson)
+        .asStream()
+        .map((response) => response.data ?? [])
+        .first
+        .catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
   Future<List<SeatVO>> getSeatingPlanByShowTime(
-      String cinemaDayTimeslotId, String bookingDate) {
-    // TODO: implement getSeatingPlanByShowTime
-    throw UnimplementedError();
+      String cinemaDayTimeslotId, String bookingDate, String bearerToken) {
+    return mTmbaApi
+        .getSeatingPlanByShowTime(cinemaDayTimeslotId, bookingDate, bearerToken)
+        .asStream()
+        .map((response) => response.data ?? [])
+        .first
+        .catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
-  Future<List<SnackCategoryVO>> getSnackCategories() {
-    // TODO: implement getSnackCategories
-    throw UnimplementedError();
+  Future<List<SnackCategoryVO>> getSnackCategories(String bearerToken) {
+    return mTmbaApi
+        .getSnackCategory(bearerToken)
+        .asStream()
+        .map((response) => response.data ?? [])
+        .first
+        .catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
-  Future<List<SnackVO>> getSnacksByCategoryId(String categoryId) {
-    // TODO: implement getSnacksByCategoryId
-    throw UnimplementedError();
+  Future<List<SnackVO>> getSnacksByCategoryId(
+      String categoryId, String bearerToken) {
+    return mTmbaApi
+        .getSnacks(categoryId, kApplicationJson, bearerToken)
+        .asStream()
+        .map((response) => response.data ?? [])
+        .first
+        .catchError((error) {
+      throw _createException(error);
+    });
   }
 
   @override
   Future<UserVO> signInWithPhone(String phone, String otp) {
-    // TODO: implement signInWithPhone
-    throw UnimplementedError();
+    return mTmbaApi
+        .signInWithPhone(phone, otp)
+        .asStream()
+        .map((signInResponse) {
+          var response = signInResponse.data;
+          return UserVO(
+            id: response?.id ?? 0,
+            email: response?.email ?? "",
+            name: response?.name ?? "",
+            phone: response?.phone ?? "",
+            profileImage: response?.profileImage ?? "",
+            totalExpense: response?.totalExpense ?? 0,
+            token: response?.token ?? "",
+          );
+        })
+        .first
+        .catchError((error) {
+          throw _createException(error);
+        });
+    // return mTmbaApi.signInWithPhone(phone, otp).then((userResponse) {
+    //   var responseData = userResponse.data;
+    //
+    //   return UserVO(
+    //     id: responseData?.id ?? 0,
+    //     email: responseData?.email ?? "",
+    //     name: responseData?.name ?? "",
+    //     phone: responseData?.phone ?? "",
+    //     profileImage: responseData?.profileImage ?? "",
+    //     totalExpense: responseData?.totalExpense ?? 0,
+    //     token: userResponse.token ?? "",
+    //   );
+    // });
   }
 }

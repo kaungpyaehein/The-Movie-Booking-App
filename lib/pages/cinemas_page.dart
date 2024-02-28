@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
 import 'package:the_movie_booking_app/widgets/cinemas_view.dart';
 
 import '../utils/colors.dart';
@@ -48,10 +49,11 @@ class CinemasPage extends StatelessWidget {
               horizontal: kMarginMedium, vertical: kMarginMedium),
           itemBuilder: (context, index) {
             print("is building");
-            return const Padding(
+            return  Padding(
               padding: EdgeInsets.only(bottom: kMarginSmall),
               child: CinemasView(
                 isShow: false,
+                cinemaVO: CinemaVO(),
               ),
             );
           },

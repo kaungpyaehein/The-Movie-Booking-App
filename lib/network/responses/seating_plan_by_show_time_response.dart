@@ -13,7 +13,7 @@ class SeatingPlanByShowTimeResponse {
   String? message;
 
   @JsonKey(name: "data")
-  List<List<SeatVO>?> data;
+  List<SeatVO>? data;
 
   SeatingPlanByShowTimeResponse(this.code, this.message, this.data);
 

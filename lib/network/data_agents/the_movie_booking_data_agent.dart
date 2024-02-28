@@ -21,13 +21,24 @@ abstract class TheMovieBookingDataAgent {
 
   // new methods
   Future<OtpResponse> getOtp(String phone);
+
   Future<UserVO> signInWithPhone(String phone, String otp);
+
   Future<List<CityVO>> getCities();
-  Future<List<SnackVO>> getSnacksByCategoryId(String categoryId);
-  Future<List<SnackCategoryVO>> getSnackCategories();
-  Future<List<PaymentTypeVO>> getPaymentTypes();
-  Future<List<CinemaVO>> getCinemasAndShowTimeByDate(String date);
+
+  Future<List<SnackVO>> getSnacksByCategoryId
+      (String categoryId, String bearerToken);
+
+  Future<List<SnackCategoryVO>> getSnackCategories(String bearerToken);
+
+  Future<List<PaymentTypeVO>> getPaymentTypes(String bearerToken,
+     );
+
+  Future<List<CinemaVO>> getCinemasAndShowTimeByDate(
+      String date, String bearerToken);
+
   Future<List<SeatVO>> getSeatingPlanByShowTime(
-      String cinemaDayTimeslotId, String bookingDate);
-  Future<CheckoutVO> checkout(CheckoutRequest checkoutRequest);
+      String cinemaDayTimeslotId, String bookingDate, String bearerToken);
+
+  Future<CheckoutVO> checkout(String bearerToken, CheckoutRequest checkoutRequest);
 }
