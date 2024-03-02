@@ -20,7 +20,7 @@ class SeatVO {
   int? price;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool? isSelected;
+  bool isSelected;
 
   SeatVO(
       {this.id,

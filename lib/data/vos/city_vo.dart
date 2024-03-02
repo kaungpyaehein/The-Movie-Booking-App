@@ -4,6 +4,7 @@ import 'package:the_movie_booking_app/persistence/hive_constants.dart';
 
 part 'city_vo.g.dart';
 
+
 @JsonSerializable()
 @HiveType(typeId: kHiveTypeCityVO, adapterName: kAdapterNameCityVO)
 class CityVO {

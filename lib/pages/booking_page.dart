@@ -226,20 +226,6 @@ class DateCardView extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Container(
-            decoration: isSelected
-                ? BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: kPrimaryColor.withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurStyle: BlurStyle.outer,
-                        blurRadius: 5,
-                        offset: const Offset(5, 9),
-                        // changes position of shadow
-                      ),
-                    ],
-                  )
-                : null,
             child: Image.asset(
               fit: BoxFit.cover,
               isSelected ? kSelectedDateCard : kUnselectedDateCard,

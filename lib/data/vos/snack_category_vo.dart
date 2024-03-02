@@ -27,6 +27,8 @@ class SnackCategoryVO {
   String? deletedAt;
   // is selected needs
 
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  bool isSelected;
   SnackCategoryVO(
       {this.id,
       this.title,
@@ -34,7 +36,8 @@ class SnackCategoryVO {
       this.isActive,
       this.createdAt,
       this.updatedAt,
-      this.deletedAt});
+      this.deletedAt,
+      this.isSelected = false});
   //from json
   factory SnackCategoryVO.fromJson(Map<String, dynamic> json) =>
       _$SnackCategoryVOFromJson(json);

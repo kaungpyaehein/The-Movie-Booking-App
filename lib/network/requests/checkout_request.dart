@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../vos/snack_vo.dart';
+import '../../data/vos/snack_vo.dart';
 
 part 'checkout_request.g.dart';
 

@@ -30,11 +30,9 @@ class MovieDao {
     return getMovieBox().values.where((movie) => movie.type == type).toList();
   }
 
-
   MovieVO? getMovieById(int movieId) {
     return getMovieBox().get(movieId);
   }
-
 
   /// Get Movie Box from HIVE
   Box<MovieVO> getMovieBox() {

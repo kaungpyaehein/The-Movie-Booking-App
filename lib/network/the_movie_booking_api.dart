@@ -14,7 +14,6 @@ import 'package:the_movie_booking_app/network/responses/sign_in_with_phone_respo
 import 'package:the_movie_booking_app/network/responses/snack_category_response.dart';
 import 'package:the_movie_booking_app/network/responses/snack_response.dart';
 
-import '../data/requests/checkout_request.dart';
 import '../data/vos/movie_vo.dart';
 
 part 'the_movie_booking_api.g.dart';

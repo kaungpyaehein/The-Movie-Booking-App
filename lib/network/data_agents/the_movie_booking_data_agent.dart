@@ -1,4 +1,3 @@
-import 'package:the_movie_booking_app/data/requests/checkout_request.dart';
 import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
 import 'package:the_movie_booking_app/data/vos/city_vo.dart';
 import 'package:the_movie_booking_app/data/vos/credit_vo.dart';
@@ -12,6 +11,7 @@ import '../../data/vos/checkout_vo.dart';
 import '../../data/vos/movie_vo.dart';
 import '../../data/vos/seat_vo.dart';
 import '../../data/vos/user_vo.dart';
+import '../requests/checkout_request.dart';
 
 abstract class TheMovieBookingDataAgent {
   Future<List<MovieVO>> getNowPlayingMovies(String page);

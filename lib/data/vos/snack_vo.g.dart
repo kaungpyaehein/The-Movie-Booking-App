@@ -11,9 +11,9 @@ SnackVO _$SnackVOFromJson(Map<String, dynamic> json) => SnackVO(
       name: json['name'] as String?,
       description: json['description'] as String?,
       price: json['price'] as int?,
-      unitPrice: json['unit_price'] as int?,
       categoryId: json['category_id'] as int?,
       image: json['image'] as String?,
+      quantity: json['quantity'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$SnackVOToJson(SnackVO instance) => <String, dynamic>{
@@ -21,7 +21,7 @@ Map<String, dynamic> _$SnackVOToJson(SnackVO instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'price': instance.price,
-      'unit_price': instance.unitPrice,
       'category_id': instance.categoryId,
       'image': instance.image,
+      'quantity': instance.quantity,
     };

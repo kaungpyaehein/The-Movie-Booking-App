@@ -3,6 +3,7 @@ import 'package:the_movie_booking_app/data/sample_vos/payment_option_model.dart'
 import 'package:the_movie_booking_app/data/sample_vos/profile_item_model.dart';
 
 import 'package:the_movie_booking_app/data/sample_vos/snack_model.dart';
+import 'package:the_movie_booking_app/data/vos/snack_vo.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
@@ -17,13 +18,13 @@ List<String> kSnackTabBarTitleData = [
   "Beverage",
 ];
 
-List<SnackModel> kSnackData = [
-  SnackModel(name: "Potato Chips", price: 1000, photo: kPotatoImage),
-  SnackModel(name: "Burger Combo", price: 5000, photo: kBurgerComboImage),
-  SnackModel(name: "Coca Cola Large", price: 1000, photo: kCocaColaImage),
-  SnackModel(name: "Pepsi Large", price: 1100, photo: kPepsiImage),
-  SnackModel(name: "Burger Combo", price: 5000, photo: kBurgerComboImage),
-  SnackModel(name: "Coca Cola Large", price: 1000, photo: kCocaColaImage),
+List<SnackVO> kSnackData = [
+  SnackVO(name: "Potato Chips", price: 1000, image: kPotatoImage, id: 1),
+  SnackVO(name: "Burger Combo", price: 5000, image: kBurgerComboImage, id: 2),
+  SnackVO(name: "Coca Cola Large", price: 1000, image: kCocaColaImage, id: 3),
+  SnackVO(name: "Pepsi Large", price: 1100, image: kPepsiImage, id: 4),
+  SnackVO(name: "Burger Combo", price: 5000, image: kBurgerComboImage, id: 5),
+  SnackVO(name: "Coca Cola Large", price: 1000, image: kCocaColaImage, id: 6),
 ];
 
 List<PaymentOptionModel> paymentOptionModelList = [

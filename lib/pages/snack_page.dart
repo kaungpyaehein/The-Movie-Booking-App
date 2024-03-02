@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_booking_app/data/sample_vos/snack_model.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
+import 'package:the_movie_booking_app/data/vos/snack_category_vo.dart';
 import 'package:the_movie_booking_app/pages/checkout_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 
 import '../data/sample_vos/sample_data.dart';
+import '../data/vos/snack_vo.dart';
 import '../utils/strings.dart';
+import 'package:badges/badges.dart' as badges;
 
 class SnackPage extends StatefulWidget {
   const SnackPage({super.key});
@@ -16,11 +19,40 @@ class SnackPage extends StatefulWidget {
 }
 
 class _SnackPageState extends State<SnackPage> {
-  List<SnackModel> snackList = [];
+  List<SnackCategoryVO> snackCategories = [];
+  List<SnackVO> snackVos = [];
   bool isShowing = false;
   int index = 0;
+  final MovieBookingModel model = MovieBookingModel();
+
+  @override
+  void initState() {
+    snackCategories = [
+      SnackCategoryVO(
+        id: 1,
+        title: "Combo",
+      ),
+      SnackCategoryVO(
+        id: 2,
+        title: "Snack",
+      ),
+      SnackCategoryVO(
+        id: 3,
+        title: "Pop Corn",
+      ),
+      SnackCategoryVO(
+        id: 4,
+        title: "Beverage",
+      ),
+    ];
+    snackVos = kSnackData;
+    snackCategories.insert(0, SnackCategoryVO(title: "All", id: 0));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(snackVos[0].quantity);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -75,6 +107,12 @@ class _SnackPageState extends State<SnackPage> {
       body: SafeArea(
         child: Stack(
           children: [
+            // Container(
+            //     child: ListView.builder(
+            //       scrollDirection: Axis.horizontal,
+            //       itemCount: snackCategories.length,
+            //
+            //     )),
             DefaultTabController(
               length: kSnackTabBarTitleData.length,
               child: Column(
@@ -100,17 +138,55 @@ class _SnackPageState extends State<SnackPage> {
                         automaticIndicatorColorAdjustment: true,
                         isScrollable: true,
                         tabAlignment: TabAlignment.center,
-                        tabs: kSnackTabBarTitleData
-                            .map((title) => Tab(
-                                  text: title,
-                                ))
+                        // onTap: (value) {
+                        //   model
+                        //       .getSnacksByCategoryId(value.toString())
+                        //       .then((snacks) {
+                        //     snackVos = snacks;
+                        //   });
+                        // },
+                        tabs: snackCategories
+                            .map(
+                              (category) => Tab(
+                                text: category.title,
+                              ),
+                            )
                             .toList()),
                   ),
                   Expanded(
-                      child: TabBarView(
-                          children: kSnackTabBarTitleData
-                              .map((text) => const SnackItemsGridView())
-                              .toList()))
+                    child: TabBarView(
+                      children: snackCategories.map((category) {
+                        return SnackItemsGridView(
+                          addSnack: (snackVO) {
+                            setState(() {
+                              snackVos = snackVos.map((snack) {
+                                if (snack.id == snackVO.id) {
+                                  return snack.copyWith(
+                                      quantity: snack.quantity + 1);
+                                } else {
+                                  return snack;
+                                }
+                              }).toList();
+                            });
+                          },
+                          removeSnack: (snackVO) {
+                            setState(() {
+                              snackVos = snackVos.map((snack) {
+                                if (snack.id == snackVO.id &&
+                                    snack.quantity > 0) {
+                                  return snack.copyWith(
+                                      quantity: snack.quantity - 1);
+                                } else {
+                                  return snack;
+                                }
+                              }).toList();
+                            });
+                          },
+                          snackList: snackVos,
+                        );
+                      }).toList(),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -124,6 +200,7 @@ class _SnackPageState extends State<SnackPage> {
                   });
                 },
                 isShow: isShowing,
+                snackList: snackVos,
                 //remove item
               ),
             )
@@ -138,11 +215,13 @@ class _SnackPageState extends State<SnackPage> {
 class SnackBottomView extends StatefulWidget {
   final void Function() onTap;
   final bool isShow;
+  final List<SnackVO> snackList;
 
   const SnackBottomView({
     super.key,
     required this.onTap,
     required this.isShow,
+    required this.snackList,
   });
 
   @override
@@ -174,9 +253,9 @@ class _SnackBottomViewState extends State<SnackBottomView> {
             visible: widget.isShow,
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: kSnackData.length,
+              itemCount: widget.snackList.length,
               itemBuilder: (context, index) => AddRemoveView(
-                snackModel: kSnackData[index],
+                snackVO: widget.snackList[index],
               ),
             ),
           ),
@@ -221,44 +300,30 @@ class SnackBottomButtonView extends StatelessWidget {
             const SizedBox(
               width: kMarginMedium4,
             ),
-            Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                Image.asset(
-                  kSnackIcon,
-                  height: kMarginLarge,
-                  width: kMarginLarge,
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    height: kMarginMedium3,
-                    width: kMarginMedium3,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: kSnackItemCountColor,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "1",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: kMarginMedium,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ),
-                  ),
-                )
-              ],
+            badges.Badge(
+              position: badges.BadgePosition.topEnd(),
+              badgeContent: const Text(
+                "1",
+                style: TextStyle(color: Colors.white, fontSize: kTextSmall),
+              ),
+              badgeStyle: const badges.BadgeStyle(badgeColor: Colors.red),
+              child: Image.asset(
+                kSnackIcon,
+                height: kMarginLarge,
+                width: kMarginLarge,
+              ),
             ),
             const SizedBox(
-              width: kMarginMedium3,
+              width: kMarginSmall,
             ),
             IconButton(
                 onPressed: onTap,
                 icon: isShow
-                    ? const Icon(Icons.keyboard_arrow_up_outlined)
-                    : const Icon(Icons.keyboard_arrow_down_sharp)),
+                    ? const Icon(
+                        Icons.keyboard_arrow_up_outlined,
+                        size: 30,
+                      )
+                    : const Icon(Icons.keyboard_arrow_down_sharp, size: 30)),
             const Spacer(),
             const Text(
               "2000Ks",
@@ -283,8 +348,14 @@ class SnackBottomButtonView extends StatelessWidget {
 
 //SnackItemsGridView
 class SnackItemsGridView extends StatefulWidget {
+  final List<SnackVO> snackList;
+  final Function(SnackVO snackVO) addSnack;
+  final Function(SnackVO snackVO) removeSnack;
   const SnackItemsGridView({
     super.key,
+    required this.snackList,
+    required this.addSnack,
+    required this.removeSnack,
   });
 
   @override
@@ -294,6 +365,11 @@ class SnackItemsGridView extends StatefulWidget {
 class _SnackItemsGridViewState extends State<SnackItemsGridView> {
   int selectedIndex = 0;
   int itemCount = 0;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -307,31 +383,14 @@ class _SnackItemsGridViewState extends State<SnackItemsGridView> {
           crossAxisSpacing: kSnackPageGridViewSpacing,
           mainAxisSpacing: kSnackPageGridViewSpacing,
           mainAxisExtent: kSnackItemHeight),
-      itemCount: kSnackData.length,
+      itemCount: widget.snackList.length,
       itemBuilder: (context, index) {
+        SnackVO snack = widget.snackList[index];
         //grid view
         return SnackItemView(
-          isSelected: selectedIndex == index,
-          snackModel: kSnackData[index],
-          onTap: () {
-            setState(() {
-              selectedIndex = index;
-              itemCount = 1;
-            });
-          },
-          add: () {
-            setState(() {
-              itemCount += 1;
-            });
-          },
-          remove: () {
-            if (itemCount >= 0) {
-              setState(() {
-                itemCount -= 1;
-              });
-            }
-          },
-          itemCount: itemCount,
+          add: widget.addSnack,
+          remove: widget.removeSnack,
+          snackVO: snack,
         );
       },
     );
@@ -339,31 +398,21 @@ class _SnackItemsGridViewState extends State<SnackItemsGridView> {
 }
 
 //SnackItemView
-class SnackItemView extends StatefulWidget {
-  final SnackModel snackModel;
-  final void Function() onTap;
-  final void Function() add;
-  final void Function() remove;
-  final int itemCount;
-  final bool isSelected;
+class SnackItemView extends StatelessWidget {
+  final SnackVO snackVO;
+  final Function(SnackVO snackVO) remove;
+  final Function(SnackVO snackVO) add;
 
   const SnackItemView({
     super.key,
-    required this.snackModel,
-    required this.onTap,
-    required this.itemCount,
-    required this.add,
+    required this.snackVO,
     required this.remove,
-    required this.isSelected,
+    required this.add,
   });
 
   @override
-  State<SnackItemView> createState() => _SnackItemViewState();
-}
-
-class _SnackItemViewState extends State<SnackItemView> {
-  @override
   Widget build(BuildContext context) {
+    print(snackVO.quantity);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: kMarginMedium2),
       decoration: BoxDecoration(
@@ -384,7 +433,7 @@ class _SnackItemViewState extends State<SnackItemView> {
           //snack image
           Center(
             child: Image.asset(
-              widget.snackModel.photo,
+              snackVO.image ?? "",
               fit: BoxFit.cover,
               height: kSnackItemImageHeight,
               width: kSnackItemImageWidth,
@@ -395,7 +444,7 @@ class _SnackItemViewState extends State<SnackItemView> {
           ),
           //name
           Text(
-            widget.snackModel.name,
+            snackVO.name ?? "",
             style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -407,7 +456,7 @@ class _SnackItemViewState extends State<SnackItemView> {
 
           //price
           Text(
-            "${widget.snackModel.price}Ks",
+            "${snackVO.price}Ks",
             style: const TextStyle(
                 color: kPrimaryColor,
                 fontWeight: FontWeight.w600,
@@ -418,14 +467,20 @@ class _SnackItemViewState extends State<SnackItemView> {
           ),
 
           //add button
-          widget.itemCount == 0 || !widget.isSelected
+          snackVO.quantity == 0
               ? AddButton(
-                  onTap: widget.onTap,
+                  onTap: () {
+                    add(snackVO);
+                  },
                 )
               : AddOrRemoveButton(
-                  itemCount: widget.itemCount,
-                  add: widget.add,
-                  remove: widget.remove,
+                  itemCount: snackVO.quantity,
+                  add: () {
+                    add(snackVO);
+                  },
+                  remove: () {
+                    remove(snackVO);
+                  },
                 ),
         ],
       ),
@@ -459,7 +514,7 @@ class AddOrRemoveButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             //remove item
-            InkWell(
+            GestureDetector(
               onTap: remove,
               child: Container(
                 height: kMarginLarge,
@@ -491,7 +546,7 @@ class AddOrRemoveButton extends StatelessWidget {
             ),
 
             //add item
-            InkWell(
+            GestureDetector(
               onTap: add,
               child: Container(
                 height: kMarginLarge,
@@ -515,11 +570,11 @@ class AddOrRemoveButton extends StatelessWidget {
 
 //add remove view
 class AddRemoveView extends StatelessWidget {
-  final SnackModel snackModel;
+  final SnackVO snackVO;
 
   const AddRemoveView({
     super.key,
-    required this.snackModel,
+    required this.snackVO,
   });
 
   @override
@@ -538,7 +593,7 @@ class AddRemoveView extends StatelessWidget {
           children: [
             //item name
             Text(
-              snackModel.name,
+              snackVO.name ?? "",
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: kTextRegular,
@@ -584,7 +639,7 @@ class AddRemoveView extends StatelessWidget {
 
             //item price
             Text(
-              "${snackModel.price}Ks",
+              "${snackVO.price}Ks",
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: kTextRegular,
@@ -606,7 +661,7 @@ class AddButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
       child: Container(
         width: double.infinity,

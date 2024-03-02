@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:the_movie_booking_app/data/requests/checkout_request.dart';
 import 'package:the_movie_booking_app/data/vos/checkout_vo.dart';
 import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
 import 'package:the_movie_booking_app/data/vos/credit_vo.dart';
@@ -18,6 +17,7 @@ import 'package:the_movie_booking_app/persistence/cities_dao.dart';
 import 'package:the_movie_booking_app/persistence/movie_dao.dart';
 import 'package:the_movie_booking_app/persistence/user_dao.dart';
 
+import '../../network/requests/checkout_request.dart';
 import '../vos/choose_date_vo.dart';
 import '../vos/city_vo.dart';
 

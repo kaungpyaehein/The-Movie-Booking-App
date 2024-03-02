@@ -3,3 +3,6 @@
 - to implement data agent methods
 - to implement retrofit data agent
 - exclude data form json key
+ call city vo when screen start
+
+ create get subtotal function to get subtotal of snack vo

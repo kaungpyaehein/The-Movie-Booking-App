@@ -45,9 +45,8 @@ void main() async {
 
   /// Open Hive Box
   await Hive.openBox<MovieVO>(kBoxNameMovieVO);
-
-
-
+  await Hive.openBox<CityVO>(kBoxNameCityVO);
+  await Hive.openBox<UserVO>(kBoxNameUserVO);
 
   runApp(const MovieBookingApp());
 }

@@ -17,8 +17,8 @@ class SnackVO {
   @JsonKey(name: "price")
   int? price;
 
-  @JsonKey(name: "unit_price")
-  int? unitPrice;
+  // @JsonKey(name: "unit_price")
+  // int? unitPrice;
 
   @JsonKey(name: "category_id")
   int? categoryId;
@@ -26,22 +26,23 @@ class SnackVO {
   @JsonKey(name: "image")
   String? image;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  int? quantity;
+  @JsonKey(name: "quantity")
+  int quantity;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  int? totalPrice;
+  // @JsonKey(includeFromJson: false, includeToJson: false)
+  // int? totalPrice;
+
+  // create total price function
+  // subtotal = price * quantity
 
   SnackVO({
     this.id,
     this.name,
     this.description,
     this.price,
-    this.unitPrice,
     this.categoryId,
     this.image,
     this.quantity = 0,
-    this.totalPrice = 0,
   });
   //from json
   factory SnackVO.fromJson(Map<String, dynamic> json) =>
@@ -49,4 +50,32 @@ class SnackVO {
 
   //to json
   Map<String, dynamic> toJson() => _$SnackVOToJson(this);
+
+  /// GET Subtotal
+  int getSubtotal() {
+    if (price != null) {
+      return price! * quantity!;
+    } else {
+      return 0;
+    }
+  }
+  SnackVO copyWith({
+    int? id,
+    String? name,
+    String? description,
+    int? price,
+    int? categoryId,
+    String? image,
+    int? quantity,
+  }) {
+    return SnackVO(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      categoryId: categoryId ?? this.categoryId,
+      image: image ?? this.image,
+      quantity: quantity ?? this.quantity,
+    );
+  }
 }

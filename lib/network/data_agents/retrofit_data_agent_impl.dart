@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:the_movie_booking_app/data/requests/checkout_request.dart';
 import 'package:the_movie_booking_app/data/vos/checkout_vo.dart';
 import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
 import 'package:the_movie_booking_app/data/vos/city_vo.dart';
@@ -19,6 +18,8 @@ import 'package:the_movie_booking_app/network/data_agents/the_movie_booking_data
 import 'package:the_movie_booking_app/network/responses/otp_response.dart';
 import 'package:the_movie_booking_app/network/the_movie_booking_api.dart';
 import 'package:the_movie_booking_app/network/tmba_api.dart';
+
+import '../requests/checkout_request.dart';
 
 class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
   //moving booking api is an object dependency
