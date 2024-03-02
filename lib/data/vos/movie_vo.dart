@@ -122,6 +122,7 @@ class MovieVO {
 
   // ONLY for persistence layer
   // to hide from network call json parse
+  // is selected
   @JsonKey(includeFromJson: false, includeToJson: false)
   @HiveField(26)
   String type;

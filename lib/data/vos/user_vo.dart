@@ -31,7 +31,7 @@ class UserVO {
   @HiveField(5)
   String? profileImage;
 
-  @JsonKey(name: "token")
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @HiveField(6)
   String? token;
 
@@ -42,7 +42,7 @@ class UserVO {
     this.phone,
     this.totalExpense,
     this.profileImage,
-    this.token,
+    this.token = "",
   });
 
   //from json

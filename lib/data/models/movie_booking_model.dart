@@ -133,6 +133,7 @@ class MovieBookingModel {
   /// Get OTP from network
   Future<UserVO> signInWithPhone(String phone, String otp) {
     return mDataAgent.signInWithPhone(phone, otp).then((userData) async {
+      // save the user data
       _userDao.saveUserData(userData);
       return userData;
     });

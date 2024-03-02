@@ -25,6 +25,7 @@ class SnackCategoryVO {
 
   @JsonKey(name: "deleted_at")
   String? deletedAt;
+  // is selected needs
 
   SnackCategoryVO(
       {this.id,

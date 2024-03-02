@@ -69,7 +69,6 @@ UserVO _$UserVOFromJson(Map<String, dynamic> json) => UserVO(
       phone: json['phone'] as String?,
       totalExpense: json['total_expense'] as int?,
       profileImage: json['profile_image'] as String?,
-      token: json['token'] as String?,
     );
 
 Map<String, dynamic> _$UserVOToJson(UserVO instance) => <String, dynamic>{
@@ -79,5 +78,4 @@ Map<String, dynamic> _$UserVOToJson(UserVO instance) => <String, dynamic>{
       'phone': instance.phone,
       'total_expense': instance.totalExpense,
       'profile_image': instance.profileImage,
-      'token': instance.token,
     };

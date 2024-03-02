@@ -15,7 +15,8 @@ import '../utils/images.dart';
 class CinemasView extends StatefulWidget {
   final bool isShow;
   final CinemaVO cinemaVO;
-  const CinemasView({super.key, required this.isShow, required this.cinemaVO});
+  final void Function() onTapTimeslot;
+  const CinemasView({super.key, required this.isShow, required this.cinemaVO, required this.onTapTimeslot});
 
   @override
   State<CinemasView> createState() => _CinemasViewState();
@@ -86,6 +87,7 @@ class _CinemasViewState extends State<CinemasView> {
               //time slot view
               child:  TimeSlotsView(
                 timeslots: widget.cinemaVO.timeslots ?? [] ,
+                onTapTimeslot: widget.onTapTimeslot,
               )),
           const Divider()
         ],
@@ -96,8 +98,9 @@ class _CinemasViewState extends State<CinemasView> {
 
 class TimeSlotsView extends StatelessWidget {
   final List<TimeslotVO> timeslots;
+  final void Function() onTapTimeslot;
   const TimeSlotsView({
-    super.key, required this.timeslots,
+    super.key, required this.timeslots, required this.onTapTimeslot,
   });
 
   @override
@@ -123,6 +126,7 @@ class TimeSlotsView extends StatelessWidget {
                 final data = timeslots[index];
                 return TimeSlotItem(
                   timeslotVO: data,
+                  onTapTimeSlot: onTapTimeslot ,
                 );
               }),
           // Wrap(
@@ -167,8 +171,9 @@ class TimeSlotsView extends StatelessWidget {
 //time slot item view
 class TimeSlotItem extends StatelessWidget {
   final TimeslotVO timeslotVO;
+  final void Function() onTapTimeSlot;
 
-  const TimeSlotItem({super.key, required this.timeslotVO});
+  const TimeSlotItem({super.key, required this.timeslotVO, required this.onTapTimeSlot});
   @override
   Widget build(BuildContext context) {
     Color textColor = Colors.white;
@@ -200,13 +205,7 @@ class TimeSlotItem extends StatelessWidget {
         break;
     }
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const SeatingPlanPage(),
-            ));
-      },
+      onTap: onTapTimeSlot,
       child: Container(
         width: kTimeSlotCardWidth + 10,
         height: kTimeSlotCardHeight,

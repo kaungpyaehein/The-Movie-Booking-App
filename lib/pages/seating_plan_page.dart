@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_booking_app/data/vos/seat_vos.dart';
+import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
 import 'package:the_movie_booking_app/pages/movie_details_page.dart';
 import 'package:the_movie_booking_app/pages/snack_page.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
@@ -11,7 +12,10 @@ import '../utils/dimensions.dart';
 import '../utils/images.dart';
 
 class SeatingPlanPage extends StatefulWidget {
-  const SeatingPlanPage({super.key});
+  final String date;
+  final TimeslotVO timeslotVO;
+  const SeatingPlanPage(
+      {super.key, required this.date, required this.timeslotVO});
 
   @override
   State<SeatingPlanPage> createState() => _SeatingPlanPageState();

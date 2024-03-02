@@ -6,7 +6,8 @@ import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 
 class CinemasPage extends StatelessWidget {
-  const CinemasPage({super.key});
+  final void Function() onTapTimeSlot;
+  const CinemasPage({super.key, required this.onTapTimeSlot});
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +55,7 @@ class CinemasPage extends StatelessWidget {
               child: CinemasView(
                 isShow: false,
                 cinemaVO: CinemaVO(),
+                onTapTimeslot: onTapTimeSlot,
               ),
             );
           },

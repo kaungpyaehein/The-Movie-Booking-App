@@ -7,6 +7,7 @@ import 'package:the_movie_booking_app/data/sample_vos/film_type_list.dart';
 import 'package:the_movie_booking_app/data/vos/choose_date_vo.dart';
 import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
 import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
+import 'package:the_movie_booking_app/pages/seating_plan_page.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 
@@ -183,6 +184,16 @@ class _BookingPageState extends State<BookingPage> {
               child: CinemasView(
                 isShow: true,
                 cinemaVO: cinemaVO,
+                onTapTimeslot: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SeatingPlanPage(
+                          timeslotVO: TimeslotVO(),
+                          date: "12-2-2024",
+                        ),
+                      ));
+                },
               ),
             );
           }))

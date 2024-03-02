@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
   List<Widget> screenWidgets = [
     const HomePage(),
-    const CinemasPage(),
+     CinemasPage(onTapTimeSlot: (){}),
     const TicketsPage(),
     const ProfilePage(),
   ];
