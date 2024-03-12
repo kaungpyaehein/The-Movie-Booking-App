@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_booking_app/data/vos/checkout_vo.dart';
 import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
 import 'package:the_movie_booking_app/data/vos/credit_vo.dart';
-import 'package:the_movie_booking_app/data/vos/date_vo.dart';
 import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
 import 'package:the_movie_booking_app/data/vos/payment_type_vo.dart';
 import 'package:the_movie_booking_app/data/vos/seat_vo.dart';
@@ -16,7 +14,6 @@ import 'package:the_movie_booking_app/network/responses/otp_response.dart';
 import 'package:the_movie_booking_app/persistence/cities_dao.dart';
 import 'package:the_movie_booking_app/persistence/movie_dao.dart';
 import 'package:the_movie_booking_app/persistence/user_dao.dart';
-
 import '../../network/requests/checkout_request.dart';
 import '../vos/choose_date_vo.dart';
 import '../vos/city_vo.dart';
@@ -104,13 +101,13 @@ class MovieBookingModel {
   }
 
   // Get snack by category id
-  Future<List<SnackVO>> getSnacksByCategoryId(String categoryId) {
+  Future<List<SnackVO>> getSnacksByCategoryId(int categoryId) {
     return mDataAgent.getSnacksByCategoryId(categoryId, getBearerToken());
   }
 
   /// Get seating plan by showtime
   Future<List<SeatVO>> getSeatingPlanByShowTime(
-    String cinemaDayTimeslotId,
+    int cinemaDayTimeslotId,
     String bookingDate,
   ) {
     return mDataAgent.getSeatingPlanByShowTime(
@@ -178,7 +175,12 @@ class MovieBookingModel {
   }
 
   String getBearerToken() {
-    return "Bearer ${_userDao.getToken() ?? ""}";
+    final String token = _userDao.getToken();
+    if (token.isNotEmpty) {
+      return "Bearer $token";
+    } else {
+      return "";
+    }
   }
 
   /// Get 2 weeks of dates

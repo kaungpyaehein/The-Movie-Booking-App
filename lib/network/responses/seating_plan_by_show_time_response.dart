@@ -13,7 +13,7 @@ class SeatingPlanByShowTimeResponse {
   String? message;
 
   @JsonKey(name: "data")
-  List<SeatVO>? data;
+  List<List<SeatVO>> data;
 
   SeatingPlanByShowTimeResponse(this.code, this.message, this.data);
 
@@ -24,3 +24,13 @@ class SeatingPlanByShowTimeResponse {
   //to json
   Map<String, dynamic> toJson() => _$SeatingPlanByShowTimeResponseToJson(this);
 }
+// List<SeatVO> getFlattenList(SeatingPlanByShowTimeResponse response) {
+//   if (response.data != null) {
+//     return response.data.reduce([], (p, e) {
+//       p.addAll(e);
+//       return p;
+//     });
+//   } else {
+//     return [];
+//   }
+// }

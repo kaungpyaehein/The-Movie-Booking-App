@@ -51,11 +51,13 @@ class CinemasPage extends StatelessWidget {
           itemBuilder: (context, index) {
             print("is building");
             return  Padding(
-              padding: EdgeInsets.only(bottom: kMarginSmall),
+              padding: const EdgeInsets.only(bottom: kMarginSmall),
               child: CinemasView(
                 isShow: false,
                 cinemaVO: CinemaVO(),
-                onTapTimeslot: onTapTimeSlot,
+                onTapTimeslot: (timeslotVO) {
+
+                },
               ),
             );
           },

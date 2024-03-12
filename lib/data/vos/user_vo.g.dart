@@ -23,7 +23,7 @@ class UserVOAdapter extends TypeAdapter<UserVO> {
       phone: fields[3] as String?,
       totalExpense: fields[4] as int?,
       profileImage: fields[5] as String?,
-      token: fields[6] as String?,
+      token: fields[6] as String,
     );
   }
 

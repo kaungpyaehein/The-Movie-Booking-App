@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 
 import 'package:the_movie_booking_app/pages/login_page.dart';
@@ -7,12 +8,20 @@ import 'package:the_movie_booking_app/utils/strings.dart';
 import 'package:the_movie_booking_app/widgets/logo_and_title_view.dart';
 import 'package:the_movie_booking_app/widgets/terms_and_condition_view.dart';
 
+import '../data/models/movie_booking_model.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 
-class OTPPage extends StatelessWidget {
-  const OTPPage({super.key});
+class OTPPage extends StatefulWidget {
+  final String phoneNumber;
+  const OTPPage({super.key, required this.phoneNumber});
 
+  @override
+  State<OTPPage> createState() => _OTPPageState();
+}
+
+class _OTPPageState extends State<OTPPage> {
+  TextEditingController pinController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +46,9 @@ class OTPPage extends StatelessWidget {
                   height: kMargin60,
                 ),
                 //OTP input view
-                const OTPInputView(),
+                OTPInputView(
+                  pinController: pinController,
+                ),
 
                 //Spacer
                 const SizedBox(
@@ -55,11 +66,7 @@ class OTPPage extends StatelessWidget {
                 PrimaryButtonView(
                   title: kConfirmOTPLabel,
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PickRegionPage(),
-                        ));
+                    loginWithPhone(context);
                   },
                 ),
 
@@ -97,6 +104,51 @@ class OTPPage extends StatelessWidget {
       ))),
     );
   }
+
+  void loginWithPhone(BuildContext context) {
+    debugPrint(pinController.text.toString());
+    MovieBookingModel model = MovieBookingModel();
+
+    /// Call Get OTP
+    model
+        .signInWithPhone(
+            widget.phoneNumber, pinController.text.trim().toString())
+        .then((response) {
+      if (response.token.isNotEmpty) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PickRegionPage(),
+            ));
+        Fluttertoast.showToast(
+            msg: "Login Success",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 1,
+            backgroundColor: kPrimaryColor,
+            textColor: Colors.black,
+            fontSize: 16.0);
+      } else {
+        Fluttertoast.showToast(
+            msg: "Failed to login, please try again!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    }).catchError((error) {
+      Fluttertoast.showToast(
+          msg: "Failed to login, please try again!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    });
+  }
 }
 
 class ResendCodeView extends StatelessWidget {
@@ -119,7 +171,8 @@ class ResendCodeView extends StatelessWidget {
 }
 
 class OTPInputView extends StatelessWidget {
-  const OTPInputView({super.key});
+  final TextEditingController pinController;
+  const OTPInputView({super.key, required this.pinController});
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +189,7 @@ class OTPInputView extends StatelessWidget {
             height: kMarginMedium,
           ),
           Pinput(
+            controller: pinController,
             defaultPinTheme: pinTheme,
             focusedPinTheme: pinTheme,
             submittedPinTheme: pinTheme,

@@ -33,7 +33,7 @@ class UserVO {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @HiveField(6)
-  String? token;
+  String token;
 
   UserVO({
     this.id,
@@ -50,4 +50,8 @@ class UserVO {
 
   //to json
   Map<String, dynamic> toJson() => _$UserVOToJson(this);
+
+  String getToken() {
+    return token;
+  }
 }

@@ -1,5 +1,6 @@
 //ticket view
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
 import 'package:the_movie_booking_app/widgets/ticket_details_view.dart';
 
 import '../pages/checkout_page.dart';
@@ -27,7 +28,7 @@ class TicketView extends StatelessWidget {
                 kTicketSmallGradientStartColor3,
                 kTicketSmallGradientStartColor4,
               ])),
-      child: const Column(
+      child:  Column(
         children: [
           //ticket top view
           Padding(
@@ -52,7 +53,10 @@ class TicketView extends StatelessWidget {
           TicketSmallDivider(),
 
           //ticket bottom view
-          DateTimeLocationView(),
+          DateTimeLocationView(
+            timeslotVO: TimeslotVO(),
+            date: "",
+          ),
         ],
       ),
     );

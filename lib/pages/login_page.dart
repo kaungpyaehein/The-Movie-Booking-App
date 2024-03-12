@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
 import 'package:the_movie_booking_app/data/sample_vos/country_code_list.dart';
 import 'package:the_movie_booking_app/pages/otp_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
@@ -9,8 +11,21 @@ import 'package:the_movie_booking_app/utils/strings.dart';
 import '../widgets/logo_and_title_view.dart';
 import '../widgets/terms_and_condition_view.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController phoneNumberController = TextEditingController();
+
+  @override
+  void dispose() {
+    phoneNumberController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +52,9 @@ class LoginPage extends StatelessWidget {
                 ),
 
                 //country code and mobile input field
-                const CountryCodeAndPhoneNumberInputView(),
+                CountryCodeAndPhoneNumberInputView(
+                  phoneNumberController: phoneNumberController,
+                ),
 
                 //spacer
                 const SizedBox(
@@ -48,11 +65,7 @@ class LoginPage extends StatelessWidget {
                 PrimaryButtonView(
                   title: kVerifyPhoneNumberLabel,
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const OTPPage(),
-                        ));
+                    getOTP(context);
                   },
                 ),
                 const SizedBox(
@@ -65,7 +78,9 @@ class LoginPage extends StatelessWidget {
                 ),
                 //google sign in button
                 const GoogleSignInButton(),
-                const SizedBox(height: kMarginXXLarge2,),
+                const SizedBox(
+                  height: kMarginXXLarge2,
+                ),
                 //Terms and conditions text view
                 const Padding(
                   padding: EdgeInsets.only(bottom: kMargin30),
@@ -79,6 +94,53 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
+
+  void getOTP(BuildContext context) {
+    debugPrint(phoneNumberController.text.toString());
+    MovieBookingModel model = MovieBookingModel();
+    if (phoneNumberController.text.trim().isEmpty) {
+      Fluttertoast.showToast(
+          msg: "Phone number is empty",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      /// Call Get OTP
+      model
+          .getOtpResponse(phoneNumberController.text.trim().toString())
+          .then((response) {
+        if (response.code == 200) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OTPPage(
+                  phoneNumber: phoneNumberController.text.trim().toString(),
+                ),
+              ));
+          Fluttertoast.showToast(
+              msg: "OTP has been sent successfully.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 1,
+              backgroundColor: kPrimaryColor,
+              textColor: Colors.black,
+              fontSize: 16.0);
+        }
+      }).catchError((error) {
+        Fluttertoast.showToast(
+            msg: "Failed to request OTP, please try again!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      });
+    }
+  }
 }
 
 class GoogleSignInButton extends StatelessWidget {
@@ -90,8 +152,7 @@ class GoogleSignInButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kMarginXLarge),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-            minimumSize:
-                const Size(double.infinity, kMargin50),
+            minimumSize: const Size(double.infinity, kMargin50),
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(kMarginMedium))),
@@ -176,12 +237,10 @@ class PrimaryButtonView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kMarginXLarge),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-            minimumSize:
-                const Size(double.infinity, kMargin50),
+            minimumSize: const Size(double.infinity, kMargin50),
             backgroundColor: kPrimaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(kMarginMedium))),
-        
         onPressed: onTap,
         child: Text(
           title,
@@ -197,8 +256,10 @@ class PrimaryButtonView extends StatelessWidget {
 
 //country code and number input
 class CountryCodeAndPhoneNumberInputView extends StatefulWidget {
+  final TextEditingController phoneNumberController;
   const CountryCodeAndPhoneNumberInputView({
     super.key,
+    required this.phoneNumberController,
   });
 
   @override
@@ -273,13 +334,14 @@ class _CountryCodeAndPhoneNumberInputViewState
             width: kMarginMedium4,
           ),
           //phone number field
-          const Expanded(
+          Expanded(
             child: TextField(
+              controller: widget.phoneNumberController,
               keyboardType: TextInputType.phone,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
               ),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(0, 14, 0, 13),
                   hintText: kMobileNumberHintText,
                   hintStyle: TextStyle(

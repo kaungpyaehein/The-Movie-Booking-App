@@ -18,7 +18,7 @@ class ErrorVO {
       required this.statusMessage,
       required this.success});
 
-  factory ErrorVO.fromJson(Map<String,dynamic> json
-      ) => _$ErrorVOFromJson(json);
-  Map<String, dynamic > toJson() => _$ErrorVOToJson(this);
+  factory ErrorVO.fromJson(Map<String, dynamic> json) =>
+      _$ErrorVOFromJson(json);
+  Map<String, dynamic> toJson() => _$ErrorVOToJson(this);
 }

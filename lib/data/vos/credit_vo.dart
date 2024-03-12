@@ -61,6 +61,6 @@ class CreditVO {
   Map<String, dynamic> toJson() => _$CreditVOToJson(this);
 
   String getProfileWithUrl() {
-    return kImageBaseUrl + (profilePath ?? "");
+    return "$kCreditImageBaseUrl${profilePath ?? ""}";
   }
 }

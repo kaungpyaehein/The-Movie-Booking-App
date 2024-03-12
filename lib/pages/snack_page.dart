@@ -6,13 +6,26 @@ import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 
-import '../data/sample_vos/sample_data.dart';
+import '../data/vos/seat_vo.dart';
 import '../data/vos/snack_vo.dart';
+import '../data/vos/timeslot_vo.dart';
 import '../utils/strings.dart';
 import 'package:badges/badges.dart' as badges;
 
 class SnackPage extends StatefulWidget {
-  const SnackPage({super.key});
+  final List<SeatVO> selectedSeatList;
+  final String totalSeatPrice;
+  final String date;
+  final TimeslotVO timeslotVO;
+  final String cinemaName;
+
+  const SnackPage(
+      {super.key,
+      required this.selectedSeatList,
+      required this.totalSeatPrice,
+      required this.date,
+      required this.timeslotVO,
+      required this.cinemaName});
 
   @override
   State<SnackPage> createState() => _SnackPageState();
@@ -27,32 +40,27 @@ class _SnackPageState extends State<SnackPage> {
 
   @override
   void initState() {
-    snackCategories = [
-      SnackCategoryVO(
-        id: 1,
-        title: "Combo",
-      ),
-      SnackCategoryVO(
-        id: 2,
-        title: "Snack",
-      ),
-      SnackCategoryVO(
-        id: 3,
-        title: "Pop Corn",
-      ),
-      SnackCategoryVO(
-        id: 4,
-        title: "Beverage",
-      ),
-    ];
-    snackVos = kSnackData;
-    snackCategories.insert(0, SnackCategoryVO(title: "All", id: 0));
+    model.getSnacksByCategoryId(0).then((snacks) {
+      setState(() {
+        snackVos = snacks;
+        snackCategories.add(SnackCategoryVO(
+          title: "All",
+          id: 0,
+          isSelected: false,
+          createdAt: "",
+          deletedAt: "",
+          isActive: 1,
+          titleMm: "All",
+          updatedAt: "",
+        ));
+      });
+    });
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(snackVos[0].quantity);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -88,7 +96,14 @@ class _SnackPageState extends State<SnackPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CheckoutPage(),
+                    builder: (context) => CheckoutPage(
+                      selectedSeatList: widget.selectedSeatList,
+                      totalSeatPrice: widget.totalSeatPrice,
+                      date: widget.date,
+                      timeslotVO: widget.timeslotVO,
+                      snackList: const [],
+                      cinemaName: widget.cinemaName,
+                    ),
                   ));
             },
             child: const Text(kSkipLabel,
@@ -105,107 +120,136 @@ class _SnackPageState extends State<SnackPage> {
       ),
       backgroundColor: kBackgroundColor,
       body: SafeArea(
-        child: Stack(
-          children: [
-            // Container(
-            //     child: ListView.builder(
-            //       scrollDirection: Axis.horizontal,
-            //       itemCount: snackCategories.length,
-            //
-            //     )),
-            DefaultTabController(
-              length: kSnackTabBarTitleData.length,
-              child: Column(
+        child: snackVos.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Stack(
                 children: [
-                  Container(
-                    height: kMargin60,
-                    margin: const EdgeInsets.only(left: kMarginMedium2),
-                    child: TabBar(
-                        labelStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: kTextRegular2X,
-                            fontWeight: FontWeight.w600),
-                        unselectedLabelStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: kTextRegular2X,
-                            fontWeight: FontWeight.w600),
-                        labelPadding: const EdgeInsets.symmetric(
-                            horizontal: kMarginCardMedium2),
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        indicatorColor: kPrimaryColor,
-                        indicatorWeight: kMarginSmall,
-                        dividerColor: Colors.transparent,
-                        automaticIndicatorColorAdjustment: true,
-                        isScrollable: true,
-                        tabAlignment: TabAlignment.center,
-                        // onTap: (value) {
-                        //   model
-                        //       .getSnacksByCategoryId(value.toString())
-                        //       .then((snacks) {
-                        //     snackVos = snacks;
-                        //   });
-                        // },
-                        tabs: snackCategories
-                            .map(
-                              (category) => Tab(
-                                text: category.title,
-                              ),
-                            )
-                            .toList()),
+                  DefaultTabController(
+                    length: snackCategories.length,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: kMargin60,
+                          margin: const EdgeInsets.only(left: kMarginMedium2),
+                          child: TabBar(
+                              labelStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: kTextRegular2X,
+                                  fontWeight: FontWeight.w600),
+                              unselectedLabelStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: kTextRegular2X,
+                                  fontWeight: FontWeight.w600),
+                              labelPadding: const EdgeInsets.symmetric(
+                                  horizontal: kMarginCardMedium2),
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              indicatorColor: kPrimaryColor,
+                              indicatorWeight: kMarginSmall,
+                              dividerColor: Colors.transparent,
+                              automaticIndicatorColorAdjustment: true,
+                              isScrollable: true,
+                              tabAlignment: TabAlignment.center,
+                              tabs: snackCategories
+                                  .map(
+                                    (category) => Tab(
+                                      text: category.title,
+                                    ),
+                                  )
+                                  .toList()),
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            children: snackCategories.map((category) {
+                              return SnackItemsGridView(
+                                addSnack: (snackVO) {
+                                  setState(() {
+                                    snackVos = snackVos.map((snack) {
+                                      if (snack.id == snackVO.id) {
+                                        return snack.copyWith(
+                                            quantity: snack.quantity + 1);
+                                      } else {
+                                        return snack;
+                                      }
+                                    }).toList();
+                                  });
+                                },
+                                removeSnack: (snackVO) {
+                                  setState(() {
+                                    snackVos = snackVos.map((snack) {
+                                      if (snack.id == snackVO.id &&
+                                          snack.quantity > 0) {
+                                        return snack.copyWith(
+                                            quantity: snack.quantity - 1);
+                                      } else {
+                                        return snack;
+                                      }
+                                    }).toList();
+                                  });
+                                },
+                                snackList: snackVos,
+                              );
+                            }).toList(),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                  Expanded(
-                    child: TabBarView(
-                      children: snackCategories.map((category) {
-                        return SnackItemsGridView(
-                          addSnack: (snackVO) {
-                            setState(() {
-                              snackVos = snackVos.map((snack) {
-                                if (snack.id == snackVO.id) {
-                                  return snack.copyWith(
-                                      quantity: snack.quantity + 1);
-                                } else {
-                                  return snack;
-                                }
-                              }).toList();
-                            });
-                          },
-                          removeSnack: (snackVO) {
-                            setState(() {
-                              snackVos = snackVos.map((snack) {
-                                if (snack.id == snackVO.id &&
-                                    snack.quantity > 0) {
-                                  return snack.copyWith(
-                                      quantity: snack.quantity - 1);
-                                } else {
-                                  return snack;
-                                }
-                              }).toList();
-                            });
-                          },
-                          snackList: snackVos,
-                        );
-                      }).toList(),
+                  //snack bottom button view
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SnackBottomView(
+                      onTapExpand: () {
+                        setState(() {
+                          isShowing = !isShowing;
+                        });
+                      },
+                      onTapBottomView: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CheckoutPage(
+                                selectedSeatList: widget.selectedSeatList,
+                                totalSeatPrice: widget.totalSeatPrice,
+                                date: widget.date,
+                                timeslotVO: widget.timeslotVO,
+                                snackList: snackVos,
+                                cinemaName: widget.cinemaName,
+                              ),
+                            ));
+                      },
+                      isShow: isShowing,
+                      snackList: snackVos,
+                      add: (snackVO) {
+                        setState(() {
+                          snackVos = snackVos.map((snack) {
+                            if (snack.id == snackVO.id) {
+                              return snack.copyWith(
+                                  quantity: snack.quantity + 1);
+                            } else {
+                              return snack;
+                            }
+                          }).toList();
+                        });
+                      },
+                      remove: (snackVO) {
+                        setState(() {
+                          snackVos = snackVos.map((snack) {
+                            if (snack.id == snackVO.id && snack.quantity > 0) {
+                              return snack.copyWith(
+                                  quantity: snack.quantity - 1);
+                            } else {
+                              return snack;
+                            }
+                          }).toList();
+                        });
+                      },
+                      //remove item
                     ),
                   )
                 ],
               ),
-            ),
-            //snack bottom button view
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SnackBottomView(
-                onTap: () {
-                  setState(() {
-                    isShowing = !isShowing;
-                  });
-                },
-                isShow: isShowing,
-                snackList: snackVos,
-                //remove item
-              ),
-            )
-          ],
-        ),
       ),
     );
   }
@@ -213,15 +257,21 @@ class _SnackPageState extends State<SnackPage> {
 
 //snack bottom view
 class SnackBottomView extends StatefulWidget {
-  final void Function() onTap;
+  final void Function() onTapExpand;
+  final void Function() onTapBottomView;
   final bool isShow;
   final List<SnackVO> snackList;
+  final Function(SnackVO snackVO) add;
+  final Function(SnackVO snackVO) remove;
 
   const SnackBottomView({
     super.key,
-    required this.onTap,
+    required this.onTapExpand,
     required this.isShow,
     required this.snackList,
+    required this.add,
+    required this.remove,
+    required this.onTapBottomView,
   });
 
   @override
@@ -250,18 +300,23 @@ class _SnackBottomViewState extends State<SnackBottomView> {
             ),
           ),
           Visibility(
-            visible: widget.isShow,
+            visible: widget.isShow && widget.snackList.isNotEmpty,
             child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.snackList.length,
-              itemBuilder: (context, index) => AddRemoveView(
-                snackVO: widget.snackList[index],
-              ),
-            ),
+                shrinkWrap: true,
+                itemCount: widget.snackList.length,
+                itemBuilder: (context, index) {
+                  return AddRemoveView(
+                    snackVO: widget.snackList[index],
+                    add: widget.add,
+                    remove: widget.remove,
+                  );
+                }),
           ),
           SnackBottomButtonView(
-            onTap: widget.onTap,
+            onTapExpand: widget.onTapExpand,
             isShow: widget.isShow,
+            snackList: widget.snackList,
+            onTap: widget.onTapBottomView,
           ),
           const SizedBox(
             height: kMargin30,
@@ -274,21 +329,21 @@ class _SnackBottomViewState extends State<SnackBottomView> {
 
 // snack bottom button
 class SnackBottomButtonView extends StatelessWidget {
+  final void Function() onTapExpand;
   final void Function() onTap;
   final bool isShow;
+  final List<SnackVO> snackList;
   const SnackBottomButtonView(
-      {super.key, required this.onTap, required this.isShow});
+      {super.key,
+      required this.onTapExpand,
+      required this.isShow,
+      required this.snackList,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CheckoutPage(),
-            ));
-      },
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: kMarginLarge),
         decoration: BoxDecoration(
@@ -302,9 +357,13 @@ class SnackBottomButtonView extends StatelessWidget {
             ),
             badges.Badge(
               position: badges.BadgePosition.topEnd(),
-              badgeContent: const Text(
-                "1",
-                style: TextStyle(color: Colors.white, fontSize: kTextSmall),
+              badgeContent: Text(
+                snackList
+                    .where((snack) => snack.quantity != 0)
+                    .length
+                    .toString(),
+                style:
+                    const TextStyle(color: Colors.white, fontSize: kTextSmall),
               ),
               badgeStyle: const badges.BadgeStyle(badgeColor: Colors.red),
               child: Image.asset(
@@ -317,7 +376,7 @@ class SnackBottomButtonView extends StatelessWidget {
               width: kMarginSmall,
             ),
             IconButton(
-                onPressed: onTap,
+                onPressed: onTapExpand,
                 icon: isShow
                     ? const Icon(
                         Icons.keyboard_arrow_up_outlined,
@@ -325,9 +384,9 @@ class SnackBottomButtonView extends StatelessWidget {
                       )
                     : const Icon(Icons.keyboard_arrow_down_sharp, size: 30)),
             const Spacer(),
-            const Text(
-              "2000Ks",
-              style: TextStyle(
+            Text(
+              "${getTotalSnackAmount(snackList)}Ks",
+              style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w700,
                   fontSize: kTextRegular2X),
@@ -412,7 +471,7 @@ class SnackItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(snackVO.quantity);
+    debugPrint(snackVO.quantity.toString());
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: kMarginMedium2),
       decoration: BoxDecoration(
@@ -432,7 +491,7 @@ class SnackItemView extends StatelessWidget {
           ),
           //snack image
           Center(
-            child: Image.asset(
+            child: Image.network(
               snackVO.image ?? "",
               fit: BoxFit.cover,
               height: kSnackItemImageHeight,
@@ -503,7 +562,6 @@ class AddOrRemoveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       height: kMargin30,
       decoration: BoxDecoration(
         color: Colors.transparent,
@@ -571,75 +629,92 @@ class AddOrRemoveButton extends StatelessWidget {
 //add remove view
 class AddRemoveView extends StatelessWidget {
   final SnackVO snackVO;
-
+  final Function(SnackVO snackVO) add;
+  final Function(SnackVO snackVO) remove;
   const AddRemoveView({
     super.key,
     required this.snackVO,
+    required this.add,
+    required this.remove,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: kMargin30,
-      margin: const EdgeInsets.symmetric(
-          horizontal: kMarginLarge, vertical: kMarginMedium4),
-      decoration: BoxDecoration(
-        color: kBackgroundColor,
-        borderRadius: BorderRadius.circular(kMarginSmall),
-      ),
-      child: Center(
+    return Visibility(
+      visible: snackVO.quantity > 0,
+      child: Container(
+        width: double.infinity,
+        height: kMargin30,
+        margin: const EdgeInsets.symmetric(
+            horizontal: kMarginLarge, vertical: kMarginMedium4),
+        decoration: BoxDecoration(
+          color: kBackgroundColor,
+          borderRadius: BorderRadius.circular(kMarginSmall),
+        ),
         child: Row(
           children: [
             //item name
-            Text(
-              snackVO.name ?? "",
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: kTextRegular,
-                  fontWeight: FontWeight.w600),
+            Expanded(
+              child: Text(
+                snackVO.name ?? "",
+                overflow: TextOverflow.visible,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: kTextRegular,
+                    fontWeight: FontWeight.w600),
+              ),
             ),
             const Spacer(),
+            AddOrRemoveButton(
+              itemCount: snackVO.quantity,
+              add: () {
+                add(snackVO);
+              },
+              remove: () {
+                remove(snackVO);
+              },
+            ),
 
-            //add remove
-            Container(
-              decoration: const BoxDecoration(
-                  color: kPrimaryColor, shape: BoxShape.circle),
-              child: const Icon(
-                Icons.remove,
-                color: kSnackItemAddRemoveButtonColor,
-                size: kMarginLarge,
-              ),
-            ),
-            const SizedBox(
-              width: kMarginCardMedium2,
-            ),
-            const Text(
-              "1",
-              style: TextStyle(
-                  color: kPrimaryColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: kTextRegular2X),
-            ),
-            const SizedBox(
-              width: kMarginCardMedium2,
-            ),
-            Container(
-              decoration: const BoxDecoration(
-                  color: kPrimaryColor, shape: BoxShape.circle),
-              child: const Icon(
-                Icons.add,
-                color: kSnackItemAddRemoveButtonColor,
-                size: kMarginLarge,
-              ),
-            ),
-            const SizedBox(
-              width: kMarginXXLarge3,
-            ),
+            const Spacer(),
+            // //add remove
+            // Container(
+            //   decoration: const BoxDecoration(
+            //       color: kPrimaryColor, shape: BoxShape.circle),
+            //   child: const Icon(
+            //     Icons.remove,
+            //     color: kSnackItemAddRemoveButtonColor,
+            //     size: kMarginLarge,
+            //   ),
+            // ),
+            // const SizedBox(
+            //   width: kMarginCardMedium2,
+            // ),
+            // const Text(
+            //   "1",
+            //   style: TextStyle(
+            //       color: kPrimaryColor,
+            //       fontWeight: FontWeight.w700,
+            //       fontSize: kTextRegular2X),
+            // ),
+            // const SizedBox(
+            //   width: kMarginCardMedium2,
+            // ),
+            // Container(
+            //   decoration: const BoxDecoration(
+            //       color: kPrimaryColor, shape: BoxShape.circle),
+            //   child: const Icon(
+            //     Icons.add,
+            //     color: kSnackItemAddRemoveButtonColor,
+            //     size: kMarginLarge,
+            //   ),
+            // ),
+            // const SizedBox(
+            //   width: kMarginXXLarge3,
+            // ),
 
             //item price
             Text(
-              "${snackVO.price}Ks",
+              "${snackVO.price! * snackVO.quantity}Ks",
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: kTextRegular,
@@ -680,3 +755,12 @@ class AddButton extends StatelessWidget {
     );
   }
 }
+
+String getTotalSnackAmount(List<SnackVO> snackList) {
+  return snackList
+      .map((snack) => snack.price! * snack.quantity)
+      .fold(0, (prev, price) => prev + price)
+      .toString();
+}
+
+

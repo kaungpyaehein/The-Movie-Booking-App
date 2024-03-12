@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
@@ -26,38 +24,31 @@ class _BookingPageState extends State<BookingPage> {
   List<ChooseDateVO> twoWeekDates = [];
   MovieBookingModel model = MovieBookingModel();
 
-  List<CinemaVO> cinemaVOs = [
-    CinemaVO(
-      cinemaId: 1,
-      cinema: "JCGV",
-      timeslots: [
-        TimeslotVO(cinemaDayTimeslotId: 2, startTime: "9:30 AM", status: 2),
-        TimeslotVO(cinemaDayTimeslotId: 2, startTime: "9:30 AM", status: 3),
-        TimeslotVO(cinemaDayTimeslotId: 2, startTime: "9:30 AM", status: 4),
-      ],
-    ),
-    CinemaVO(
-      cinemaId: 2,
-      cinema: "MINGALAR Cinema",
-      timeslots: [
-        TimeslotVO(cinemaDayTimeslotId: 4, startTime: "10:00 AM", status: 2),
-        TimeslotVO(cinemaDayTimeslotId: 4, startTime: "10:00 AM", status: 3),
-        TimeslotVO(cinemaDayTimeslotId: 4, startTime: "10:00 AM", status: 4),
-      ],
-    ),
-  ];
+  List<CinemaVO> cinemaVOs = [];
+  String selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  bool isSelected = false;
+  bool isLoading = true;
 
   @override
   void initState() {
-    twoWeekDates = model.getTwoWeeksOfDates().map((dateTime) {
-      String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      bool isSelected =
-          dateTime.date == today; // Set isSelected to true for current date
-      return ChooseDateVO(dateTime.date, isSelected);
+    /// GET Two weeks dates
+    twoWeekDates = model.getTwoWeeksOfDates().map((dates) {
+      return ChooseDateVO(dates.date, dates.date == selectedDate);
     }).toList();
+    // Get timeslot data
+    getCinemaData(selectedDate);
 
-    print(cinemaVOs[0].cinemaId.toString());
     super.initState();
+  }
+
+  void getCinemaData(String date) {
+    model.getCinemasAndShowTimeByDate(date).then((cinemas) {
+      setState(() {
+        isLoading = false;
+        cinemaVOs = cinemas;
+        debugPrint(cinemas[0].timeslots![0].status.toString());
+      });
+    });
   }
 
   @override
@@ -111,112 +102,115 @@ class _BookingPageState extends State<BookingPage> {
           )
         ],
       ),
-      body: SafeArea(
-          child: CustomScrollView(
-        slivers: [
-          //date list view
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: kDateListHeight,
-              child: ListView.builder(
-                itemCount: twoWeekDates.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  final ChooseDateVO chooseDateVO = twoWeekDates[index];
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SafeArea(
+              child: CustomScrollView(
+              slivers: [
+                //Date List View
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: kDateListHeight,
+                    child: ListView.builder(
+                      key: const PageStorageKey(0),
+                      itemCount: twoWeekDates.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        final ChooseDateVO chooseDateVO = twoWeekDates[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: DateCardView(
+                            chooseDateVO: chooseDateVO,
+                            onTap: () {
+                              isLoading = true;
+                              setState(() {
+                                twoWeekDates = twoWeekDates.map((dateTime) {
+                                  return ChooseDateVO(dateTime.date,
+                                      dateTime.date == chooseDateVO.date);
+                                }).toList();
+                                selectedDate = chooseDateVO.date;
+
+                                /// Change Cinema Data According to The Date
+                                getCinemaData(chooseDateVO.date);
+
+                                // model.getCinemasAndShowTimeByDate();
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: kMargin30,
+                  ),
+                ),
+
+                //film type view
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: kPickReginHorizontalPadding),
+                    child: ChooseFilmTypeView(),
+                  ),
+                ),
+                //spacer
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: kMargin30,
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: AvailabilityView(),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: kMargin30,
+                  ),
+                ),
+
+                /// Cinema View
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        childCount: cinemaVOs.length, (context, index) {
+                  final cinemaVO = cinemaVOs[index];
                   return Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: DateCardView(
-                      month: chooseDateVO.getMonthName(),
-                      isSelected: chooseDateVO.isSelected,
-                      date: chooseDateVO.getRelativeDay(),
-                      day: chooseDateVO.getDayOfMonth(),
-                      onTap: () {
-                        setState(() {
-                          twoWeekDates = twoWeekDates.map((dateTime) {
-                            bool isSelected = dateTime.date ==
-                                chooseDateVO
-                                    .date; // Set isSelected to true for current date
-                            return ChooseDateVO(dateTime.date, isSelected);
-                          }).toList();
-                        });
+                    padding: const EdgeInsets.only(bottom: kMarginSmall),
+                    child: CinemasView(
+                      isShow: true,
+                      cinemaVO: cinemaVO,
+                      onTapTimeslot: (timeslotVO) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SeatingPlanPage(
+                                timeslotVO: timeslotVO,
+                                date: selectedDate,
+                                cinemaName: cinemaVO.cinema ?? "",
+
+                              ),
+                            ));
                       },
                     ),
                   );
-                },
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: kMargin30,
-            ),
-          ),
-
-          //film type view
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: kPickReginHorizontalPadding),
-              child: ChooseFilmTypeView(),
-            ),
-          ),
-          //spacer
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: kMargin30,
-            ),
-          ),
-
-          const SliverToBoxAdapter(
-            child: AvailabilityView(),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: kMargin30,
-            ),
-          ),
-          SliverList(
-              delegate: SliverChildBuilderDelegate(childCount: cinemaVOs.length,
-                  (context, index) {
-            final cinemaVO = cinemaVOs[index];
-            return Padding(
-              padding: EdgeInsets.only(bottom: kMarginSmall),
-              child: CinemasView(
-                isShow: true,
-                cinemaVO: cinemaVO,
-                onTapTimeslot: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SeatingPlanPage(
-                          timeslotVO: TimeslotVO(),
-                          date: "12-2-2024",
-                        ),
-                      ));
-                },
-              ),
-            );
-          }))
-        ],
-      )),
+                }))
+              ],
+            )),
     );
   }
 }
 
 //date card view
 class DateCardView extends StatelessWidget {
-  final String date;
-  final String month;
-  final String day;
-  final bool isSelected;
+  final ChooseDateVO chooseDateVO;
   final void Function() onTap;
   const DateCardView(
-      {super.key,
-      required this.date,
-      required this.month,
-      required this.day,
-      required this.isSelected,
-      required this.onTap});
+      {super.key, required this.onTap, required this.chooseDateVO});
 
   @override
   Widget build(BuildContext context) {
@@ -225,13 +219,11 @@ class DateCardView extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Container(
-            child: Image.asset(
-              fit: BoxFit.cover,
-              isSelected ? kSelectedDateCard : kUnselectedDateCard,
-              width: kDateCardWidth,
-              height: kDateCardHeight,
-            ),
+          Image.asset(
+            fit: BoxFit.cover,
+            chooseDateVO.isSelected ? kSelectedDateCard : kUnselectedDateCard,
+            width: kDateCardWidth,
+            height: kDateCardHeight,
           ),
           Align(
             alignment: Alignment.topCenter,
@@ -241,19 +233,19 @@ class DateCardView extends StatelessWidget {
                   height: kMarginMedium4,
                 ),
                 TextInsideDateCard(
-                  text: date,
+                  text: chooseDateVO.getRelativeDay(),
                 ),
                 const SizedBox(
                   height: kMarginMedium,
                 ),
                 TextInsideDateCard(
-                  text: month,
+                  text: chooseDateVO.getMonthName(),
                 ),
                 const SizedBox(
                   height: kMarginSmall,
                 ),
                 TextInsideDateCard(
-                  text: day,
+                  text: chooseDateVO.getDayOfMonth(),
                 ),
               ],
             ),

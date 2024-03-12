@@ -29,10 +29,10 @@ class TicketDetailsPage extends StatelessWidget {
       body: const Stack(
         children: [
           //ticket details
-          SingleChildScrollView(
-              child: TicketDetailsView(
-            isTicketCancelButtonRed: true,
-          )),
+          // SingleChildScrollView(
+          //     child: TicketDetailsView(
+          //   isTicketCancelButtonRed: true,
+          // )),
 
           //bottom view
           TicketDetailsBottomView(),

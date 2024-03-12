@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
 import 'package:the_movie_booking_app/pages/login_page.dart';
-import 'package:the_movie_booking_app/pages/pick_region_page.dart';
+import 'package:the_movie_booking_app/pages/main_page.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 
@@ -15,21 +15,28 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  MovieBookingModel model = MovieBookingModel();
   @override
   void initState() {
-    model.getCities();
     _delayedNavigation();
     super.initState();
   }
 
   void _delayedNavigation() {
+    MovieBookingModel model = MovieBookingModel();
     Future.delayed(const Duration(seconds: 3)).then((_) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const LoginPage(),
-          ));
+      /// GET Cities and Navigate
+      model.getCities().then((value) {
+        // print(value[0].name.toString());
+        /// Navigate to Login if no Bearer Token
+        print(model.getBearerToken());
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => model.getBearerToken().isEmpty
+                  ? const LoginPage()
+                  : const MainPage(),
+            ));
+      });
     });
   }
 

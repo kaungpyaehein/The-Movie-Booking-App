@@ -79,9 +79,8 @@ const double kDateCardWidth = 71;
 const double kFilmTypeTextSize = 16.5;
 const double kAvailabilityContainerHeight = 37;
 
-
 const double kTimeSlotItemPaddingVertical = 7.5;
-const double kTimeSlotItemPaddingHorizontal = 15;
+const double kTimeSlotItemPaddingHorizontal = 10;
 
 const double kTimeSlotCardWidth = 100;
 const double kTimeSlotCardHeight = 120;
@@ -89,7 +88,7 @@ const double kTimeSlotCardHeight = 120;
 const double kMinScale = 1;
 const double kMaxScale = 5;
 
-const  kSeatsCount = 12;
+const kSeatsCount = 14;
 
 const double kSeatsViewHeight = 350;
 
@@ -112,8 +111,3 @@ const double kTicketViewImageWidth = 96;
 
 const double kQRSize = 93.0;
 const double kDoneButtonWidth = 176;
-
-
-
-
-

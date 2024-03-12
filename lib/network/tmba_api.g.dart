@@ -13,7 +13,7 @@ class _TmbaApi implements TmbaApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://tmba.padc.com.mm';
+    baseUrl ??= 'http://34.126.136.182';
   }
 
   final Dio _dio;
@@ -111,7 +111,7 @@ class _TmbaApi implements TmbaApi {
 
   @override
   Future<SnackResponse> getSnacks(
-    String categoryId,
+    int categoryId,
     String accept,
     String bearerToken,
   ) async {
@@ -177,7 +177,7 @@ class _TmbaApi implements TmbaApi {
 
   @override
   Future<SeatingPlanByShowTimeResponse> getSeatingPlanByShowTime(
-    String cinemaDayTimeslotId,
+    int cinemaDayTimeslotId,
     String bookingDate,
     String bearerToken,
   ) async {

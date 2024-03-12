@@ -185,12 +185,12 @@ class MovieVO {
 
   /// Poster Path with base url
   String getPosterPathWithBaseUrl() {
-    return kImageBaseUrl + (posterPath ?? "");
+    return kPosterImageBaseUrl + (posterPath ?? "");
   }
 
   ///backdrop path with base url
   String getBackdropPathWithBaseUrl() {
-    return kImageBaseUrl + (backdropPath ?? "");
+    return kBackDropImageBaseUrl + (backdropPath ?? "");
   }
 
   //get rating with two decimal places

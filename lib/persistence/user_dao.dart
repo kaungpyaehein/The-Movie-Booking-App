@@ -14,11 +14,12 @@ class UserDao {
   /// save user data
 
   void saveUserData(UserVO userVO) async {
+    await getUserBox().clear();
     await getUserBox().put(kBoxKeyUser, userVO);
   }
 
-  String? getToken() {
-    return getUserBox().get(kBoxKeyUser)?.token ?? "";
+  String getToken() {
+    return getUserBox().get(kBoxKeyUser)?.getToken().toString() ?? "";
   }
 
   /// get user data

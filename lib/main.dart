@@ -48,6 +48,28 @@ void main() async {
   await Hive.openBox<CityVO>(kBoxNameCityVO);
   await Hive.openBox<UserVO>(kBoxNameUserVO);
 
+  MovieBookingModel model = MovieBookingModel();
+  model.getCinemasAndShowTimeByDate("2024-03-05").then((value) {
+    print(value.toString());
+  });
+  // model.getOtpResponse("959958283086").then((value) {
+  //   print(value.code.toString());
+  // }).then((value) {});
+  // model.signInWithPhone("959958283086", "123456").then((value) {
+  //   print(value.token.toString());
+  //   Future.delayed(Duration(seconds: 1)).then((value) {
+  //
+  //
+  //   });
+  //
+  // });
+  // model.getSnacksByCategoryId(0).then((value) {
+  //   print(value.toString());
+  // });
+  // model.getSnackCategories().then((value) {
+  //   print(value.toString());
+  // });
+
   runApp(const MovieBookingApp());
 }
 

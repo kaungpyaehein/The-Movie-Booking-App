@@ -26,19 +26,21 @@ abstract class TheMovieBookingDataAgent {
 
   Future<List<CityVO>> getCities();
 
-  Future<List<SnackVO>> getSnacksByCategoryId
-      (String categoryId, String bearerToken);
+  Future<List<SnackVO>> getSnacksByCategoryId(
+      int categoryId, String bearerToken);
 
   Future<List<SnackCategoryVO>> getSnackCategories(String bearerToken);
 
-  Future<List<PaymentTypeVO>> getPaymentTypes(String bearerToken,
-     );
+  Future<List<PaymentTypeVO>> getPaymentTypes(
+    String bearerToken,
+  );
 
   Future<List<CinemaVO>> getCinemasAndShowTimeByDate(
       String date, String bearerToken);
 
   Future<List<SeatVO>> getSeatingPlanByShowTime(
-      String cinemaDayTimeslotId, String bookingDate, String bearerToken);
+      int cinemaDayTimeslotId, String bookingDate, String bearerToken);
 
-  Future<CheckoutVO> checkout(String bearerToken, CheckoutRequest checkoutRequest);
+  Future<CheckoutVO> checkout(
+      String bearerToken, CheckoutRequest checkoutRequest);
 }

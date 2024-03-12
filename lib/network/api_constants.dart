@@ -1,8 +1,10 @@
 ///  Base Url
 const String kBaseUrlHttp = "api.themoviedb.org";
 const String kBaseUrl = "https://api.themoviedb.org";
-const String kNewBaseUrl = "https://tmba.padc.com.mm";
-const String kImageBaseUrl = "https://image.tmdb.org/t/p/w400";
+const String kNewBaseUrl = "http://34.126.136.182";
+const String kPosterImageBaseUrl = "https://image.tmdb.org/t/p/w500";
+const String kCreditImageBaseUrl = "https://image.tmdb.org/t/p/w500";
+const String kBackDropImageBaseUrl = "https://image.tmdb.org/t/p/w780";
 
 /// End Points
 const String kEndPointGetNowPlaying = "/3/movie/now_playing";

@@ -23,8 +23,8 @@ List<SnackVO> kSnackData = [
   SnackVO(name: "Burger Combo", price: 5000, image: kBurgerComboImage, id: 2),
   SnackVO(name: "Coca Cola Large", price: 1000, image: kCocaColaImage, id: 3),
   SnackVO(name: "Pepsi Large", price: 1100, image: kPepsiImage, id: 4),
-  SnackVO(name: "Burger Combo", price: 5000, image: kBurgerComboImage, id: 5),
-  SnackVO(name: "Coca Cola Large", price: 1000, image: kCocaColaImage, id: 6),
+  SnackVO(name: "Burger Set", price: 5000, image: kBurgerComboImage, id: 5),
+  SnackVO(name: "Coca Cola Small", price: 1000, image: kCocaColaImage, id: 6),
 ];
 
 List<PaymentOptionModel> paymentOptionModelList = [

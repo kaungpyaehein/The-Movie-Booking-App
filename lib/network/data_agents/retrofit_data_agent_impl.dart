@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:the_movie_booking_app/data/vos/checkout_vo.dart';
 import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
 import 'package:the_movie_booking_app/data/vos/city_vo.dart';
@@ -20,6 +21,7 @@ import 'package:the_movie_booking_app/network/the_movie_booking_api.dart';
 import 'package:the_movie_booking_app/network/tmba_api.dart';
 
 import '../requests/checkout_request.dart';
+import '../responses/seating_plan_by_show_time_response.dart';
 
 class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
   //moving booking api is an object dependency
@@ -155,17 +157,37 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
   Future<List<CityVO>> getCities() {
     return mTmbaApi
         .getCities()
+        .then((response) {
+          if (response.code == 200) {
+            return response;
+          } else {
+            throw CustomException(ErrorVO(
+                statusCode: response.code ?? 400,
+                statusMessage: response.message ?? "Invalid response",
+                success: false));
+          }
+        })
         .asStream()
         .map((response) => response.data ?? [])
         .first
         .catchError((error) {
-      throw _createException(error);
-    });
+          throw _createException(error);
+        });
   }
 
   @override
   Future<OtpResponse> getOtp(String phone) {
-    return mTmbaApi.getOtp(phone).catchError((error) {
+    return mTmbaApi.getOtp(phone).then((response) {
+      if (response.code == 200) {
+        return response;
+      } else {
+        throw CustomException(ErrorVO(
+          statusCode: response.code ?? 400,
+          statusMessage: response.message ?? "Invalid",
+          success: false,
+        ));
+      }
+    }).catchError((error) {
       throw _createException(error);
     });
   }
@@ -184,17 +206,52 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
     });
   }
 
+  // @override
+  // Future<List<SeatVO>> getSeatingPlanByShowTime(
+  //     int cinemaDayTimeslotId, String bookingDate, String bearerToken) {
+  //   return mTmbaApi
+  //       .getSeatingPlanByShowTime(cinemaDayTimeslotId, bookingDate, bearerToken)
+  //       .asStream()
+  //       .map((response) => SeatingPlanByShowTimeResponse(
+  //
+  //   ).getFlattenList(response))
+  //       .first
+  //       .catchError((error) {
+  //     throw _createException(error);
+  //   });
+  // }
   @override
   Future<List<SeatVO>> getSeatingPlanByShowTime(
-      String cinemaDayTimeslotId, String bookingDate, String bearerToken) {
+      int cinemaDayTimeslotId, String bookingDate, String bearerToken) {
     return mTmbaApi
         .getSeatingPlanByShowTime(cinemaDayTimeslotId, bookingDate, bearerToken)
-        .asStream()
-        .map((response) => response.data ?? [])
-        .first
-        .catchError((error) {
+        .then((response) {
+      if (response.data != null) {
+        // Flatten the list of lists
+        final List<SeatVO> result = [];
+
+        for (var elements in response.data!) {
+          result.addAll(elements);
+        }
+
+        return result;
+      } else {
+        // Handle case where response or data is null
+        throw Exception("Failed to fetch seating plan by show time");
+      }
+    }).catchError((error) {
       throw _createException(error);
     });
+  }
+
+  List<SeatVO> flattenWithLoop<SeatVO>(List<List<SeatVO>> list) {
+    final List<SeatVO> result = [];
+
+    for (var elements in list) {
+      result.addAll(elements);
+    }
+
+    return result;
   }
 
   @override
@@ -211,7 +268,7 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
 
   @override
   Future<List<SnackVO>> getSnacksByCategoryId(
-      String categoryId, String bearerToken) {
+      int categoryId, String bearerToken) {
     return mTmbaApi
         .getSnacks(categoryId, kApplicationJson, bearerToken)
         .asStream()
@@ -229,6 +286,7 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
         .asStream()
         .map((signInResponse) {
           var response = signInResponse.data;
+          debugPrint(signInResponse.token.toString());
           return UserVO(
             id: response?.id ?? 0,
             email: response?.email ?? "",
@@ -236,7 +294,7 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
             phone: response?.phone ?? "",
             profileImage: response?.profileImage ?? "",
             totalExpense: response?.totalExpense ?? 0,
-            token: response?.token ?? "",
+            token: signInResponse.token ?? "",
           );
         })
         .first

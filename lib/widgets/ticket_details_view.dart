@@ -1,14 +1,32 @@
 //ticket details view
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../data/vos/seat_vo.dart';
+import '../data/vos/snack_vo.dart';
+import '../data/vos/timeslot_vo.dart';
+import '../pages/snack_page.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
 
 class TicketDetailsView extends StatelessWidget {
   final bool isTicketCancelButtonRed;
+  final List<SeatVO> selectedSeatList;
+  final String totalSeatPrice;
+  final String date;
+  final TimeslotVO timeslotVO;
+  final List<SnackVO> snackList;
+  final String cinemaName;
   const TicketDetailsView({
     super.key,
     required this.isTicketCancelButtonRed,
+    required this.selectedSeatList,
+    required this.totalSeatPrice,
+    required this.date,
+    required this.timeslotVO,
+    required this.snackList,
+    required this.cinemaName,
   });
 
   @override
@@ -34,10 +52,18 @@ class TicketDetailsView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //movie info view
-          const TicketTopView(),
-          const TickerDividerView(),
+          TicketTopView(
+            timeslotVO: timeslotVO,
+            totalSeatPrice: totalSeatPrice,
+            date: date,
+            selectedSeatList: selectedSeatList,
+            cinemaName: cinemaName,
+            snackList: snackList,
+          ),
+          const TicketDividerView(),
           TicketBottomView(
             isTicketRed: isTicketCancelButtonRed,
+            totalAmount: getTotalCheckoutAmount(snackList, totalSeatPrice),
           ),
         ],
       ),
@@ -45,11 +71,23 @@ class TicketDetailsView extends StatelessWidget {
   }
 }
 
+String getTotalCheckoutAmount(
+  List<SnackVO> snackList,
+  String totalSeatCost,
+) {
+  return (int.parse(getTotalSnackAmount(snackList)) +
+          5 +
+          int.parse(totalSeatCost))
+      .toString();
+}
+
 class TicketBottomView extends StatelessWidget {
   final bool isTicketRed;
+  final String totalAmount;
   const TicketBottomView({
     super.key,
     required this.isTicketRed,
+    required this.totalAmount,
   });
 
   @override
@@ -62,7 +100,7 @@ class TicketBottomView extends StatelessWidget {
           //convenience fee text
           ConvenienceFeeView(
             label: "Convenience fee",
-            price: "500",
+            price: "5",
             isShow: false,
             onTap: () {},
           ),
@@ -84,9 +122,9 @@ class TicketBottomView extends StatelessWidget {
             ),
           ),
 
-          const Row(
+          Row(
             children: [
-              Text(
+              const Text(
                 "Total",
                 style: TextStyle(
                     color: kPrimaryColor,
@@ -95,10 +133,10 @@ class TicketBottomView extends StatelessWidget {
               ),
 
               //spacer
-              Spacer(),
+              const Spacer(),
               Text(
-                "22500Ks",
-                style: TextStyle(
+                "$totalAmount Ks",
+                style: const TextStyle(
                     color: kPrimaryColor,
                     fontWeight: FontWeight.w700,
                     fontSize: kText18),
@@ -156,7 +194,6 @@ class TicketCancellationPolicyView extends StatelessWidget {
 void showTicketCancellationPolicy(BuildContext context) {
   showModalBottomSheet(
     isScrollControlled: true,
-
     context: context,
     builder: (context) {
       return FractionallySizedBox(
@@ -319,8 +356,8 @@ class CloseButtonView extends StatelessWidget {
   }
 }
 
-class TickerDividerView extends StatelessWidget {
-  const TickerDividerView({
+class TicketDividerView extends StatelessWidget {
+  const TicketDividerView({
     super.key,
   });
 
@@ -355,8 +392,20 @@ class TickerDividerView extends StatelessWidget {
 }
 
 class TicketTopView extends StatefulWidget {
+  final List<SeatVO> selectedSeatList;
+  final String totalSeatPrice;
+  final String date;
+  final TimeslotVO timeslotVO;
+  final String cinemaName;
+  final List<SnackVO> snackList;
   const TicketTopView({
     super.key,
+    required this.selectedSeatList,
+    required this.totalSeatPrice,
+    required this.date,
+    required this.timeslotVO,
+    required this.cinemaName,
+    required this.snackList,
   });
 
   @override
@@ -365,6 +414,10 @@ class TicketTopView extends StatefulWidget {
 
 class _TicketTopViewState extends State<TicketTopView> {
   bool showSnackItems = false;
+  String getAllSeats() {
+    return widget.selectedSeatList.map((seat) => seat.seatName!).join(', ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -373,9 +426,9 @@ class _TicketTopViewState extends State<TicketTopView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //movie name
-          const Text(
-            "Black Widow (3D) (U/A)",
-            style: TextStyle(
+          Text(
+            "${widget.cinemaName} (3D) (U/A)",
+            style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
                 fontSize: kText18),
@@ -409,7 +462,10 @@ class _TicketTopViewState extends State<TicketTopView> {
           ),
 
           //date/ time and location view
-          const DateTimeLocationView(),
+          DateTimeLocationView(
+            date: widget.date,
+            timeslotVO: widget.timeslotVO,
+          ),
           //spacer
           const SizedBox(
             height: kMarginMedium4,
@@ -417,8 +473,8 @@ class _TicketTopViewState extends State<TicketTopView> {
 
           //tickets price view
           RichText(
-              text: const TextSpan(children: [
-            TextSpan(
+              text: TextSpan(children: [
+            const TextSpan(
               text: "M-Ticket(",
               style: TextStyle(
                 color: kFacilityViewColor,
@@ -426,13 +482,13 @@ class _TicketTopViewState extends State<TicketTopView> {
               ),
             ),
             TextSpan(
-              text: "2",
-              style: TextStyle(
+              text: widget.selectedSeatList.length.toString(),
+              style: const TextStyle(
                 color: kPrimaryColor,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            TextSpan(
+            const TextSpan(
               text: ")",
               style: TextStyle(
                 color: kFacilityViewColor,
@@ -445,21 +501,25 @@ class _TicketTopViewState extends State<TicketTopView> {
           ),
 
           //seats and prices
-          const Row(
+          Row(
             children: [
-              Text(
-                "Gold-G8,G7",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: kTextRegular2X),
+              Expanded(
+                child: Text(
+                  "Normal- ${getAllSeats()}",
+                  maxLines: 2,
+                  overflow: TextOverflow.visible,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: kTextRegular2X),
+                ),
               ),
 
               //spacer
-              Spacer(),
+
               Text(
-                "20000Ks",
-                style: TextStyle(
+                "${widget.totalSeatPrice} Ks",
+                style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                     fontSize: kTextRegular2X),
@@ -478,19 +538,21 @@ class _TicketTopViewState extends State<TicketTopView> {
           //snacks and prices
           FoodAndBeverageView(
             label: "Food and Beverage",
-            price: "20000",
             onTap: () {
               setState(() {
                 showSnackItems = !showSnackItems;
               });
             },
             isShow: showSnackItems,
+            snacks: widget.snackList,
           ),
 
           //snack items view
           Visibility(
-            visible: showSnackItems,
-            child: const SnackItemsListView(),
+            visible: showSnackItems && widget.snackList.isNotEmpty,
+            child: SnackItemsListView(
+              snackList: widget.snackList,
+            ),
           )
         ],
       ),
@@ -549,30 +611,43 @@ class ConvenienceFeeView extends StatelessWidget {
   }
 }
 
+String formatDate(String inputDate) {
+  DateFormat inputFormat = DateFormat("yyyy-MM-dd");
+  DateTime date = inputFormat.parse(inputDate);
+  DateFormat outputFormat = DateFormat("d MMM, yyyy");
+  String formattedDate = outputFormat.format(date);
+
+  return formattedDate;
+}
+
 class DateTimeLocationView extends StatelessWidget {
+  final String date;
+  final TimeslotVO timeslotVO;
   const DateTimeLocationView({
     super.key,
+    required this.date,
+    required this.timeslotVO,
   });
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Column(
           children: [
-            Icon(
+            const Icon(
               Icons.calendar_month_outlined,
               color: kPrimaryColor,
             ),
             //spacer
-            SizedBox(
+            const SizedBox(
               height: kMarginMedium2,
             ),
             Text(
-              "Sat, 18 Jun, 2022",
-              style: TextStyle(
+              formatDate(date),
+              style: const TextStyle(
                 color: Colors.white,
               ),
             ),
@@ -580,21 +655,21 @@ class DateTimeLocationView extends StatelessWidget {
         ),
         Column(
           children: [
-            Icon(
+            const Icon(
               Icons.access_time,
               color: kPrimaryColor,
             ),
             //spacer
-            SizedBox(
+            const SizedBox(
               height: kMarginMedium2,
             ),
             Text(
-              "3:30PM",
-              style: TextStyle(color: Colors.white),
+              timeslotVO.startTime.toString(),
+              style: const TextStyle(color: Colors.white),
             ),
           ],
         ),
-        Column(
+        const Column(
           children: [
             Icon(
               Icons.location_on_outlined,
@@ -617,21 +692,27 @@ class DateTimeLocationView extends StatelessWidget {
 }
 
 class SnackItemsListView extends StatelessWidget {
+  final List<SnackVO> snackList;
   const SnackItemsListView({
     super.key,
+    required this.snackList,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: kMarginMedium),
-      shrinkWrap: true,
-      itemCount: 2,
-      itemBuilder: (context, index) => const Padding(
-        padding: EdgeInsets.only(top: kMarginMedium3),
-        child: SnackItemPriceView(name: "Potato Chips (Qt. 1)", price: "1000"),
-      ),
-    );
+        padding: const EdgeInsets.only(top: kMarginMedium),
+        shrinkWrap: true,
+        itemCount: snackList.length,
+        itemBuilder: (context, index) {
+          final SnackVO snackVO = snackList[index];
+          return Padding(
+            padding: const EdgeInsets.only(top: kMarginMedium3),
+            child: SnackItemPriceView(
+                name: "${snackVO.name} ${snackVO.quantity}",
+                price: "${snackVO.price! * snackVO.quantity}"),
+          );
+        });
   }
 }
 
@@ -677,15 +758,16 @@ class SnackItemPriceView extends StatelessWidget {
 //food and beverage view
 class FoodAndBeverageView extends StatelessWidget {
   final String label;
-  final String price;
+
   final bool isShow;
+  final List<SnackVO> snacks;
   final void Function() onTap;
   const FoodAndBeverageView({
     super.key,
     required this.label,
-    required this.price,
     required this.isShow,
     required this.onTap,
+    required this.snacks,
   });
 
   @override
@@ -725,7 +807,9 @@ class FoodAndBeverageView extends StatelessWidget {
           const Spacer(),
           //price
           Text(
-            price,
+            snacks.isEmpty
+                ? "0"
+                : "${getTotalSnackAmount(snacks).toString()} Ks",
             style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,

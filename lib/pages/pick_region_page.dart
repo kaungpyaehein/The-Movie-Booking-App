@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
 import 'package:the_movie_booking_app/pages/home_page.dart';
 import 'package:the_movie_booking_app/pages/main_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
@@ -6,10 +7,25 @@ import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 
 import '../data/sample_vos/citiy_list.dart';
+import '../data/vos/city_vo.dart';
 import '../utils/strings.dart';
 
-class PickRegionPage extends StatelessWidget {
+class PickRegionPage extends StatefulWidget {
   const PickRegionPage({super.key});
+
+  @override
+  State<PickRegionPage> createState() => _PickRegionPageState();
+}
+
+class _PickRegionPageState extends State<PickRegionPage> {
+  MovieBookingModel model = MovieBookingModel();
+
+  List<CityVO> cityList = [];
+  @override
+  void initState() {
+    cityList = model.getCitiesFromDatabase();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +42,24 @@ class PickRegionPage extends StatelessWidget {
               fontWeight: FontWeight.w700),
         ),
       ),
-      body: const SafeArea(
+      body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             //search field
-            SearchFieldView(),
+            const SearchFieldView(),
 
-            SizedBox(
+            const SizedBox(
               height: kMargin30,
             ),
 
             //CityTitle
-            CitiesTitleView(),
+            const CitiesTitleView(),
 
             //CityList
-            CityListView()
+            CityListView(
+              cityList: cityList,
+            )
           ],
         ),
       ),
@@ -50,8 +68,10 @@ class PickRegionPage extends StatelessWidget {
 }
 
 class CityListView extends StatelessWidget {
+  final List<CityVO> cityList;
   const CityListView({
     super.key,
+    required this.cityList,
   });
 
   @override
@@ -60,6 +80,7 @@ class CityListView extends StatelessWidget {
       child: ListView.builder(
         itemCount: cityList.length,
         itemBuilder: (context, index) {
+          final CityVO city = cityList[index];
           return InkWell(
             onTap: () {
               Navigator.pushAndRemoveUntil(
@@ -78,7 +99,7 @@ class CityListView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: kPickReginHorizontalPadding),
                   child: Text(
-                    cityList[index],
+                    city.name ?? "",
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: kTextRegular2X,

@@ -14,6 +14,7 @@ class CinemaAndShowTimeByDateResponse {
 
   @JsonKey(name: "data")
   List<CinemaVO>? data;
+
   CinemaAndShowTimeByDateResponse({
     this.code,
     this.message,

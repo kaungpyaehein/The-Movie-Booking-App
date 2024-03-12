@@ -15,8 +15,12 @@ import '../utils/images.dart';
 class CinemasView extends StatefulWidget {
   final bool isShow;
   final CinemaVO cinemaVO;
-  final void Function() onTapTimeslot;
-  const CinemasView({super.key, required this.isShow, required this.cinemaVO, required this.onTapTimeslot});
+  final Function(TimeslotVO timeslotVO) onTapTimeslot;
+  const CinemasView(
+      {super.key,
+      required this.isShow,
+      required this.cinemaVO,
+      required this.onTapTimeslot});
 
   @override
   State<CinemasView> createState() => _CinemasViewState();
@@ -85,8 +89,8 @@ class _CinemasViewState extends State<CinemasView> {
           Visibility(
               visible: isShow,
               //time slot view
-              child:  TimeSlotsView(
-                timeslots: widget.cinemaVO.timeslots ?? [] ,
+              child: TimeSlotsView(
+                timeslots: widget.cinemaVO.timeslots ?? [],
                 onTapTimeslot: widget.onTapTimeslot,
               )),
           const Divider()
@@ -98,9 +102,11 @@ class _CinemasViewState extends State<CinemasView> {
 
 class TimeSlotsView extends StatelessWidget {
   final List<TimeslotVO> timeslots;
-  final void Function() onTapTimeslot;
+  final void Function(TimeslotVO timeslotVO) onTapTimeslot;
   const TimeSlotsView({
-    super.key, required this.timeslots, required this.onTapTimeslot,
+    super.key,
+    required this.timeslots,
+    required this.onTapTimeslot,
   });
 
   @override
@@ -126,20 +132,9 @@ class TimeSlotsView extends StatelessWidget {
                 final data = timeslots[index];
                 return TimeSlotItem(
                   timeslotVO: data,
-                  onTapTimeSlot: onTapTimeslot ,
+                  onTapTimeSlot: onTapTimeslot,
                 );
               }),
-          // Wrap(
-          //     spacing: kMarginXLarge,
-          //     runSpacing: kMarginLarge,
-          //     alignment: WrapAlignment.start,
-          //     crossAxisAlignment: WrapCrossAlignment.center,
-          //     children: timeSlotDataList.map((data) {
-          //       return TimeSlotItem(timeSlotModel: data);
-          //     }).toList()),
-          // const SizedBox(
-          //   height: kMarginLarge,
-          // ),
           const SizedBox(
             height: kMarginMedium3,
           ),
@@ -171,43 +166,51 @@ class TimeSlotsView extends StatelessWidget {
 //time slot item view
 class TimeSlotItem extends StatelessWidget {
   final TimeslotVO timeslotVO;
-  final void Function() onTapTimeSlot;
+  final Function(TimeslotVO timeslotVO) onTapTimeSlot;
 
-  const TimeSlotItem({super.key, required this.timeslotVO, required this.onTapTimeSlot});
+  const TimeSlotItem(
+      {super.key, required this.timeslotVO, required this.onTapTimeSlot});
   @override
   Widget build(BuildContext context) {
     Color textColor = Colors.white;
     late Color borderColor;
     late Color backgroundColor;
+    late String filmType;
+    late String screenNumber;
 
     switch (timeslotVO.status.toString()) {
-      case "1":
-        textColor = kBottomNavigationUnselectedColor;
-        backgroundColor = kTimeSlotCardUnavailableBackgroundColor;
-        borderColor = kBottomNavigationUnselectedColor;
-        break;
-      case "2":
+      case "3":
         backgroundColor = kTimeSlotCardAvailableBackgroundColor;
         borderColor = kAvailableColor;
+        filmType = kFilmType3D;
+        screenNumber = "Screen 1";
         break;
 
-      case "3":
+      case "2":
         backgroundColor = kTimeSlotCardFillingFastBackgroundColor;
         borderColor = kFillingFastColor;
+        filmType = kFilmType2D;
+        screenNumber = "Screen 2";
+
         break;
 
-      case "4":
+      case "1":
         backgroundColor = kTimeSlotCardAlmostFullBackgroundColor;
         borderColor = kAlmostFullColor;
+        filmType = kFilmType3DIMAX;
+        screenNumber = "Screen 3";
+
         break;
 
       default:
         break;
     }
     return GestureDetector(
-      onTap: onTapTimeSlot,
+      onTap: () {
+        onTapTimeSlot(timeslotVO);
+      },
       child: Container(
-        width: kTimeSlotCardWidth + 10,
+        width: kTimeSlotCardWidth,
         height: kTimeSlotCardHeight,
         padding: const EdgeInsets.symmetric(
             horizontal: kTimeSlotItemPaddingHorizontal,
@@ -224,23 +227,23 @@ class TimeSlotItem extends StatelessWidget {
               timeslotVO.startTime ?? "",
               style: TextStyle(
                 color: textColor,
-                fontSize: kTextSmall,
+                fontSize: kTextRegular,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
-              timeslotVO.cinemaDayTimeslotId.toString() ?? "",
+              filmType,
               style: TextStyle(
                 color: textColor,
-                fontSize: kTextSmall,
+                fontSize: kTextRegular,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
-              timeslotVO.startTime ?? "",
+              screenNumber,
               style: TextStyle(
                 color: textColor,
-                fontSize: kTextSmall,
+                fontSize: kTextRegular,
                 fontWeight: FontWeight.w600,
               ),
             ),

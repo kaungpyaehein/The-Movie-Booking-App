@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
 import 'package:the_movie_booking_app/data/vos/seat_vos.dart';
 import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
 import 'package:the_movie_booking_app/pages/movie_details_page.dart';
@@ -14,8 +15,9 @@ import '../utils/images.dart';
 class SeatingPlanPage extends StatefulWidget {
   final String date;
   final TimeslotVO timeslotVO;
+  final String cinemaName;
   const SeatingPlanPage(
-      {super.key, required this.date, required this.timeslotVO});
+      {super.key, required this.date, required this.timeslotVO, required this.cinemaName});
 
   @override
   State<SeatingPlanPage> createState() => _SeatingPlanPageState();
@@ -25,80 +27,21 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
   TransformationController transformationController =
       TransformationController();
   double _zoomLevel = .5;
-  List<SeatVO> seatVOList = [
-    SeatVO(
-      id: 1,
-      price: 0,
-      seatName: "A",
-      type: "text",
-    ),
-    SeatVO(
-      id: 2,
-      price: 0,
-      seatName: "",
-      type: "available",
-    ),
-    SeatVO(
-      id: 3,
-      price: 2,
-      seatName: "A-1",
-      type: "available",
-    ),
-    SeatVO(
-      id: 4,
-      price: 2,
-      seatName: "A-4",
-      type: "taken",
-    ),
-    SeatVO(
-      id: 5,
-      price: 2,
-      seatName: "A-5",
-      type: "available",
-    ),
-    SeatVO(
-      id: 6,
-      price: 2,
-      seatName: "A-6",
-      type: "space",
-    ),
-    SeatVO(
-      id: 7,
-      price: 2,
-      seatName: "A-7",
-      type: "space",
-    ),
-    SeatVO(
-      id: 8,
-      price: 2,
-      seatName: "A-9",
-      type: "available",
-    ),
-    SeatVO(
-      id: 9,
-      price: 2,
-      seatName: "A-9",
-      type: "available",
-    ),
-    SeatVO(
-      id: 10,
-      price: 2,
-      seatName: "A-10",
-      type: "available",
-    ),
-    SeatVO(
-      id: 11,
-      price: 2,
-      seatName: "",
-      type: "taken",
-    ),
-    SeatVO(
-      id: 12,
-      price: 0,
-      seatName: "B",
-      type: "text",
-    ),
-  ];
+  List<SeatVO> seatVOList = [];
+  MovieBookingModel model = MovieBookingModel();
+  @override
+  void initState() {
+    /// Get Seating Plan by Showtime
+    model
+        .getSeatingPlanByShowTime(
+            widget.timeslotVO.cinemaDayTimeslotId!, widget.date)
+        .then((seats) {
+      setState(() {
+        seatVOList = seats;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,70 +50,79 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            Column(
-              children: [
-                const SizedBox(
-                  height: kMarginXLarge,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Image.asset(
-                      kScreenImage,
-                      fit: BoxFit.cover,
-                    ),
-                    const Align(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: kMarginLarge),
-                        child: Text(
-                          kScreenLabel,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: kTextRegular2X,
-                            letterSpacing: 3,
+            seatVOList.isEmpty
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Column(
+                    children: [
+                      const SizedBox(
+                        height: kMarginXLarge,
+                      ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset(
+                            kScreenImage,
+                            fit: BoxFit.cover,
                           ),
+                          const Align(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: kMarginLarge),
+                              child: Text(
+                                kScreenLabel,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: kTextRegular2X,
+                                  letterSpacing: 3,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      //title text
+                      const Text(
+                        kNormalTextLabel,
+                        style: TextStyle(
+                            color: kBottomNavigationUnselectedColor,
+                            fontSize: kFilmTypeTextSize),
+                      ),
+
+                      //zoomable seats view
+                      GestureDetector(
+                        onDoubleTap: () {
+                          setState(() {
+                            _zoomLevel = .5;
+                            transformationController.value = Matrix4.identity();
+                          });
+                        },
+                        child: ZoomableSeatsView(
+                          transformController: transformationController,
+                          scale: _zoomLevel * 2,
+                          seatVOList: seatVOList,
+                          onTapSeat: (selectedSeat) {
+                            setState(() {
+                              seatVOList = seatVOList
+                                  .map((seatVO) => SeatVO(
+                                        id: seatVO.id,
+                                        price: seatVO.price,
+                                        seatName: seatVO.seatName,
+                                        type: seatVO.id == selectedSeat.id &&
+                                                seatVO.seatName ==
+                                                    selectedSeat.seatName
+                                            ? "selected"
+                                            : seatVO.type,
+                                        isSelected: true,
+                                        symbol: seatVO.symbol,
+                                      ))
+                                  .toList();
+                            });
+                          },
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                //title text
-                const Text(
-                  kNormalTextLabel,
-                  style: TextStyle(
-                      color: kBottomNavigationUnselectedColor,
-                      fontSize: kFilmTypeTextSize),
-                ),
-
-                //zoomable seats view
-                GestureDetector(
-                  onDoubleTap: () {
-                    setState(() {
-                      _zoomLevel = .5;
-                      transformationController.value = Matrix4.identity();
-                    });
-                  },
-                  child: ZoomableSeatsView(
-                    transformController: transformationController,
-                    scale: _zoomLevel * 2,
-                    seatVOList: seatVOList,
-                    onTapSeat: (selectedSeat) {
-                      setState(() {
-                        seatVOList = seatVOList
-                            .map((seatVO) => SeatVO(
-                                id: seatVO.id,
-                                price: seatVO.price,
-                                seatName: seatVO.seatName,
-                                type: seatVO.id == selectedSeat.id
-                                    ? "selected"
-                                    : seatVO.type))
-                            .toList();
-                      });
-                    },
+                    ],
                   ),
-                ),
-              ],
-            ),
 
             /// zoom slider
             Align(
@@ -256,7 +208,23 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                     const SizedBox(
                       height: kMarginMedium2,
                     ),
-                    const BuyTicketView(),
+                    BuyTicketView(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SnackPage(
+                                selectedSeatList: getSelectedSeatList(),
+                                totalSeatPrice: getTotalAmount(),
+                                date: widget.date,
+                                timeslotVO: widget.timeslotVO,
+                                cinemaName: widget.cinemaName,
+                              ),
+                            ));
+                      },
+                      ticketCount: getTicketCount(),
+                      totalAmount: getTotalAmount(),
+                    ),
                   ],
                 )),
 
@@ -274,11 +242,33 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
       ),
     );
   }
+
+  List<SeatVO> getSelectedSeatList() {
+    return seatVOList.where((seatVO) => seatVO.type == "selected").toList();
+  }
+
+  String getTotalAmount() {
+    return getSelectedSeatList()
+        .map((seatVO) => seatVO.price)
+        .fold(0, (prev, price) => prev + price!)
+        .toString();
+  }
+
+  String getTicketCount() {
+    return getSelectedSeatList().length.toString();
+  }
 }
 
 //buy ticket view
 class BuyTicketView extends StatelessWidget {
-  const BuyTicketView({super.key});
+  final String ticketCount;
+  final String totalAmount;
+  final void Function() onTap;
+  const BuyTicketView(
+      {super.key,
+      required this.ticketCount,
+      required this.totalAmount,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -288,21 +278,21 @@ class BuyTicketView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          const Column(
+          Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "2 Tickets",
-                style: TextStyle(
+                "$ticketCount Tickets",
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: kText18,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               Text(
-                "170000ks",
-                style: TextStyle(
+                "${totalAmount}KS",
+                style: const TextStyle(
                   color: kPrimaryColor,
                   fontSize: kTextRegular3X,
                   fontWeight: FontWeight.w700,
@@ -310,91 +300,13 @@ class BuyTicketView extends StatelessWidget {
               )
             ],
           ),
-          PrimaryButton(
-              label: kBuyTicketLabel,
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SnackPage(),
-                    ));
-              })
+          PrimaryButton(label: kBuyTicketLabel, onTap: onTap)
         ],
       ),
     );
   }
 }
 
-// GestureDetector(
-//   onScaleStart: (ScaleStartDetails details) {
-//     print(details);
-//     _previousScale = _scale;
-//     setState(() {});
-//   },
-//   onScaleUpdate: (ScaleUpdateDetails details) {
-//     print(details);
-//     if (_scale < 1) {
-//       _scale = 1;
-//     } else {
-//       _scale = _previousScale * details.scale;
-//     }
-//     setState(() {});
-//   },
-//   onScaleEnd: (ScaleEndDetails details) {
-//     print(details);
-//
-//     _previousScale = 1.0;
-//     setState(() {});
-//   },
-//   child: Padding(
-//     padding: const EdgeInsets.all(8.0),
-//     child: Transform(
-//         alignment: FractionalOffset.center,
-//         transform:
-//             Matrix4.diagonal3(Vector3(_scale, _scale, _scale)),
-//         child: const SeatsView()),
-//   ),
-// ),
-
-//seats zoom in out view
-
-// Expanded(
-//
-//
-//   child: InteractiveViewer(
-//     alignment: Alignment.center,
-//      trackpadScrollCausesScale: true,
-//     maxScale: 2,
-//     minScale: 1,
-//     onInteractionStart: (ScaleStartDetails details) {
-//       print(details);
-//       _previousScale = _scale;
-//       setState(() {});
-//     },
-//     onInteractionUpdate: (ScaleUpdateDetails details) {
-//       print(details);
-//       _scale = _previousScale * details.scale;
-//       setState(() {});
-//     },
-//     onInteractionEnd: (ScaleEndDetails details) {
-//       print(details);
-//
-//       _previousScale = 1.0;
-//       setState(() {});
-//     },
-//     transformationController: transformationController,
-//     child: SeatsView(),
-//   ),
-// )
-
-// InteractiveViewer(
-//   alignment: Alignment.center,
-//   maxScale: 5,
-//   minScale: 1,
-//   transformationController: transformationController,
-//   child: SeatsView(),
-// )
-//seats availability view
 class SeatsAvailabilityView extends StatelessWidget {
   const SeatsAvailabilityView({super.key});
 
@@ -505,7 +417,7 @@ class _ZoomableSeatsViewState extends State<ZoomableSeatsView> {
                     ? const NeverScrollableScrollPhysics()
                     : null,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: kMargin60,
+                    mainAxisExtent: kMarginMedium4,
                     crossAxisCount: kSeatsCount,
                     mainAxisSpacing: kMarginMedium4),
                 childrenDelegate: SliverChildBuilderDelegate(
@@ -539,7 +451,7 @@ class SeatView extends StatelessWidget {
       case "text":
         return Center(
           child: Text(
-            seatVO.seatName ?? "",
+            seatVO.symbol ?? "",
             style: const TextStyle(color: kDividerColor, fontSize: kTextSmall),
             textAlign: TextAlign.center,
           ),
@@ -554,17 +466,21 @@ class SeatView extends StatelessWidget {
       case "available":
         return GestureDetector(
           onTap: onTapSeat,
-          child: const Icon(
-            Icons.chair,
-            size: 30,
-            color: Colors.white,
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Icon(
+              Icons.chair,
+              color: Colors.white,
+            ),
           ),
         );
       case "selected":
-        return const Icon(
-          Icons.chair,
-          size: 30,
-          color: kPrimaryColor,
+        return const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4),
+          child: Icon(
+            Icons.chair,
+            color: kPrimaryColor,
+          ),
         );
       case "space":
         return const SizedBox(
@@ -575,28 +491,6 @@ class SeatView extends StatelessWidget {
     }
   }
 }
-
-// // seats view
-// class SeatsView extends StatefulWidget {
-//   final List<SeatVO> seatVOList;
-//   final double scale;
-//   final Function(SeatVO seatVO) onTapSeat;
-//   const SeatsView(
-//       {super.key,
-//       required this.scale,
-//       required this.seatVOList,
-//       required this.onTapSeat});
-//
-//   @override
-//   State<SeatsView> createState() => _SeatsViewState();
-// }
-//
-// class _SeatsViewState extends State<SeatsView> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return ;
-//   }
-// }
 
 void selectSeat({required int index}) {
   seatList1[index].type = "selected";

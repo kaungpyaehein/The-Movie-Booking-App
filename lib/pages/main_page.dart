@@ -7,7 +7,6 @@ import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 
-
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -19,7 +18,7 @@ class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
   List<Widget> screenWidgets = [
     const HomePage(),
-     CinemasPage(onTapTimeSlot: (){}),
+    CinemasPage(onTapTimeSlot: () {}),
     const TicketsPage(),
     const ProfilePage(),
   ];

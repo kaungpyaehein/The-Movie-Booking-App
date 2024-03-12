@@ -367,7 +367,7 @@ class CastView extends StatelessWidget {
           height: kMargin60,
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: kMarginMedium2),
-            itemCount: 8,
+            itemCount: 5,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return CastItemView(

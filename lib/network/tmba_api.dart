@@ -41,7 +41,7 @@ abstract class TmbaApi {
   /// GET SNACKS
   @GET(kEndPointGetSnacks)
   Future<SnackResponse> getSnacks(
-    @Query(kParamCategoryId) String categoryId,
+    @Query(kParamCategoryId) int categoryId,
     @Header(kHeaderAccept) String accept,
     @Header(kHeaderAuthorization) String bearerToken,
   );
@@ -56,7 +56,7 @@ abstract class TmbaApi {
   /// GET SEATING PLAN BY SHOW TIME
   @GET(kEndPointGetSeatingPlanByShowTime)
   Future<SeatingPlanByShowTimeResponse> getSeatingPlanByShowTime(
-    @Query(kParamCinemaDayTimeslotId) String cinemaDayTimeslotId,
+    @Query(kParamCinemaDayTimeslotId) int cinemaDayTimeslotId,
     @Query(kParamBookingDate) String bookingDate,
     @Header(kHeaderAuthorization) String bearerToken,
   );

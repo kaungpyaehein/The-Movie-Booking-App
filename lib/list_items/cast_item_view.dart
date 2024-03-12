@@ -14,10 +14,7 @@ class CastItemView extends StatelessWidget {
       children: [
         ClipOval(
           child: CachedNetworkImage(
-            imageUrl: credit?.getProfileWithUrl() == null ||
-                    credit!.getProfileWithUrl().isEmpty
-                ? ""
-                : credit!.getProfileWithUrl(),
+            imageUrl: credit!.getProfileWithUrl(),
             errorWidget: (_, __, ___) => Container(
               width: kMargin60,
               height: kMargin60,
