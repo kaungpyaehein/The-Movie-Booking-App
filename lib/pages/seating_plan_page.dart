@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
+import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
 import 'package:the_movie_booking_app/data/vos/seat_vos.dart';
 import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
 import 'package:the_movie_booking_app/pages/movie_details_page.dart';
@@ -16,8 +17,9 @@ class SeatingPlanPage extends StatefulWidget {
   final String date;
   final TimeslotVO timeslotVO;
   final String cinemaName;
+  final MovieVO movieVO;
   const SeatingPlanPage(
-      {super.key, required this.date, required this.timeslotVO, required this.cinemaName});
+      {super.key, required this.date, required this.timeslotVO, required this.cinemaName, required this.movieVO});
 
   @override
   State<SeatingPlanPage> createState() => _SeatingPlanPageState();
@@ -219,6 +221,7 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                                 date: widget.date,
                                 timeslotVO: widget.timeslotVO,
                                 cinemaName: widget.cinemaName,
+                                movieVO: widget.movieVO,
                               ),
                             ));
                       },

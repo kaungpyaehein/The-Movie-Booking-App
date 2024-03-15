@@ -57,7 +57,9 @@ class TicketsPage extends StatelessWidget {
                         builder: (context) => const TicketDetailsPage(),
                       ));
                 },
-                child: const TicketView()),
+                child:  Container(
+
+                )),
           ),
         ));
   }

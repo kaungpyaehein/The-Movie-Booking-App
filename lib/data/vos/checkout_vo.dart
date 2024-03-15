@@ -66,4 +66,8 @@ class CheckoutVO {
 
   //to json
   Map<String, dynamic> toJson() => _$CheckoutVOToJson(this);
+
+  String getQRImage(){
+    return "http://34.126.136.182/$qrCode";
+  }
 }

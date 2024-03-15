@@ -162,7 +162,7 @@ class _HomeScreenBodyViewState extends State<HomeScreenBodyView> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          content: Text(error.toString()),
+          content: Text(error.message.toString()),
         ),
       );
     });

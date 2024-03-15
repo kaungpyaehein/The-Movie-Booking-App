@@ -132,12 +132,22 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
       String bearerToken, CheckoutRequest checkoutRequest) {
     return mTmbaApi
         .checkout(bearerToken, kApplicationJson, checkoutRequest)
+        .then((response) {
+          if (response.code == 200) {
+            return response;
+          } else {
+            throw CustomException(ErrorVO(
+                statusCode: response.code ?? 400,
+                statusMessage: response.message ?? "Invalid response",
+                success: false));
+          }
+        })
         .asStream()
         .map((response) => response.data ?? CheckoutVO())
         .first
         .catchError((error) {
-      throw _createException(error);
-    });
+          throw _createException(error);
+        });
   }
 
   @override
@@ -226,19 +236,14 @@ class RetrofitDataAgentImpl extends TheMovieBookingDataAgent {
     return mTmbaApi
         .getSeatingPlanByShowTime(cinemaDayTimeslotId, bookingDate, bearerToken)
         .then((response) {
-      if (response.data != null) {
-        // Flatten the list of lists
-        final List<SeatVO> result = [];
+      // Flatten the list of lists
+      final List<SeatVO> result = [];
 
-        for (var elements in response.data!) {
-          result.addAll(elements);
-        }
-
-        return result;
-      } else {
-        // Handle case where response or data is null
-        throw Exception("Failed to fetch seating plan by show time");
+      for (var elements in response.data) {
+        result.addAll(elements);
       }
+
+      return result;
     }).catchError((error) {
       throw _createException(error);
     });

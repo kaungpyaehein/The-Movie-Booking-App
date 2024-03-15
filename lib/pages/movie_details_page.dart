@@ -181,7 +181,9 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const BookingPage(),
+                                    builder: (context) => BookingPage(
+                                      movieVO: movieDetails!,
+                                    ),
                                   ));
                             },
                           ),

@@ -4,6 +4,7 @@ import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
 import 'package:the_movie_booking_app/data/sample_vos/film_type_list.dart';
 import 'package:the_movie_booking_app/data/vos/choose_date_vo.dart';
 import 'package:the_movie_booking_app/data/vos/cinema_vo.dart';
+import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
 import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
 import 'package:the_movie_booking_app/pages/seating_plan_page.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
@@ -14,7 +15,8 @@ import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 
 class BookingPage extends StatefulWidget {
-  const BookingPage({super.key});
+  final MovieVO movieVO;
+  const BookingPage({super.key, required this.movieVO});
 
   @override
   State<BookingPage> createState() => _BookingPageState();
@@ -102,82 +104,84 @@ class _BookingPageState extends State<BookingPage> {
           )
         ],
       ),
-      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : SafeArea(
-              child: CustomScrollView(
-              slivers: [
-                //Date List View
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: kDateListHeight,
-                    child: ListView.builder(
-                      key: const PageStorageKey(0),
-                      itemCount: twoWeekDates.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        final ChooseDateVO chooseDateVO = twoWeekDates[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: DateCardView(
-                            chooseDateVO: chooseDateVO,
-                            onTap: () {
-                              isLoading = true;
-                              setState(() {
-                                twoWeekDates = twoWeekDates.map((dateTime) {
-                                  return ChooseDateVO(dateTime.date,
-                                      dateTime.date == chooseDateVO.date);
-                                }).toList();
-                                selectedDate = chooseDateVO.date;
+      body: SafeArea(
+          child: CustomScrollView(
+        slivers: [
+          //Date List View
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: kDateListHeight,
+              child: ListView.builder(
+                key: const PageStorageKey(0),
+                itemCount: twoWeekDates.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  final ChooseDateVO chooseDateVO = twoWeekDates[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: DateCardView(
+                      chooseDateVO: chooseDateVO,
+                      onTap: () {
+                        isLoading = true;
+                        setState(() {
+                          twoWeekDates = twoWeekDates.map((dateTime) {
+                            return ChooseDateVO(dateTime.date,
+                                dateTime.date == chooseDateVO.date);
+                          }).toList();
+                          selectedDate = chooseDateVO.date;
 
-                                /// Change Cinema Data According to The Date
-                                getCinemaData(chooseDateVO.date);
+                          /// Change Cinema Data According to The Date
+                          getCinemaData(chooseDateVO.date);
 
-                                // model.getCinemasAndShowTimeByDate();
-                              });
-                            },
-                          ),
-                        );
+                          // model.getCinemasAndShowTimeByDate();
+                        });
                       },
                     ),
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: kMargin30,
-                  ),
-                ),
+                  );
+                },
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: kMargin30,
+            ),
+          ),
 
-                //film type view
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: kPickReginHorizontalPadding),
-                    child: ChooseFilmTypeView(),
-                  ),
-                ),
-                //spacer
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: kMargin30,
-                  ),
-                ),
+          //film type view
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: kPickReginHorizontalPadding),
+              child: ChooseFilmTypeView(),
+            ),
+          ),
+          //spacer
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: kMargin30,
+            ),
+          ),
 
-                const SliverToBoxAdapter(
-                  child: AvailabilityView(),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: kMargin30,
-                  ),
-                ),
+          const SliverToBoxAdapter(
+            child: AvailabilityView(),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: kMargin30,
+            ),
+          ),
 
-                /// Cinema View
-                SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        childCount: cinemaVOs.length, (context, index) {
+          /// Cinema View
+          isLoading
+              ? const SliverFillRemaining(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      childCount: cinemaVOs.length, (context, index) {
                   final cinemaVO = cinemaVOs[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: kMarginSmall),
@@ -192,15 +196,15 @@ class _BookingPageState extends State<BookingPage> {
                                 timeslotVO: timeslotVO,
                                 date: selectedDate,
                                 cinemaName: cinemaVO.cinema ?? "",
-
+                                movieVO: widget.movieVO,
                               ),
                             ));
                       },
                     ),
                   );
                 }))
-              ],
-            )),
+        ],
+      )),
     );
   }
 }

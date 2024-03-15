@@ -1,20 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
+import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
+import 'package:the_movie_booking_app/data/vos/payment_type_vo.dart';
 import 'package:the_movie_booking_app/pages/ticket_information_page.dart';
 
 import '../data/sample_vos/sample_data.dart';
+import '../data/vos/seat_vo.dart';
+import '../data/vos/snack_vo.dart';
+import '../data/vos/timeslot_vo.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
 import '../utils/strings.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key});
+  final List<SeatVO> selectedSeatList;
+  final String totalSeatPrice;
+  final String date;
+  final TimeslotVO timeslotVO;
+  final List<SnackVO> snackList;
+  final String cinemaName;
+  final MovieVO movieVO;
+  const PaymentPage(
+      {super.key,
+      required this.selectedSeatList,
+      required this.totalSeatPrice,
+      required this.date,
+      required this.timeslotVO,
+      required this.snackList,
+      required this.cinemaName, required this.movieVO});
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
 }
 
 class _PaymentPageState extends State<PaymentPage> {
+  List<PaymentTypeVO> paymentMethods = [];
+  final MovieBookingModel model = MovieBookingModel();
+
+  @override
+  void initState() {
+    model.getPaymentTypes().then((paymentTypes) {
+      print(paymentTypes.toString());
+      setState(() {
+        paymentMethods = paymentTypes;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,18 +65,39 @@ class _PaymentPageState extends State<PaymentPage> {
               fontWeight: FontWeight.w600),
         ),
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ApplyCouponView(),
+            const ApplyCouponView(),
             //spacer
-            SizedBox(
+            const SizedBox(
               height: kMarginXLarge,
             ),
 
             //choose payment method view
-            ChoosePaymentMethodsView(),
+            paymentMethods.isEmpty
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ChoosePaymentMethodsView(
+                    paymentMethods: paymentMethods,
+                    onTap: (paymentId) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TicketInformationPage(
+                                selectedSeatList: widget.selectedSeatList,
+                                totalSeatPrice: widget.totalSeatPrice,
+                                date: widget.date,
+                                timeslotVO: widget.timeslotVO,
+                                snackList: widget.snackList,
+                                cinemaName: widget.cinemaName,
+                                paymentId: paymentId,
+                            movieVO: widget.movieVO,),
+                          ));
+                    },
+                  ),
           ],
         ),
       ),
@@ -79,8 +134,12 @@ class ApplyCouponView extends StatelessWidget {
 }
 
 class ChoosePaymentMethodsView extends StatelessWidget {
+  final List<PaymentTypeVO> paymentMethods;
+  final Function(int paymentId) onTap;
   const ChoosePaymentMethodsView({
     super.key,
+    required this.paymentMethods,
+    required this.onTap,
   });
 
   @override
@@ -100,18 +159,14 @@ class ChoosePaymentMethodsView extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(vertical: kMarginMedium4),
-            itemCount: paymentOptionModelList.length,
+            itemCount: paymentMethods.length,
             itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.only(bottom: kMarginMedium2),
               child: PaymentOptionItemView(
-                label: paymentOptionModelList[index].label,
+                label: paymentMethods[index].title ?? "",
                 image: paymentOptionModelList[index].image,
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TicketInformationPage(),
-                      ));
+                  onTap(paymentMethods[index].id!);
                 },
               ),
             ),

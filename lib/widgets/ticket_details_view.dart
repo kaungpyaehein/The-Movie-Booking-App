@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:the_movie_booking_app/data/vos/checkout_vo.dart';
 import '../data/vos/seat_vo.dart';
 import '../data/vos/snack_vo.dart';
 import '../data/vos/timeslot_vo.dart';
@@ -18,6 +19,7 @@ class TicketDetailsView extends StatelessWidget {
   final TimeslotVO timeslotVO;
   final List<SnackVO> snackList;
   final String cinemaName;
+  final Function(SnackVO) onDeleteSnack;
   const TicketDetailsView({
     super.key,
     required this.isTicketCancelButtonRed,
@@ -27,6 +29,7 @@ class TicketDetailsView extends StatelessWidget {
     required this.timeslotVO,
     required this.snackList,
     required this.cinemaName,
+    required this.onDeleteSnack,
   });
 
   @override
@@ -59,6 +62,7 @@ class TicketDetailsView extends StatelessWidget {
             selectedSeatList: selectedSeatList,
             cinemaName: cinemaName,
             snackList: snackList,
+            onDeleteSnack: onDeleteSnack,
           ),
           const TicketDividerView(),
           TicketBottomView(
@@ -398,6 +402,7 @@ class TicketTopView extends StatefulWidget {
   final TimeslotVO timeslotVO;
   final String cinemaName;
   final List<SnackVO> snackList;
+  final Function(SnackVO) onDeleteSnack;
   const TicketTopView({
     super.key,
     required this.selectedSeatList,
@@ -406,6 +411,7 @@ class TicketTopView extends StatefulWidget {
     required this.timeslotVO,
     required this.cinemaName,
     required this.snackList,
+    required this.onDeleteSnack,
   });
 
   @override
@@ -465,6 +471,7 @@ class _TicketTopViewState extends State<TicketTopView> {
           DateTimeLocationView(
             date: widget.date,
             timeslotVO: widget.timeslotVO,
+
           ),
           //spacer
           const SizedBox(
@@ -552,6 +559,7 @@ class _TicketTopViewState extends State<TicketTopView> {
             visible: showSnackItems && widget.snackList.isNotEmpty,
             child: SnackItemsListView(
               snackList: widget.snackList,
+              onDeleteSnack: widget.onDeleteSnack,
             ),
           )
         ],
@@ -623,6 +631,7 @@ String formatDate(String inputDate) {
 class DateTimeLocationView extends StatelessWidget {
   final String date;
   final TimeslotVO timeslotVO;
+
   const DateTimeLocationView({
     super.key,
     required this.date,
@@ -693,9 +702,11 @@ class DateTimeLocationView extends StatelessWidget {
 
 class SnackItemsListView extends StatelessWidget {
   final List<SnackVO> snackList;
+  final Function(SnackVO) onDeleteSnack;
   const SnackItemsListView({
     super.key,
     required this.snackList,
+    required this.onDeleteSnack,
   });
 
   @override
@@ -708,9 +719,14 @@ class SnackItemsListView extends StatelessWidget {
           final SnackVO snackVO = snackList[index];
           return Padding(
             padding: const EdgeInsets.only(top: kMarginMedium3),
-            child: SnackItemPriceView(
-                name: "${snackVO.name} ${snackVO.quantity}",
-                price: "${snackVO.price! * snackVO.quantity}"),
+            child: GestureDetector(
+              onTap: () {
+                onDeleteSnack(snackVO);
+              },
+              child: SnackItemPriceView(
+                  name: "${snackVO.name} ${snackVO.quantity}",
+                  price: "${snackVO.price! * snackVO.quantity}"),
+            ),
           );
         });
   }
@@ -720,6 +736,7 @@ class SnackItemsListView extends StatelessWidget {
 class SnackItemPriceView extends StatelessWidget {
   final String name;
   final String price;
+
   const SnackItemPriceView({
     super.key,
     required this.name,

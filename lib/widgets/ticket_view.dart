@@ -1,15 +1,40 @@
 //ticket view
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:the_movie_booking_app/data/vos/checkout_vo.dart';
 import 'package:the_movie_booking_app/data/vos/timeslot_vo.dart';
 import 'package:the_movie_booking_app/widgets/ticket_details_view.dart';
 
+import '../data/vos/movie_vo.dart';
+import '../data/vos/seat_vo.dart';
+import '../data/vos/snack_vo.dart';
 import '../pages/checkout_page.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
 
 class TicketView extends StatelessWidget {
-  const TicketView({super.key});
+  final List<SeatVO> selectedSeatList;
+  final String totalSeatPrice;
+  final String date;
+  final TimeslotVO timeslotVO;
+  final List<SnackVO> snackList;
+  final String cinemaName;
+  final int paymentId;
+  final MovieVO movieVO;
+  final CheckoutVO checkoutVO;
+  const TicketView(
+      {super.key,
+      required this.selectedSeatList,
+      required this.totalSeatPrice,
+      required this.date,
+      required this.timeslotVO,
+      required this.snackList,
+      required this.cinemaName,
+      required this.paymentId,
+      required this.movieVO,
+      required this.checkoutVO});
 
   @override
   Widget build(BuildContext context) {
@@ -28,34 +53,47 @@ class TicketView extends StatelessWidget {
                 kTicketSmallGradientStartColor3,
                 kTicketSmallGradientStartColor4,
               ])),
-      child:  Column(
+      child: Column(
         children: [
           //ticket top view
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: kMarginMedium3,
             ),
             child: Row(
               children: [
                 //ticket poster
-                TicketPosterView(),
+                TicketPosterView(
+                  imageUrl: movieVO.getPosterPathWithBaseUrl(),
+                ),
 
-                //spacer
-                Spacer(),
+                const SizedBox(
+                  width: kMarginMedium4,
+                ),
 
                 //ticket information
-                SmallTicketInformationView()
+                Expanded(
+                  child: SmallTicketInformationView(
+                    checkoutVO: checkoutVO,
+                    movieVO: movieVO,
+                    cinemaName: cinemaName,
+                  ),
+                ),
+                //spacer
+                const SizedBox(
+                  width: kMarginMedium4,
+                ),
               ],
             ),
           ),
 
           //ticket divider
-          TicketSmallDivider(),
+          const TicketSmallDivider(),
 
           //ticket bottom view
           DateTimeLocationView(
-            timeslotVO: TimeslotVO(),
-            date: "",
+            timeslotVO: checkoutVO.timeslot!,
+            date: checkoutVO.bookingDate!,
           ),
         ],
       ),
@@ -64,27 +102,34 @@ class TicketView extends StatelessWidget {
 }
 
 class TicketPosterView extends StatelessWidget {
+  final String imageUrl;
   const TicketPosterView({
     super.key,
+    required this.imageUrl,
   });
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(kMarginSmall),
-      child: Image.asset(
-        "assets/images/poster4.jpg",
-        height: kTicketViewImageHeight,
-        width: kTicketViewImageWidth,
-        fit: BoxFit.cover,
-      ),
-    );
+        borderRadius: BorderRadius.circular(kMarginSmall),
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          height: kTicketViewImageHeight,
+          width: kTicketViewImageWidth,
+          fit: BoxFit.cover,
+        ));
   }
 }
 
 class SmallTicketInformationView extends StatelessWidget {
+  final CheckoutVO checkoutVO;
+  final MovieVO movieVO;
+  final String cinemaName;
   const SmallTicketInformationView({
     super.key,
+    required this.checkoutVO,
+    required this.movieVO,
+    required this.cinemaName,
   });
 
   @override
@@ -93,9 +138,9 @@ class SmallTicketInformationView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         //movie name
-        const Text(
-          "Black Widow (3D) (U/A)",
-          style: TextStyle(
+        Text(
+          "${movieVO.title} (3D) (U/A)",
+          style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w700,
               fontSize: kText18),
@@ -104,9 +149,9 @@ class SmallTicketInformationView extends StatelessWidget {
           height: kMarginMedium2,
         ),
         //spacer
-        const Text(
-          "JCGV : Junction City",
-          style: TextStyle(
+        Text(
+          cinemaName,
+          style: const TextStyle(
               color: kPrimaryColor,
               fontSize: kTextRegular2X,
               fontWeight: FontWeight.w400),
@@ -116,8 +161,8 @@ class SmallTicketInformationView extends StatelessWidget {
         ),
         //tickets price view
         RichText(
-            text: const TextSpan(children: [
-          TextSpan(
+            text: TextSpan(children: [
+          const TextSpan(
             text: "M-Ticket(",
             style: TextStyle(
               color: kFacilityViewColor,
@@ -125,13 +170,13 @@ class SmallTicketInformationView extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: "2",
-            style: TextStyle(
+            text: "${checkoutVO.totalSeat}",
+            style: const TextStyle(
               color: kPrimaryColor,
               fontWeight: FontWeight.w700,
             ),
           ),
-          TextSpan(
+          const TextSpan(
             text: ")",
             style: TextStyle(
               color: kFacilityViewColor,
@@ -146,24 +191,27 @@ class SmallTicketInformationView extends StatelessWidget {
 
         //seat text
         RichText(
-            text: const TextSpan(children: [
-          TextSpan(
-            text: "Gold-G8,G7",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: kTextRegular2X,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          TextSpan(
-            text: "(Screen2)",
-            style: TextStyle(
-              fontSize: kTextSmall,
-              color: kFacilityViewColor,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ])),
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+            text: TextSpan(children: [
+              TextSpan(
+                text: "Normal - ${checkoutVO.seat}",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: kTextRegular2X,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const TextSpan(
+                text: "(Screen2)",
+                style: TextStyle(
+                  fontSize: kTextSmall,
+                  color: kFacilityViewColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ])),
       ],
     );
   }

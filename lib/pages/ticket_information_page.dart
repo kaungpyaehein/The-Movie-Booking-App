@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
+import 'package:the_movie_booking_app/data/vos/checkout_vo.dart';
+import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
+import 'package:the_movie_booking_app/data/vos/seat_vo.dart';
+import 'package:the_movie_booking_app/network/requests/checkout_request.dart';
 import 'package:the_movie_booking_app/pages/main_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
+import '../data/vos/snack_vo.dart';
+import '../data/vos/timeslot_vo.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
 import '../utils/strings.dart';
 import '../widgets/ticket_view.dart';
 
 class TicketInformationPage extends StatefulWidget {
-  const TicketInformationPage({super.key});
+  final List<SeatVO> selectedSeatList;
+  final String totalSeatPrice;
+  final String date;
+  final TimeslotVO timeslotVO;
+  final List<SnackVO> snackList;
+  final String cinemaName;
+  final int paymentId;
+  final MovieVO movieVO;
+  const TicketInformationPage(
+      {super.key,
+      required this.selectedSeatList,
+      required this.totalSeatPrice,
+      required this.date,
+      required this.timeslotVO,
+      required this.snackList,
+      required this.cinemaName,
+      required this.paymentId,
+      required this.movieVO});
 
   @override
   State<TicketInformationPage> createState() => _TicketInformationPageState();
@@ -16,11 +39,45 @@ class TicketInformationPage extends StatefulWidget {
 
 class _TicketInformationPageState extends State<TicketInformationPage> {
   bool isShow = true;
+
+  final MovieBookingModel model = MovieBookingModel();
+
+  late CheckoutRequest request;
+
+  CheckoutVO? checkoutVO;
+
+  /// FORMAT SEATS
+  String formatSeats() {
+    return widget.selectedSeatList.map((seat) => seat.seatName!).join(',');
+  }
+
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 2)).whenComplete(() {
       setState(() {
         isShow = false;
+      });
+      request = CheckoutRequest(
+        bookingDate: widget.date,
+        cinemaDayTimeslotId: widget.timeslotVO.cinemaDayTimeslotId,
+        movieId: widget.movieVO.id,
+        paymentTypeId: widget.paymentId,
+        seatNumber: formatSeats(),
+        snacks: widget.snackList,
+      );
+      model.checkout(request)?.then((response) {
+        setState(() {
+          checkoutVO = response;
+        });
+      }).catchError((error) {
+        ///catch the error and
+        /// show custom error
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Text(error.toString()),
+          ),
+        );
       });
     });
 
@@ -46,30 +103,46 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                   fontWeight: FontWeight.w600),
             ),
           ),
-          body: const Padding(
-            padding: EdgeInsets.symmetric(
+          body: Padding(
+            padding: const EdgeInsets.symmetric(
                 vertical: kMargin30, horizontal: kMarginLarge),
-            child: Column(
-              children: [
-                //ticket view
-                TicketView(),
+            child: checkoutVO == null
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Column(
+                    children: [
+                      //ticket view
+                      TicketView(
+                        selectedSeatList: widget.selectedSeatList,
+                        totalSeatPrice: widget.totalSeatPrice,
+                        date: widget.date,
+                        timeslotVO: widget.timeslotVO,
+                        snackList: widget.snackList,
+                        cinemaName: widget.cinemaName,
+                        paymentId: widget.paymentId,
+                        movieVO: widget.movieVO,
+                        checkoutVO: checkoutVO!,
+                      ),
 
-                //spacer
-                Spacer(),
+                      //spacer
+                      const Spacer(),
 
-                //qr view
-                QRView(),
-                //spacer
-                Spacer(),
+                      //qr view
+                      QRView(
+                        checkoutVO: checkoutVO!,
+                      ),
+                      //spacer
+                      const Spacer(),
 
-                //done button
-                DoneButtonView(),
+                      //done button
+                      const DoneButtonView(),
 
-                //spacer
-                Spacer(),
-                // booking successful view
-              ],
-            ),
+                      //spacer
+                      const Spacer(),
+                      // booking successful view
+                    ],
+                  ),
           ),
         ),
         Visibility(
@@ -142,29 +215,36 @@ class DoneButtonView extends StatelessWidget {
 }
 
 class QRView extends StatelessWidget {
+  final CheckoutVO checkoutVO;
   const QRView({
     super.key,
+    required this.checkoutVO,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        QrImageView(
-          foregroundColor: Colors.white,
-          padding: EdgeInsets.zero,
-          backgroundColor: Colors.transparent,
-          data: '1234567890',
-          version: QrVersions.auto,
-          size: kQRSize,
+        // QrImageView(
+        //   foregroundColor: Colors.white,
+        //   padding: EdgeInsets.zero,
+        //   backgroundColor: Colors.transparent,
+        //   data: '1234567890',
+        //   version: QrVersions.auto,
+        //   size: kQRSize,
+        // ),
+        Image.network(
+          checkoutVO.getQRImage(),
+          height: kQRSize,
+          width: kQRSize,
         ),
         //spacer
         const SizedBox(
           height: kMarginMedium4,
         ),
-        const Text(
-          "WAG5LP1C",
-          style: TextStyle(
+        Text(
+          checkoutVO.bookingNo ?? "",
+          style: const TextStyle(
               color: Colors.white,
               fontSize: kTextRegular3X,
               fontWeight: FontWeight.w700),

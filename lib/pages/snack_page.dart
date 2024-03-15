@@ -6,6 +6,7 @@ import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/dimensions.dart';
 import 'package:the_movie_booking_app/utils/images.dart';
 
+import '../data/vos/movie_vo.dart';
 import '../data/vos/seat_vo.dart';
 import '../data/vos/snack_vo.dart';
 import '../data/vos/timeslot_vo.dart';
@@ -18,6 +19,7 @@ class SnackPage extends StatefulWidget {
   final String date;
   final TimeslotVO timeslotVO;
   final String cinemaName;
+  final MovieVO movieVO;
 
   const SnackPage(
       {super.key,
@@ -25,7 +27,8 @@ class SnackPage extends StatefulWidget {
       required this.totalSeatPrice,
       required this.date,
       required this.timeslotVO,
-      required this.cinemaName});
+      required this.cinemaName,
+      required this.movieVO});
 
   @override
   State<SnackPage> createState() => _SnackPageState();
@@ -57,6 +60,10 @@ class _SnackPageState extends State<SnackPage> {
     });
 
     super.initState();
+  }
+
+  List<SnackVO> filterSnackList() {
+    return snackVos.where((snackVO) => snackVO.quantity > 0).toList();
   }
 
   @override
@@ -103,6 +110,7 @@ class _SnackPageState extends State<SnackPage> {
                       timeslotVO: widget.timeslotVO,
                       snackList: const [],
                       cinemaName: widget.cinemaName,
+                      movieVO: widget.movieVO,
                     ),
                   ));
             },
@@ -214,8 +222,9 @@ class _SnackPageState extends State<SnackPage> {
                                 totalSeatPrice: widget.totalSeatPrice,
                                 date: widget.date,
                                 timeslotVO: widget.timeslotVO,
-                                snackList: snackVos,
+                                snackList: filterSnackList(),
                                 cinemaName: widget.cinemaName,
+                                movieVO: widget.movieVO,
                               ),
                             ));
                       },
@@ -762,5 +771,3 @@ String getTotalSnackAmount(List<SnackVO> snackList) {
       .fold(0, (prev, price) => prev + price)
       .toString();
 }
-
-
