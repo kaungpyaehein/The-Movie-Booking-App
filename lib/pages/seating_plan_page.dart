@@ -150,7 +150,7 @@ class _SeatingPlanPageState extends State<SeatingPlanPage> {
                             setState(() {
                               //zoom out
                               if (_zoomLevel > 0.1) {
-                                print(_zoomLevel);
+                                debugPrint(_zoomLevel.toString());
                                 _zoomLevel -= 0.1;
                                 transformationController.value =
                                     Matrix4.identity()

@@ -62,10 +62,6 @@ class _SnackPageState extends State<SnackPage> {
     super.initState();
   }
 
-  List<SnackVO> filterSnackList() {
-    return snackVos.where((snackVO) => snackVO.quantity > 0).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,10 +133,13 @@ class _SnackPageState extends State<SnackPage> {
                   DefaultTabController(
                     length: snackCategories.length,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           height: kMargin60,
                           margin: const EdgeInsets.only(left: kMarginMedium2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kSnackPageGridViewSpacing),
                           child: TabBar(
                               labelStyle: const TextStyle(
                                   color: Colors.white,
@@ -158,7 +157,7 @@ class _SnackPageState extends State<SnackPage> {
                               dividerColor: Colors.transparent,
                               automaticIndicatorColorAdjustment: true,
                               isScrollable: true,
-                              tabAlignment: TabAlignment.center,
+                              tabAlignment: TabAlignment.start,
                               tabs: snackCategories
                                   .map(
                                     (category) => Tab(
@@ -222,7 +221,7 @@ class _SnackPageState extends State<SnackPage> {
                                 totalSeatPrice: widget.totalSeatPrice,
                                 date: widget.date,
                                 timeslotVO: widget.timeslotVO,
-                                snackList: filterSnackList(),
+                                snackList: snackVos,
                                 cinemaName: widget.cinemaName,
                                 movieVO: widget.movieVO,
                               ),

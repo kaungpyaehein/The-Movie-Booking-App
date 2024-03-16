@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_booking_app/data/models/movie_booking_model.dart';
+import 'package:the_movie_booking_app/data/vos/checkout_vo.dart';
 import 'package:the_movie_booking_app/data/vos/movie_vo.dart';
 import 'package:the_movie_booking_app/data/vos/payment_type_vo.dart';
 import 'package:the_movie_booking_app/pages/ticket_information_page.dart';
@@ -8,6 +9,7 @@ import '../data/sample_vos/sample_data.dart';
 import '../data/vos/seat_vo.dart';
 import '../data/vos/snack_vo.dart';
 import '../data/vos/timeslot_vo.dart';
+import '../network/requests/checkout_request.dart';
 import '../utils/colors.dart';
 import '../utils/dimensions.dart';
 import '../utils/images.dart';
@@ -28,7 +30,8 @@ class PaymentPage extends StatefulWidget {
       required this.date,
       required this.timeslotVO,
       required this.snackList,
-      required this.cinemaName, required this.movieVO});
+      required this.cinemaName,
+      required this.movieVO});
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
@@ -83,10 +86,24 @@ class _PaymentPageState extends State<PaymentPage> {
                 : ChoosePaymentMethodsView(
                     paymentMethods: paymentMethods,
                     onTap: (paymentId) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TicketInformationPage(
+                      late CheckoutVO checkoutVO;
+                      var request = CheckoutRequest(
+                        bookingDate: widget.date,
+                        cinemaDayTimeslotId:
+                            widget.timeslotVO.cinemaDayTimeslotId,
+                        movieId: widget.movieVO.id,
+                        paymentTypeId: paymentId,
+                        seatNumber: formatSeats(),
+                        snacks: widget.snackList,
+                      );
+                      model.checkout(request)?.then((response) {
+                        setState(() {
+                          checkoutVO = response;
+                        });
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TicketInformationPage(
                                 selectedSeatList: widget.selectedSeatList,
                                 totalSeatPrice: widget.totalSeatPrice,
                                 date: widget.date,
@@ -94,14 +111,30 @@ class _PaymentPageState extends State<PaymentPage> {
                                 snackList: widget.snackList,
                                 cinemaName: widget.cinemaName,
                                 paymentId: paymentId,
-                            movieVO: widget.movieVO,),
-                          ));
+                                movieVO: widget.movieVO,
+                                checkoutVO: checkoutVO,
+                              ),
+                            ));
+                      }).catchError((error) {
+                        /// CATCH AND SHOW CUSTOM ERROR
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            content: Text(error.toString()),
+                          ),
+                        );
+                      });
                     },
                   ),
           ],
         ),
       ),
     );
+  }
+
+  /// FORMAT SEATS
+  String formatSeats() {
+    return widget.selectedSeatList.map((seat) => seat.seatName!).join(',');
   }
 }
 

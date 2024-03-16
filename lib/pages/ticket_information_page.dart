@@ -22,6 +22,7 @@ class TicketInformationPage extends StatefulWidget {
   final String cinemaName;
   final int paymentId;
   final MovieVO movieVO;
+  final CheckoutVO checkoutVO;
   const TicketInformationPage(
       {super.key,
       required this.selectedSeatList,
@@ -31,7 +32,8 @@ class TicketInformationPage extends StatefulWidget {
       required this.snackList,
       required this.cinemaName,
       required this.paymentId,
-      required this.movieVO});
+      required this.movieVO,
+      required this.checkoutVO});
 
   @override
   State<TicketInformationPage> createState() => _TicketInformationPageState();
@@ -42,14 +44,7 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
 
   final MovieBookingModel model = MovieBookingModel();
 
-  late CheckoutRequest request;
-
   CheckoutVO? checkoutVO;
-
-  /// FORMAT SEATS
-  String formatSeats() {
-    return widget.selectedSeatList.map((seat) => seat.seatName!).join(',');
-  }
 
   @override
   void initState() {
@@ -57,28 +52,28 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
       setState(() {
         isShow = false;
       });
-      request = CheckoutRequest(
-        bookingDate: widget.date,
-        cinemaDayTimeslotId: widget.timeslotVO.cinemaDayTimeslotId,
-        movieId: widget.movieVO.id,
-        paymentTypeId: widget.paymentId,
-        seatNumber: formatSeats(),
-        snacks: widget.snackList,
-      );
-      model.checkout(request)?.then((response) {
-        setState(() {
-          checkoutVO = response;
-        });
-      }).catchError((error) {
-        ///catch the error and
-        /// show custom error
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: Text(error.toString()),
-          ),
-        );
-      });
+      // var request = CheckoutRequest(
+      //   bookingDate: widget.date,
+      //   cinemaDayTimeslotId: widget.timeslotVO.cinemaDayTimeslotId,
+      //   movieId: widget.movieVO.id,
+      //   paymentTypeId: widget.paymentId,
+      //   seatNumber: formatSeats(),
+      //   snacks: widget.snackList,
+      // );
+      // model.checkout(request)?.then((response) {
+      //   setState(() {
+      //     checkoutVO = response;
+      //   });
+      // }).catchError((error) {
+      //   ///catch the error and
+      //   /// show custom error
+      //   showDialog(
+      //     context: context,
+      //     builder: (context) => AlertDialog(
+      //       content: Text(error.toString()),
+      //     ),
+      //   );
+      // });
     });
 
     super.initState();
@@ -86,6 +81,7 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final CheckoutVO checkoutVO = widget.checkoutVO;
     return Stack(
       children: [
         Scaffold(

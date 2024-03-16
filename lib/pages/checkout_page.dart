@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pinput/pinput.dart';
 import 'package:the_movie_booking_app/pages/movie_details_page.dart';
 import 'package:the_movie_booking_app/pages/payment_page.dart';
-import 'package:the_movie_booking_app/pages/snack_page.dart';
 import 'package:the_movie_booking_app/utils/colors.dart';
 import 'package:the_movie_booking_app/utils/strings.dart';
 
@@ -44,6 +42,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
     super.initState();
   }
 
+  List<SnackVO> filterSnackList() {
+    return snackList.where((snackVO) => snackVO.quantity > 0).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +71,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 date: widget.date,
                 totalSeatPrice: widget.totalSeatPrice,
                 selectedSeatList: widget.selectedSeatList,
-                snackList: snackList,
+                snackList: filterSnackList(),
                 timeslotVO: widget.timeslotVO,
                 cinemaName: widget.cinemaName,
                 onDeleteSnack: (snackVO) {
